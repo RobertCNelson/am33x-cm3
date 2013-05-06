@@ -550,105 +550,6 @@ void configure_deepsleep_count(int ds_count)
 	__raw_writel(v, DEEPSLEEP_CTRL);
 }
 
-/* 1ms timer */
-static int check_timer1(int base)
-{
-	int v = 0;
-
-	v = __raw_readl(base + 0x10);
-
-	if ((v & 0x14) != 0x14) {
-		__raw_writel(0x214, base + 0x10);
-		return 1;
-	}
-
-	return 0;
-}
-
-static int check_i2c(int base)
-{
-	int v = 0;
-
-	v = __raw_readl(base + 0x10);
-
-	if ((v & 0x1C) != 0x1C) {
-		__raw_writel(0x1C, base + 0x10);
-		return 1;
-	}
-
-	return 0;
-}
-
-static int check_adtsc(int base)
-{
-	int v = 0;
-
-	v = __raw_readl(base + 0x10);
-
-	if ((v & 0xC) != 0xC) {
-		__raw_writel(0xCc, base + 0x10);
-		return 1;
-	}
-
-	return 0;
-}
-
-static int check_uart(int base)
-{
-	int v = 0;
-
-	v = __raw_readl(base + 0x54);
-
-	if ((v & 0x1C) != 0x1C) {
-		__raw_writel(0x1C, base + 0x54);
-		return 1;
-	}
-
-	return 0;
-}
-
-static int check_gpio(int base)
-{
-	int v = 0;
-
-	v = __raw_readl(base + 0x10);
-
-	if ((v & 0x1C) != 0x1C) {
-		__raw_writel(0x1C, base + 0x10);
-		return 1;
-	}
-
-	return 0;
-}
-
-static int check_rtc(int base)
-{
-	int v = 0;
-
-	v = __raw_readl(base + 0x78);
-
-	if ((v & 0x3) != 0x3) {
-		__raw_writel(0x3, base + 0x78);
-		return 1;
-	}
-
-	return 0;
-}
-
-static int check_wdt(int base)
-{
-	int v = 0;
-
-	v = __raw_readl(base + 0x10);
-
-	if ((v & 0x18) != 0x18) {
-		__raw_writel(0x18, base + 0x10);
-		return 1;
-	}
-
-	return 0;
-}
-
 /*
  * In standby state we expect only the MPU_WAKE interrupt to come in
  */
@@ -664,120 +565,52 @@ void configure_standby_wake_sources(int wake_sources, int mod_check)
  */
 void configure_wake_sources(int wake_sources, int mod_check)
 {
-	int v = 0;
-
 	if (wake_sources != 0 || (mod_check == 0))
 		cmd_wake_sources = wake_sources;
 	else
 		cmd_wake_sources = WAKE_ALL;
 
-	/*
-	 * This flag is for checking the SYSCONFIG of the module
-	 * and then gating the clock. The clock needs to be gated
-	 * for the module to generate swake
-	 */
-	mod_check = 0;
-
 	/* Enable wakeup interrupts from required wake sources */
-	if (BB_USB_WAKE) {
-		/* A8 driver needs to configure SYSCONFIG. No M3 access */
-		module_state_change(MODULE_DISABLE, AM335X_CM_PER_USB0_CLKCTRL);
+	if (BB_USB_WAKE)
 		nvic_enable_irq(AM335X_IRQ_USBWAKEUP);
-	}
 
-	if(BB_I2C0_WAKE) {
-		if(mod_check) {
-			module_state_change(MODULE_ENABLE, AM335X_CM_WKUP_I2C0_CLKCTRL);
-			v = check_i2c(I2C0_BASE);
-			module_state_change(MODULE_DISABLE, AM335X_CM_WKUP_I2C0_CLKCTRL);
-		}
+	if(BB_I2C0_WAKE)
 		nvic_enable_irq(AM335X_IRQ_I2C0_WAKE);
-	}
 
-	if(BB_ADTSC_WAKE) {
-		if(mod_check) {
-			module_state_change(MODULE_ENABLE, AM335X_CM_WKUP_ADC_TSC_CLKCTRL);
-			v = check_adtsc(ADC_TSC_BASE);
-			module_state_change(MODULE_DISABLE, AM335X_CM_WKUP_ADC_TSC_CLKCTRL);
-		}
+	if(BB_ADTSC_WAKE)
 		nvic_enable_irq(AM335X_IRQ_ADC_TSC_WAKE);
-	}
 
-	if(BB_UART0_WAKE) {
-		if(mod_check) {
-			module_state_change(MODULE_ENABLE, AM335X_CM_WKUP_UART0_CLKCTRL);
-			v = check_uart(UART0_BASE);
-			module_state_change(MODULE_DISABLE, AM335X_CM_WKUP_UART0_CLKCTRL);
-		}
+	if(BB_UART0_WAKE)
 		nvic_enable_irq(AM335X_IRQ_UART0_WAKE);
-	}
 
-	if(BB_GPIO0_WAKE0) {
-		if(mod_check) {
-			module_state_change(MODULE_ENABLE, AM335X_CM_WKUP_GPIO0_CLKCTRL);
-			v = check_gpio(GPIO_BASE);
-			module_state_change(MODULE_DISABLE, AM335X_CM_WKUP_GPIO0_CLKCTRL);
-		}
+	if(BB_GPIO0_WAKE0)
 		nvic_enable_irq(AM335X_IRQ_GPIO0_WAKE0);
-	}
 
-	if(BB_GPIO0_WAKE1) {
-		if(mod_check) {
-			module_state_change(MODULE_ENABLE, AM335X_CM_WKUP_GPIO0_CLKCTRL);
-			v = check_gpio(GPIO_BASE);
-			module_state_change(MODULE_DISABLE, AM335X_CM_WKUP_GPIO0_CLKCTRL);
-		}
+	if(BB_GPIO0_WAKE1)
 		nvic_enable_irq(AM335X_IRQ_GPIO0_WAKE1);
-	}
 
-	if(BB_RTC_ALARM_WAKE) {
-		if(mod_check) {
-			module_state_change(MODULE_ENABLE, AM335X_CM_RTC_RTC_CLKCTRL);
-			v = check_rtc(RTCSS_BASE);
-		}
+	if(BB_RTC_ALARM_WAKE)
 		nvic_enable_irq(AM335X_IRQ_RTC_ALARM_WAKE);
-	}
 
-	if(BB_TIMER1_WAKE) {
-		if(mod_check) {
-			module_state_change(MODULE_ENABLE, AM335X_CM_WKUP_TIMER1_CLKCTRL);
-			v = check_timer1(DMTIMER1_BASE);
-		}
+	if(BB_TIMER1_WAKE)
 		nvic_enable_irq(AM335X_IRQ_TIMER1_WAKE);
-	}
 
-	if(BB_WDT1_WAKE) {
-		if(mod_check) {
-			module_state_change(MODULE_ENABLE, AM335X_CM_WKUP_WDT1_CLKCTRL);
-			v = check_wdt(WDT1_BASE);
-		}
+	if(BB_WDT1_WAKE)
 		nvic_enable_irq(AM335X_IRQ_WDT1_WAKE);
-	}
 
 #if 0
 	/* Not recommended */
-	if(BB_RTC_TIMER_WAKE) {
-		module_state_change(MODULE_ENABLE, AM335X_CM_WKUP_GPIO0_CLKCTRL);
-		module_wakeup_enable(AM335X_CM_PER_USB0_SYSCONFIG);
+	if(BB_RTC_TIMER_WAKE)
 		nvic_enable_irq(AM335X_IRQ_RTC_TIMER_WAKE);
-	}
 
-	if(BB_MPU_WAKE) {
-		module_wakeup_enable(AM335X_CM_PER_USB0_SYSCONFIG);
+	if(BB_MPU_WAKE)
 		nvic_enable_irq(AM335X_IRQ_MPU_WAKE);
-	}
 
-	if(BB_TIMER0_WAKE) {
-		module_state_change(MODULE_DISABLE, AM335X_CM_WKUP_GPIO0_CLKCTRL);
-		module_wakeup_enable(AM335X_CM_PER_USB0_SYSCONFIG);
+	if(BB_TIMER0_WAKE)
 		nvic_enable_irq(AM335X_IRQ_TIMER0_WAKE);
-	}
 
-	if(BB_WDT0_WAKE) {
-		module_state_change(MODULE_DISABLE, AM335X_CM_WKUP_GPIO0_CLKCTRL);
-		module_wakeup_enable(AM335X_CM_PER_USB0_SYSCONFIG);
+	if(BB_WDT0_WAKE)
 		nvic_enable_irq(AM335X_IRQ_WDT0_WAKE);
-	}
 #endif
 
 	if(BB_USBWOUT0)
