@@ -19,6 +19,10 @@
 #include <prmam335x.h>
 #include <system_am335.h>
 
+struct rtc_data rtc_mode_data =	   {
+	.rtc_timeout_val		= RTC_TIMEOUT_DEFAULT
+};
+
 /* Explicit 0s imply don't care */
 struct deep_sleep_data ds0_data =  {
 	.mosc_state 			= MOSC_OFF,

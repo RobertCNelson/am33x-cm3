@@ -16,6 +16,12 @@
 #include <low_power.h>
 #include <system_am335.h>
 
+extern struct rtc_data rtc_mode_data;
+extern struct deep_sleep_data standby_data;
+extern struct deep_sleep_data ds0_data;
+extern struct deep_sleep_data ds1_data;
+extern struct deep_sleep_data ds2_data;
+
 short valid_cmd_id[] = {
 	0x1,	/* RTC */
 	0x2, 	/* RTC_FAST */
@@ -121,6 +127,7 @@ int msg_cmd_is_valid(void)
 	return 0;
 }
 
+#define lp_data(a, b, c) (a ? (void *) b: (void *) c)
 /* Read all the IPC regs and pass it along to the appropriate handler */
 void msg_cmd_dispatcher()
 {
@@ -135,29 +142,35 @@ void msg_cmd_dispatcher()
 	a8_m3_ds_data.reg1 = a8_m3_data_r.reg3;
 	a8_m3_ds_data.reg2 = a8_m3_data_r.reg4;
 
-	cmd_global_data.data = &a8_m3_ds_data;
 	cmd_global_data.cmd_id = cmd_id;
 
 	switch(cmd_id) {
 	case 0x1:
+		cmd_global_data.data = lp_data(use_default_val, &rtc_mode_data, &a8_m3_ds_data);
 		a8_lp_cmd1_handler(&cmd_global_data, use_default_val);	/* RTC */
 		break;
 	case 0x2:
+		cmd_global_data.data = lp_data(use_default_val, &rtc_mode_data, &a8_m3_ds_data);
 		a8_lp_cmd2_handler(&cmd_global_data, use_default_val);	/* RTC_fast */
 		break;
 	case 0x3:
+		cmd_global_data.data = lp_data(use_default_val, &ds0_data, &a8_m3_ds_data);
 		a8_lp_cmd3_handler(&cmd_global_data, use_default_val);	/* DS0 */
 		break;
 	case 0x5:
+		cmd_global_data.data = lp_data(use_default_val, &ds1_data, &a8_m3_ds_data);
 		a8_lp_cmd5_handler(&cmd_global_data, use_default_val);	/* DS1 */
 		break;
 	case 0x7:
+		cmd_global_data.data = lp_data(use_default_val, &ds2_data, &a8_m3_ds_data);
 		a8_lp_cmd7_handler(&cmd_global_data, use_default_val);	/* DS2 */
 		break;
 	case 0x9:
+		cmd_global_data.data = &a8_m3_ds_data;
 		a8_standalone_handler(&cmd_global_data);
 		break;
 	case 0xb:
+		cmd_global_data.data = lp_data(use_default_val, &standby_data, &a8_m3_ds_data);
 		a8_standby_handler(&cmd_global_data, use_default_val);	/* Standby */
 		break;
 	case 0xe:
