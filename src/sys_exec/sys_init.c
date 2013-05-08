@@ -40,7 +40,7 @@ int am335_init(void)
 
 	pm_init();
 
-	setup_am335x_soc_revision();
+	setup_soc_revision();
 
 	/* Enable only the MBX IRQ */
 	nvic_enable_irq(AM335X_IRQ_MBINT0);

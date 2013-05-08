@@ -31,7 +31,6 @@ struct ds_data {
 	int reg2;
 };
 
-
 struct cmd_data {
 	short cmd_id;
 	void *data;
@@ -58,7 +57,8 @@ int pd_mpu_pwrstst_prev_val;
 int pd_per_pwrstst_next_val;
 int pd_per_pwrstst_prev_val;
 
-unsigned int am335x_soc_rev;
+unsigned int soc_id;
+unsigned int soc_rev;
 
 void pm_init(void);
 
@@ -109,8 +109,7 @@ int rtc_enable_check(void);
 int rtc_reg_read(int);
 void rtc_reg_write(int, int);
 
-void setup_am335x_soc_revision(void);
-unsigned int get_am335x_soc_rev(void);
+void setup_soc_revision(void);
 
 #define BITBAND_SRAM_REF 	UMEM_ALIAS
 #define BITBAND_SRAM_BASE 	0x22000000
@@ -163,6 +162,7 @@ unsigned int get_am335x_soc_rev(void);
 #define SET_BIT(x)		(1<<x)
 #define CLR_BIT(x)		(0<<x)
 
+#define AM335X_SOC_ID		0xB944
 #define AM335X_REV_ES1_0	0
 #define AM335X_REV_ES2_0	1
 #define AM335X_REV_ES2_1	2

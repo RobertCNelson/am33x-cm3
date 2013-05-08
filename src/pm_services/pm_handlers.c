@@ -138,11 +138,7 @@ void a8_lp_cmd3_handler(struct cmd_data *data, char use_default_val)
 	interconnect_modules_disable();
 
 	/* DPLL retention update for PG 2.0 */
-	if (get_am335x_soc_rev() >= AM335X_REV_ES2_0) {
-		dpll_power_down(DPLL_DDR);
-		dpll_power_down(DPLL_DISP);
-		dpll_power_down(DPLL_PER);
-	}
+	am33xx_power_down_plls();
 
 	mpu_clkdm_sleep();
 
@@ -152,7 +148,7 @@ void a8_lp_cmd3_handler(struct cmd_data *data, char use_default_val)
 	if (use_default_val || !(local_cmd->mosc_state)) {
 		disable_master_oscillator();
 		/* Core LDO retention for PG 2.0 if PD_PER is in RET */
-		if (get_am335x_soc_rev() >= AM335X_REV_ES2_0) {
+		if (soc_id == AM335X_SOC_ID && soc_rev > AM335X_REV_ES1_0) {
 			if ((__raw_readl(AM335X_PM_PER_PWRSTST) &
 				PWR_STATE_STS_MASK) == POWER_STATE_STS_RET) {
 				/* set Auto_RAMP_EN in SMA2 Spare Register (SMA2). */
@@ -222,11 +218,7 @@ void a8_lp_cmd5_handler(struct cmd_data *data, char use_default_val)
 	pd_state_change(per_st, PD_PER);
 
 	/* DPLL retention update for PG 2.0 */
-	if (get_am335x_soc_rev() >= AM335X_REV_ES2_0) {
-		dpll_power_down(DPLL_DDR);
-		dpll_power_down(DPLL_DISP);
-		dpll_power_down(DPLL_PER);
-	}
+	am33xx_power_down_plls();
 
 	mpu_clkdm_sleep();
 
@@ -285,11 +277,7 @@ void a8_lp_cmd7_handler(struct cmd_data *data, char use_default_val)
 	pd_state_change(per_st, PD_PER);
 
 	/* DPLL retention update for PG 2.0 */
-	if (get_am335x_soc_rev() >= AM335X_REV_ES2_0) {
-		dpll_power_down(DPLL_DDR);
-		dpll_power_down(DPLL_DISP);
-		dpll_power_down(DPLL_PER);
-	}
+	am33xx_power_down_plls();
 
 	wkup_clkdm_sleep();
 
@@ -446,7 +434,7 @@ void a8_wake_cmd3_handler(void)
 {
 	int result = 0;
 
-	if (get_am335x_soc_rev() >= AM335X_REV_ES2_0)
+	if (soc_id == AM335X_SOC_ID && soc_rev > AM335X_REV_ES1_0)
 		core_ldo_power_up();
 
 	result = verify_pd_transitions();
@@ -457,12 +445,7 @@ void a8_wake_cmd3_handler(void)
 
 	clkdm_wake();
 
-	/* DPLL retention update for PG 2.0 */
-	if (get_am335x_soc_rev() >= AM335X_REV_ES2_0) {
-		dpll_power_up(DPLL_DDR);
-		dpll_power_up(DPLL_DISP);
-		dpll_power_up(DPLL_PER);
-	}
+	am33xx_power_up_plls();
 
 	interconnect_modules_enable();
 
@@ -491,12 +474,7 @@ void a8_wake_cmd5_handler(void)
 
 	wkup_clkdm_wake();
 
-	/* DPLL retention update for PG 2.0 */
-	if (get_am335x_soc_rev() >= AM335X_REV_ES2_0) {
-		dpll_power_up(DPLL_DDR);
-		dpll_power_up(DPLL_DISP);
-		dpll_power_up(DPLL_PER);
-	}
+	am33xx_power_up_plls();
 
 	essential_modules_enable();
 
@@ -523,12 +501,7 @@ void a8_wake_cmd7_handler(void)
 
 	wkup_clkdm_wake();
 
-	/* DPLL retention update for PG 2.0 */
-	if (get_am335x_soc_rev() >= AM335X_REV_ES2_0) {
-		dpll_power_up(DPLL_DDR);
-		dpll_power_up(DPLL_DISP);
-		dpll_power_up(DPLL_PER);
-	}
+	am33xx_power_up_plls();
 
 	msg_cmd_stat_update(result);
 

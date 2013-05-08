@@ -135,14 +135,12 @@ void pm_init(void)
 	pd_per_pwrstst_prev_val	= 0;
 }
 
-void setup_am335x_soc_revision(void)
+void setup_soc_revision(void)
 {
-	am335x_soc_rev = (__raw_readl(DEVICE_ID) >> 0x1c) & 0xff;
-}
+	int var = __raw_readl(DEVICE_ID);
 
-unsigned int get_am335x_soc_rev(void)
-{
-	return am335x_soc_rev;
+	soc_id = (var & DEVICE_ID_PARTNUM_MASK ) >> DEVICE_ID_PARTNUM_SHIFT;
+	soc_rev = (var & DEVICE_ID_DEVREV_MASK) >> DEVICE_ID_DEVREV_SHIFT;
 }
 
 int var_mod(int var, int mask, int bit_val)
@@ -810,6 +808,26 @@ void dpll_power_up(unsigned int dpll)
 	dpll_reg_val = __raw_readl(dpll_data[dpll].dpll_reg);
 	dpll_reg_val &= ~dpll_data[dpll].sw_ctrl_dpll_bit;
 	__raw_writel(dpll_reg_val, dpll_data[dpll].dpll_reg);
+}
+
+/* DPLL retention update for PG 2.0 */
+void am33xx_power_down_plls()
+{
+	if (soc_id == AM335X_SOC_ID && soc_rev > AM335X_REV_ES1_0) {
+		dpll_power_down(DPLL_DDR);
+		dpll_power_down(DPLL_DISP);
+		dpll_power_down(DPLL_PER);
+	}
+}
+
+/* DPLL retention update for PG 2.x */
+void am33xx_power_up_plls()
+{
+	if (soc_id == AM335X_SOC_ID && soc_rev > AM335X_REV_ES1_0) {
+		dpll_power_up(DPLL_DDR);
+		dpll_power_up(DPLL_DISP);
+		dpll_power_up(DPLL_PER);
+	}
 }
 
 void core_ldo_power_down(void)

@@ -78,7 +78,6 @@ struct deep_sleep_data {
 };
 
 int reg_mod(int, int, int);
-int debugss_keep_enabled(void);
 
 int module_state_change(int, int);
 int clkdm_state_change(int state, int reg);
@@ -123,10 +122,12 @@ int enable_master_oscillator(void);
 void configure_deepsleep_count(int ds_count);
 void configure_wake_sources(int wake_sources,int mod_check);
 void clear_wake_sources(void);
-void enable_wake_sources_for_ds2(void);
 
 void dpll_power_down(unsigned int dpll);
 void dpll_power_up(unsigned int dpll);
+
+void am33xx_power_down_plls(void);
+void am33xx_power_up_plls(void);
 
 void core_ldo_power_down(void);
 void core_ldo_power_up(void);
