@@ -33,15 +33,11 @@ struct deep_sleep_data ds0_data =  {
 	.pd_mpu_ram_ret_state 		= MEM_BANK_RET_ST_OFF,
 	.pd_mpu_l1_ret_state 		= MEM_BANK_RET_ST_OFF,
 	.pd_mpu_l2_ret_state 		= MEM_BANK_RET_ST_OFF,
-	.pd_mpu_ram_on_state 		= 0,
 
 	.pd_per_state 			= PD_RET,
 	.pd_per_icss_mem_ret_state 	= MEM_BANK_RET_ST_OFF,
 	.pd_per_mem_ret_state 		= MEM_BANK_RET_ST_OFF,
 	.pd_per_ocmc_ret_state 		= MEM_BANK_RET_ST_RET,
-	.pd_per_icss_mem_on_state 	= 0,
-	.pd_per_mem_on_state 		= 0,
-	.pd_per_ocmc_on_state 		= 0,
 
 	.wake_sources 			= WAKE_ALL,
 	.reserved 			= 0
@@ -56,15 +52,11 @@ struct deep_sleep_data ds1_data =  {
 	.pd_mpu_ram_ret_state 		= MEM_BANK_RET_ST_OFF,
 	.pd_mpu_l1_ret_state 		= MEM_BANK_RET_ST_OFF,
 	.pd_mpu_l2_ret_state 		= MEM_BANK_RET_ST_OFF,
-	.pd_mpu_ram_on_state 		= 0,
 
 	.pd_per_state 			= PD_ON,
 	.pd_per_icss_mem_ret_state 	= 0,
 	.pd_per_mem_ret_state 		= 0,
 	.pd_per_ocmc_ret_state 		= 0,
-	.pd_per_icss_mem_on_state 	= MEM_BANK_ON_ST_ON,
-	.pd_per_mem_on_state 		= MEM_BANK_ON_ST_ON,
-	.pd_per_ocmc_on_state 		= MEM_BANK_ON_ST_ON,
 
 	.wake_sources 			= WAKE_ALL,
 	.reserved 			= 0
@@ -79,15 +71,11 @@ struct deep_sleep_data ds2_data =  {
 	.pd_mpu_ram_ret_state 		= 0,
 	.pd_mpu_l1_ret_state 		= 0,
 	.pd_mpu_l2_ret_state 		= 0,
-	.pd_mpu_ram_on_state 		= MEM_BANK_ON_ST_ON,
 
 	.pd_per_state 			= PD_ON,
 	.pd_per_icss_mem_ret_state 	= 0,
 	.pd_per_mem_ret_state 		= 0,
 	.pd_per_ocmc_ret_state 		= 0,
-	.pd_per_icss_mem_on_state 	= MEM_BANK_ON_ST_ON,
-	.pd_per_mem_on_state 		= MEM_BANK_ON_ST_ON,
-	.pd_per_ocmc_on_state 		= MEM_BANK_ON_ST_ON,
 
 	.wake_sources 			= WAKE_ALL,
 	.reserved 			= 0
@@ -102,15 +90,11 @@ struct deep_sleep_data standby_data =  {
 	.pd_mpu_ram_ret_state		= MEM_BANK_RET_ST_OFF,
 	.pd_mpu_l1_ret_state		= MEM_BANK_RET_ST_OFF,
 	.pd_mpu_l2_ret_state		= MEM_BANK_RET_ST_OFF,
-	.pd_mpu_ram_on_state		= 0,
 
 	.pd_per_state			= PD_ON,
 	.pd_per_icss_mem_ret_state	= 0,
 	.pd_per_mem_ret_state		= 0,
 	.pd_per_ocmc_ret_state		= 0,
-	.pd_per_icss_mem_on_state	= MEM_BANK_ON_ST_ON,
-	.pd_per_mem_on_state		= MEM_BANK_ON_ST_ON,
-	.pd_per_ocmc_on_state		= MEM_BANK_ON_ST_ON,
 
 	.wake_sources			= WAKE_ALL | MPU_WAKE,
 	.reserved			= 0
@@ -394,36 +378,6 @@ int ocmc_mem_ret_state_change(int val, int var)
 	return var;
 }
 
-int mpu_ram_on_state_change(int val, int var)
-{
-	/* Currently don't do anything */
-	return var;
-}
-
-int icss_mem_on_state_change(int val, int var)
-{
-	var = var_mod(var, PER_ICSS_MEM_ONSTATE_MASK,
-				(val << PER_ICSS_MEM_ONSTATE_SHIFT));
-
-	return var;
-}
-
-int per_mem_on_state_change(int val, int var)
-{
-	var = var_mod(var, PER_MEM_ONSTATE_MASK,
-				(val << PER_MEM_ONSTATE_SHIFT));
-
-	return var;
-}
-
-int ocmc_mem_on_state_change(int val, int var)
-{
-	var = var_mod(var, PER_RAM_MEM_ONSTATE_MASK,
-				(val << PER_RAM_MEM_ONSTATE_SHIFT));
-
-	return var;
-}
-
 int per_powerst_change(int val, int var)
 {
 	var = var_mod(var, PER_POWERSTATE_MASK,
@@ -451,23 +405,11 @@ static int _next_pd_per_stctrl_val(state)
 		v = ocmc_mem_ret_state_change(ds0_data.pd_per_ocmc_ret_state, v);
 	} else if (state == 1) {
 		v = per_powerst_change(ds1_data.pd_per_state, v);
-		v = icss_mem_on_state_change(ds1_data.pd_per_icss_mem_on_state, v);
-		v = per_mem_on_state_change(ds1_data.pd_per_mem_on_state, v);
-		v = ocmc_mem_on_state_change(ds1_data.pd_per_ocmc_on_state, v);
 	} else if (state == 2) {
 		v = per_powerst_change(ds2_data.pd_per_state, v);
-		v = icss_mem_on_state_change(ds2_data.pd_per_icss_mem_on_state, v);
-		v = per_mem_on_state_change(ds2_data.pd_per_mem_on_state, v);
-		v = ocmc_mem_on_state_change(ds2_data.pd_per_ocmc_on_state, v);
 	} else if (state == 3) {
 		v = per_powerst_change
 				(standby_data.pd_per_state, v);
-		v = icss_mem_on_state_change
-				(standby_data.pd_per_icss_mem_on_state, v);
-		v = per_mem_on_state_change
-				(standby_data.pd_per_mem_on_state, v);
-		v = ocmc_mem_on_state_change
-				(standby_data.pd_per_ocmc_on_state, v);
 	}
 
 	return v;
@@ -497,7 +439,6 @@ static int _next_pd_mpu_stctrl_val(state)
 		v = mpu_l2_ret_state_change(ds1_data.pd_mpu_l2_ret_state, v);
 	} else if (state == 2) {
 		v = mpu_powerst_change(ds2_data.pd_mpu_state, v);
-		v = mpu_ram_on_state_change(ds2_data.pd_mpu_ram_on_state, v);
 	} else if (state == 3) {
 		v = mpu_powerst_change
 			(standby_data.pd_mpu_state, v);

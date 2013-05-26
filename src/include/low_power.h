@@ -59,15 +59,14 @@ struct deep_sleep_data {
 	int pd_mpu_ram_ret_state :1;		/* Sabertooth RAM in retention state */
 	int pd_mpu_l1_ret_state :1;		/* L1 memory in retention state */
 	int pd_mpu_l2_ret_state :1;		/* L2 memory in retention state */
-	int pd_mpu_ram_on_state :2;		/* Sabertooth RAM in ON state */
+	int res1 :2;
 
 	int pd_per_state :2;	 		/* Powerstate of PD_PER */
 	int pd_per_icss_mem_ret_state :1;	/* ICSS memory in retention state */
 	int pd_per_mem_ret_state :1; 		/* Other memories in retention state */
 	int pd_per_ocmc_ret_state :1; 		/* OCMC memory in retention state */
-	int pd_per_icss_mem_on_state :2; 	/* ICSS memory in ON state */
-	int pd_per_mem_on_state :2; 		/* Other memories in ON state */
-	int pd_per_ocmc_on_state :2; 		/* OCMC memory in ON state */
+	int pd_per_ocmc2_ret_state :1;		/* OCMC bank 2 in retention state */
+	int res2 :5;
 
 	int wake_sources :13;			/* Wake sources */
 						/* USB, I2C0, RTC_ALARM, TIMER1 \
@@ -102,11 +101,6 @@ int mpu_l2_ret_state_change(int, int);
 int icss_mem_ret_state_change(int, int);
 int per_mem_ret_state_change(int, int);
 int ocmc_mem_ret_state_change(int, int);
-
-int mpu_ram_on_state_change(int, int);
-int icss_mem_on_state_change(int, int);
-int per_mem_on_state_change(int, int);
-int ocmc_mem_on_state_change(int, int);
 
 int per_powerst_change(int, int);
 int mpu_powerst_change(int, int);

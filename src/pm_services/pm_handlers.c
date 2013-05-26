@@ -217,12 +217,6 @@ void a8_lp_cmd5_handler(struct cmd_data *data, char use_default_val)
 				(local_cmd->pd_mpu_l2_ret_state, mpu_st);
 		per_st = per_powerst_change
 				(local_cmd->pd_per_state, per_st);
-		per_st = icss_mem_on_state_change
-				(local_cmd->pd_per_icss_mem_on_state, per_st);
-		per_st = per_mem_on_state_change
-				(local_cmd->pd_per_mem_on_state, per_st);
-		per_st = ocmc_mem_on_state_change
-				(local_cmd->pd_per_ocmc_on_state, per_st);
 	}
 
 	/* MPU power domain state change */
@@ -277,16 +271,8 @@ void a8_lp_cmd7_handler(struct cmd_data *data, char use_default_val)
 	if (!use_default_val) {
 		mpu_st = mpu_powerst_change
 				(local_cmd->pd_mpu_state, mpu_st);
-		mpu_st = mpu_ram_on_state_change
-				(local_cmd->pd_mpu_ram_on_state, mpu_st);
 		per_st = per_powerst_change
 				(local_cmd->pd_per_state, per_st);
-		per_st = icss_mem_on_state_change
-				(local_cmd->pd_per_icss_mem_on_state, per_st);
-		per_st = per_mem_on_state_change
-				(local_cmd->pd_per_mem_on_state, per_st);
-		per_st = ocmc_mem_on_state_change
-				(local_cmd->pd_per_ocmc_on_state, per_st);
 	}
 
 	/* MPU power domain state change */
