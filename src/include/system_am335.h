@@ -52,6 +52,9 @@ int mem_type;			/* Memory Type 2 = DDR2, 3 = DDR3 */
 int vtt_toggle; 		/* VTT Toggle  1 = required */
 int vtt_gpio_pin; 		/* VTT GPIO Pin */
 
+/* Debug info */
+int halt_on_resume;
+
 int cmd_wake_sources;
 int pd_mpu_stctrl_next_val;
 int pd_mpu_stctrl_prev_val;
@@ -87,6 +90,7 @@ int msg_cmd_is_valid(void);
 int msg_cmd_needs_trigger(void);
 void msg_cmd_dispatcher(void);
 void msg_cmd_stat_update(int);
+void msg_cmd_wakeup_reason_update(int);
 
 void a8_notify(int);
 void a8_m3_low_power_sync(int);
@@ -152,19 +156,13 @@ void setup_soc_revision(void);
 #define MODULE_DISABLE	0x0
 #define MODULE_ENABLE	0x2
 
-#define CD_DISABLE	0x0
-#define CD_ENABLE	0x2
-
-#define PD_DISABLE	0x0
-#define PD_ENABLE	0x2
-
-#define TRACE_REG	0x0
+#define RESUME_REG	0x0
 #define STAT_ID_REG	0x1
 #define PARAM1_REG	0x2
 #define PARAM2_REG	0x3
-#define RES1_REG	0x4
-#define RES2_REG	0x5
-#define RES3_REG	0x6
+#define PARAM3_REG	0x4
+#define PARAM4_REG	0x5
+#define TRACE_REG	0x6
 #define CUST_REG	0x7
 
 #define CMD_STAT_PASS		0x0

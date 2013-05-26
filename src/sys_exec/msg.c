@@ -215,6 +215,14 @@ void msg_cmd_stat_update(int cmd_stat_value)
 	msg_write(STAT_ID_REG);
 }
 
+void msg_cmd_wakeup_reason_update(int wakeup_source)
+{
+	msg_read(TRACE_REG);
+	ipc_reg_r &= 0xffffff00;
+	ipc_reg_w = ipc_reg_r | wakeup_source;
+	msg_write(TRACE_REG);
+}
+
 /*
  * Check whether command needs a trigger or not
  * returns 1 if trigger is needed

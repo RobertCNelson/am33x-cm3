@@ -364,6 +364,9 @@ void generic_wake_handler(int wakeup_reason)
 {
 	int i = 0;
 
+	if (halt_on_resume)
+		while(1);
+
 	/*
 	 * Assuming that cmd_id is a valid reflection of what we did
 	 */
@@ -394,6 +397,8 @@ void generic_wake_handler(int wakeup_reason)
 		while(1)
 		;
 	}
+
+	msg_cmd_wakeup_reason_update(wakeup_reason);
 
 	enable_master_oscillator();
 
