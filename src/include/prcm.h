@@ -411,6 +411,8 @@
 #define DPLL_EN_MASK					(0x7 << 0)
 #define DPLL_LP_BYP_MODE				(0x5 << 0)
 #define DPLL_LOCK_MODE					(0x7 << 0)
+#define DPLL_DIV_PER_SHIFT				(0)
+#define DPLL_DIV_PER_MASK				(0xff)
 
 /*
  * Values recommended by the HW team. These change the pulls

@@ -147,6 +147,8 @@ void msg_cmd_dispatcher()
 	a8_m3_ds_data.reg2 = a8_m3_data_r.reg4;
 
 	cmd_global_data.cmd_id = cmd_id;
+	cmd_global_data.i2c_sleep_offset = a8_m3_data_r.reg6 & 0xffff;
+	cmd_global_data.i2c_wake_offset = a8_m3_data_r.reg6 >> 16;
 
 	/* board specific data saved in global variables for now */
 	mem_type = (a8_m3_data_r.reg5 & MEM_TYPE_MASK) >> MEM_TYPE_SHIFT;

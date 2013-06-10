@@ -1094,3 +1094,25 @@ void ds_restore(void)
 
 	clear_ddr_reset();
 }
+
+int a8_i2c_sleep_handler(unsigned short i2c_sleep_offset)
+{
+	unsigned char *dmem = (unsigned char *) DMEM_BASE;
+	int ret = 0;
+
+	if (i2c_sleep_offset != 0xffff)
+		ret = i2c_write(dmem + i2c_sleep_offset);
+
+	return ret;
+}
+
+int a8_i2c_wake_handler(unsigned short i2c_wake_offset)
+{
+	unsigned char *dmem = (unsigned char *) DMEM_BASE;
+	int ret = 0;
+
+	if (i2c_wake_offset != 0xffff)
+		ret = i2c_write(dmem + i2c_wake_offset);
+
+	return ret;
+}

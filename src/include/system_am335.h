@@ -34,6 +34,8 @@ struct ds_data {
 struct cmd_data {
 	short cmd_id;
 	void *data;
+	unsigned short i2c_sleep_offset;
+	unsigned short i2c_wake_offset;
 };
 
 struct cmd_data cmd_global_data;
@@ -125,7 +127,12 @@ int rtc_enable_check(void);
 int rtc_reg_read(int);
 void rtc_reg_write(int, int);
 
+int i2c_write(const unsigned char *);
+
 void setup_soc_revision(void);
+
+int a8_i2c_sleep_handler(unsigned short);
+int a8_i2c_wake_handler(unsigned short);
 
 #define BITBAND_SRAM_REF 	UMEM_ALIAS
 #define BITBAND_SRAM_BASE 	0x22000000
