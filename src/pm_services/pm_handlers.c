@@ -432,6 +432,7 @@ void generic_wake_handler(int wakeup_reason)
 
 	/* Enable only the MBX IRQ */
 	nvic_enable_irq(AM335X_IRQ_MBINT0);
+	nvic_enable_irq(53);
 
 	/* Enable MPU only after we are sure that we are done with the wakeup */
 	mpu_enable();

@@ -17,6 +17,7 @@
 #include <low_power.h>
 #include <prcm.h>
 #include <prmam335x.h>
+#include <prm43xx.h>
 #include <system_am335.h>
 
 struct rtc_data rtc_mode_data =	   {
@@ -43,6 +44,26 @@ struct deep_sleep_data ds0_data =  {
 	.reserved 			= 0
 };
 
+/* In case of HS devices MPU RAM must be held in retention */
+struct deep_sleep_data ds0_data_hs =  {
+	.mosc_state 			= MOSC_OFF,
+	.deepsleep_count 		= DS_COUNT_DEFAULT,
+	.vdd_mpu_val 			= 0,
+
+	.pd_mpu_state 			= PD_RET,
+	.pd_mpu_ram_ret_state 		= MEM_BANK_RET_ST_RET,
+	.pd_mpu_l1_ret_state 		= MEM_BANK_RET_ST_OFF,
+	.pd_mpu_l2_ret_state 		= MEM_BANK_RET_ST_OFF,
+
+	.pd_per_state 			= PD_RET,
+	.pd_per_icss_mem_ret_state 	= MEM_BANK_RET_ST_OFF,
+	.pd_per_mem_ret_state 		= MEM_BANK_RET_ST_OFF,
+	.pd_per_ocmc_ret_state 		= MEM_BANK_RET_ST_RET,
+
+	.wake_sources 			= WAKE_ALL,
+	.reserved 			= 0
+};
+
 struct deep_sleep_data ds1_data =  {
 	.mosc_state 			= MOSC_OFF,
 	.deepsleep_count 		= DS_COUNT_DEFAULT,
@@ -50,6 +71,26 @@ struct deep_sleep_data ds1_data =  {
 
 	.pd_mpu_state 			= PD_OFF,
 	.pd_mpu_ram_ret_state 		= MEM_BANK_RET_ST_OFF,
+	.pd_mpu_l1_ret_state 		= MEM_BANK_RET_ST_OFF,
+	.pd_mpu_l2_ret_state 		= MEM_BANK_RET_ST_OFF,
+
+	.pd_per_state 			= PD_ON,
+	.pd_per_icss_mem_ret_state 	= 0,
+	.pd_per_mem_ret_state 		= 0,
+	.pd_per_ocmc_ret_state 		= 0,
+
+	.wake_sources 			= WAKE_ALL,
+	.reserved 			= 0
+};
+
+/* In case of HS devices MPU RAM must be held in retention */
+struct deep_sleep_data ds1_data_hs =  {
+	.mosc_state 			= MOSC_OFF,
+	.deepsleep_count 		= DS_COUNT_DEFAULT,
+	.vdd_mpu_val 			= 0,
+
+	.pd_mpu_state 			= PD_RET,
+	.pd_mpu_ram_ret_state 		= MEM_BANK_RET_ST_RET,
 	.pd_mpu_l1_ret_state 		= MEM_BANK_RET_ST_OFF,
 	.pd_mpu_l2_ret_state 		= MEM_BANK_RET_ST_OFF,
 
@@ -100,6 +141,38 @@ struct deep_sleep_data standby_data =  {
 	.reserved			= 0
 };
 
+struct pd_mpu_bits mpu_bits = {
+	.ram_retst_mask		= -1,
+	.ram_retst_shift	= -1,
+	.l2_retst_mask		= -1,
+	.l2_retst_shift		= -1,
+	.l1_retst_mask		= -1,
+	.l1_retst_shift		= -1,
+	.lpstchg_mask		= -1,
+	.lpstchg_shift		= -1,
+	.logicretst_mask	= -1,
+	.logicretst_shift	= -1,
+	.pwrst_mask		= -1,
+	.pwrst_shift		= -1,
+};
+
+struct pd_per_bits per_bits = {
+	.per_retst_mask		= -1,
+	.per_retst_shift	= -1,
+	.ram1_retst_mask	= -1,
+	.ram1_retst_shift	= -1,
+	.ram2_retst_mask	= -1,
+	.ram2_retst_shift	= -1,
+	.icss_retst_mask	= -1,
+	.icss_retst_shift	= -1,
+	.lpstchg_mask		= -1,
+	.lpstchg_shift		= -1,
+	.logicretst_mask	= -1,
+	.logicretst_shift	= -1,
+	.pwrst_mask		= -1,
+	.pwrst_shift		= -1,
+};
+
 /* Clear out the global variables here */
 void pm_init(void)
 {
@@ -119,12 +192,76 @@ void pm_init(void)
 	pd_per_pwrstst_prev_val	= 0;
 }
 
-void setup_soc_revision(void)
+void setup_soc(void)
 {
 	int var = __raw_readl(DEVICE_ID);
 
 	soc_id = (var & DEVICE_ID_PARTNUM_MASK ) >> DEVICE_ID_PARTNUM_SHIFT;
 	soc_rev = (var & DEVICE_ID_DEVREV_MASK) >> DEVICE_ID_DEVREV_SHIFT;
+
+	var = __raw_readl(CONTROL_STATUS);
+	soc_type = (var & CONTROL_STATUS_DEVTYPE_MASK) >> CONTROL_STATUS_DEVTYPE_SHIFT;
+
+	/* yes this is ugly */
+	if (soc_id == AM335X_SOC_ID) {
+		/* PRM_MPU bits */
+		mpu_bits.ram_retst_mask		= AM335X_MPU_RAM_RETSTATE_MASK;
+		mpu_bits.ram_retst_shift	= AM335X_MPU_RAM_RETSTATE_SHIFT;
+		mpu_bits.l2_retst_mask		= AM335X_MPU_L2_RETSTATE_MASK;
+		mpu_bits.l2_retst_shift		= AM335X_MPU_L2_RETSTATE_SHIFT;
+		mpu_bits.l1_retst_mask		= AM335X_MPU_L1_RETSTATE_MASK;
+		mpu_bits.l1_retst_shift		= AM335X_MPU_L1_RETSTATE_SHIFT;
+		mpu_bits.lpstchg_mask		= AM335X_MPU_LOWPOWERSTATECHANGE_MASK;
+		mpu_bits.lpstchg_shift		= AM335X_MPU_LOWPOWERSTATECHANGE_SHIFT;
+		mpu_bits.logicretst_mask	= AM335X_MPU_LOGICRETSTATE_MASK;
+		mpu_bits.logicretst_shift	= AM335X_MPU_LOGICRETSTATE_SHIFT;
+		mpu_bits.pwrst_mask		= AM335X_MPU_POWERSTATE_MASK;
+		mpu_bits.pwrst_shift		= AM335X_MPU_POWERSTATE_SHIFT;
+
+		/* PRM_PER bits */
+		per_bits.per_retst_mask		= AM335X_PER_MEM_RETSTATE_MASK;
+		per_bits.per_retst_shift	= AM335X_PER_MEM_RETSTATE_SHIFT;
+		per_bits.ram1_retst_mask	= AM335X_PER_RAM_MEM_RETSTATE_MASK;
+		per_bits.ram1_retst_shift	= AM335X_PER_RAM_MEM_RETSTATE_SHIFT;
+		per_bits.icss_retst_mask	= AM335X_PER_ICSS_MEM_RETSTATE_MASK;
+		per_bits.icss_retst_shift	= AM335X_PER_ICSS_MEM_RETSTATE_SHIFT;
+		per_bits.lpstchg_mask		= AM335X_PER_LOWPOWERSTATECHANGE_MASK;
+		per_bits.lpstchg_shift		= AM335X_PER_LOWPOWERSTATECHANGE_SHIFT;
+		per_bits.logicretst_mask	= AM335X_PER_LOGICRETSTATE_MASK;
+		per_bits.logicretst_shift	= AM335X_PER_LOGICRETSTATE_SHIFT;
+		per_bits.pwrst_mask		= AM335X_PER_POWERSTATE_MASK;
+		per_bits.pwrst_shift		= AM335X_PER_POWERSTATE_SHIFT;
+	} else if (soc_id == AM43XX_SOC_ID) {
+		/* PRM_MPU bits */
+		mpu_bits.ram_retst_mask		= AM43XX_MPU_RAM_RETSTATE_MASK;
+		mpu_bits.ram_retst_shift	= AM43XX_MPU_RAM_RETSTATE_SHIFT;
+		mpu_bits.l2_retst_mask		= AM43XX_MPU_L2_RETSTATE_MASK;
+		mpu_bits.l2_retst_shift		= AM43XX_MPU_L2_RETSTATE_SHIFT;
+		mpu_bits.l1_retst_mask		= AM43XX_MPU_L1_RETSTATE_MASK;
+		mpu_bits.l1_retst_shift		= AM43XX_MPU_L1_RETSTATE_SHIFT;
+		mpu_bits.lpstchg_mask		= AM43XX_MPU_LOWPOWERSTATECHANGE_MASK;
+		mpu_bits.lpstchg_shift		= AM43XX_MPU_LOWPOWERSTATECHANGE_SHIFT;
+		mpu_bits.logicretst_mask	= AM43XX_MPU_LOGICRETSTATE_MASK;
+		mpu_bits.logicretst_shift	= AM43XX_MPU_LOGICRETSTATE_SHIFT;
+		mpu_bits.pwrst_mask		= AM43XX_MPU_POWERSTATE_MASK;
+		mpu_bits.pwrst_shift		= AM43XX_MPU_POWERSTATE_SHIFT;
+
+		/* PRM_PER bits */
+		per_bits.per_retst_mask		= AM43XX_PER_MEM_RETSTATE_MASK;
+		per_bits.per_retst_shift	= AM43XX_PER_MEM_RETSTATE_SHIFT;
+		per_bits.ram1_retst_mask	= AM43XX_PER_RAM1_MEM_RETSTATE_MASK;
+		per_bits.ram1_retst_shift	= AM43XX_PER_RAM1_MEM_RETSTATE_SHIFT;
+		per_bits.ram2_retst_mask	= AM43XX_PER_RAM2_MEM_RETSTATE_MASK;
+		per_bits.ram2_retst_shift	= AM43XX_PER_RAM2_MEM_RETSTATE_SHIFT;
+		per_bits.icss_retst_mask	= AM43XX_PER_ICSS_MEM_RETSTATE_MASK;
+		per_bits.icss_retst_shift	= AM43XX_PER_ICSS_MEM_RETSTATE_SHIFT;
+		per_bits.lpstchg_mask		= AM43XX_PER_LOWPOWERSTATECHANGE_MASK;
+		per_bits.lpstchg_shift		= AM43XX_PER_LOWPOWERSTATECHANGE_SHIFT;
+		per_bits.logicretst_mask	= AM43XX_PER_LOGICRETSTATE_MASK;
+		per_bits.logicretst_shift	= AM43XX_PER_LOGICRETSTATE_SHIFT;
+		per_bits.pwrst_mask		= AM43XX_PER_POWERSTATE_MASK;
+		per_bits.pwrst_shift		= AM43XX_PER_POWERSTATE_SHIFT;
+	}
 }
 
 int var_mod(int var, int mask, int bit_val)
@@ -214,10 +351,16 @@ int clkdm_state_change(int state, int reg)
 int essential_modules_disable(void)
 {
 	/* Disable only the bare essential modules */
-	module_state_change(MODULE_DISABLE, AM335X_CM_PER_CLKDIV32K_CLKCTRL);
-	module_state_change(MODULE_DISABLE, AM335X_CM_PER_IEEE5000_CLKCTRL);
-	module_state_change(MODULE_DISABLE, AM335X_CM_PER_EMIF_FW_CLKCTRL);
-	module_state_change(MODULE_DISABLE, AM335X_CM_PER_OCMCRAM_CLKCTRL);
+	if (soc_id == AM335X_SOC_ID) {
+		module_state_change(MODULE_DISABLE, AM335X_CM_PER_CLKDIV32K_CLKCTRL);
+		module_state_change(MODULE_DISABLE, AM335X_CM_PER_IEEE5000_CLKCTRL);
+		module_state_change(MODULE_DISABLE, AM335X_CM_PER_EMIF_FW_CLKCTRL);
+		module_state_change(MODULE_DISABLE, AM335X_CM_PER_OCMCRAM_CLKCTRL);
+	} else if (soc_id == AM43XX_SOC_ID) {
+		module_state_change(MODULE_DISABLE, AM43XX_CM_PER_EMIF_FW_CLKCTRL);
+		module_state_change(MODULE_DISABLE, AM43XX_CM_PER_OTFA_EMIF_CLKCTRL);
+		module_state_change(MODULE_DISABLE, AM43XX_CM_PER_OCMCRAM_CLKCTRL);
+	}
 
 	return 0;
 }
@@ -225,93 +368,165 @@ int essential_modules_disable(void)
 int essential_modules_enable(void)
 {
 	/* Enable only the bare essential modules */
-	module_state_change(MODULE_ENABLE, AM335X_CM_PER_CLKDIV32K_CLKCTRL);
-	module_state_change(MODULE_ENABLE, AM335X_CM_PER_IEEE5000_CLKCTRL);
-	module_state_change(MODULE_ENABLE, AM335X_CM_PER_EMIF_FW_CLKCTRL);
-	module_state_change(MODULE_ENABLE, AM335X_CM_PER_OCMCRAM_CLKCTRL);
+	if (soc_id == AM335X_SOC_ID) {
+		module_state_change(MODULE_ENABLE, AM335X_CM_PER_CLKDIV32K_CLKCTRL);
+		module_state_change(MODULE_ENABLE, AM335X_CM_PER_IEEE5000_CLKCTRL);
+		module_state_change(MODULE_ENABLE, AM335X_CM_PER_EMIF_FW_CLKCTRL);
+		module_state_change(MODULE_ENABLE, AM335X_CM_PER_OCMCRAM_CLKCTRL);
+	} else if (soc_id == AM43XX_SOC_ID) {
+		module_state_change(MODULE_ENABLE, AM43XX_CM_PER_EMIF_FW_CLKCTRL);
+		module_state_change(MODULE_ENABLE, AM43XX_CM_PER_OTFA_EMIF_CLKCTRL);
+		module_state_change(MODULE_ENABLE, AM43XX_CM_PER_OCMCRAM_CLKCTRL);
+	}
 
 	return 0;
 }
 
 int interconnect_modules_disable(void)
 {
-	module_state_change(MODULE_DISABLE, AM335X_CM_PER_L4LS_CLKCTRL);
-	module_state_change(MODULE_DISABLE, AM335X_CM_PER_L4HS_CLKCTRL);
-	module_state_change(MODULE_DISABLE, AM335X_CM_PER_L4FW_CLKCTRL);
-	module_state_change(MODULE_DISABLE, AM335X_CM_PER_L3_INSTR_CLKCTRL);
-	module_state_change(MODULE_DISABLE, AM335X_CM_PER_L3_CLKCTRL);
+	if (soc_id == AM335X_SOC_ID) {
+		module_state_change(MODULE_DISABLE, AM335X_CM_PER_L4LS_CLKCTRL);
+		module_state_change(MODULE_DISABLE, AM335X_CM_PER_L4HS_CLKCTRL);
+		module_state_change(MODULE_DISABLE, AM335X_CM_PER_L4FW_CLKCTRL);
+		module_state_change(MODULE_DISABLE, AM335X_CM_PER_L3_INSTR_CLKCTRL);
+		module_state_change(MODULE_DISABLE, AM335X_CM_PER_L3_CLKCTRL);
+	} else if (soc_id == AM43XX_SOC_ID) {
+		module_state_change(MODULE_DISABLE, AM43XX_CM_PER_L4LS_CLKCTRL);
+		module_state_change(MODULE_DISABLE, AM43XX_CM_PER_L4HS_CLKCTRL);
+		module_state_change(MODULE_DISABLE, AM43XX_CM_PER_L4FW_CLKCTRL);
+		module_state_change(MODULE_DISABLE, AM43XX_CM_PER_L3_INSTR_CLKCTRL);
+		module_state_change(MODULE_DISABLE, AM43XX_CM_PER_L3_CLKCTRL);
+	}
 
 	return 0;
 }
 
 int interconnect_modules_enable(void)
 {
-	module_state_change(MODULE_ENABLE, AM335X_CM_PER_L3_CLKCTRL);
-	module_state_change(MODULE_ENABLE, AM335X_CM_PER_L3_INSTR_CLKCTRL);
-	module_state_change(MODULE_ENABLE, AM335X_CM_PER_L4FW_CLKCTRL);
-	module_state_change(MODULE_ENABLE, AM335X_CM_PER_L4HS_CLKCTRL);
-	module_state_change(MODULE_ENABLE, AM335X_CM_PER_L4LS_CLKCTRL);
+	if (soc_id == AM335X_SOC_ID) {
+		module_state_change(MODULE_ENABLE, AM335X_CM_PER_L3_CLKCTRL);
+		module_state_change(MODULE_ENABLE, AM335X_CM_PER_L3_INSTR_CLKCTRL);
+		module_state_change(MODULE_ENABLE, AM335X_CM_PER_L4FW_CLKCTRL);
+		module_state_change(MODULE_ENABLE, AM335X_CM_PER_L4HS_CLKCTRL);
+		module_state_change(MODULE_ENABLE, AM335X_CM_PER_L4LS_CLKCTRL);
+	} else if (soc_id == AM43XX_SOC_ID) {
+		module_state_change(MODULE_ENABLE, AM43XX_CM_PER_L3_CLKCTRL);
+		module_state_change(MODULE_ENABLE, AM43XX_CM_PER_L3_INSTR_CLKCTRL);
+		module_state_change(MODULE_ENABLE, AM43XX_CM_PER_L4FW_CLKCTRL);
+		module_state_change(MODULE_ENABLE, AM43XX_CM_PER_L4HS_CLKCTRL);
+		module_state_change(MODULE_ENABLE, AM43XX_CM_PER_L4LS_CLKCTRL);
+	}
 
 	return 0;
 }
 
 void mpu_disable(void)
 {
-	module_state_change(MODULE_DISABLE, AM335X_CM_MPU_MPU_CLKCTRL);
+	if (soc_id == AM335X_SOC_ID)
+		module_state_change(MODULE_DISABLE, AM335X_CM_MPU_MPU_CLKCTRL);
+	else if (soc_id == AM43XX_SOC_ID)
+		module_state_change(MODULE_DISABLE, AM43XX_CM_MPU_MPU_CLKCTRL);
 }
 
 void mpu_enable(void)
 {
-	module_state_change(MODULE_ENABLE, AM335X_CM_MPU_MPU_CLKCTRL);
+	if (soc_id == AM335X_SOC_ID)
+		module_state_change(MODULE_ENABLE, AM335X_CM_MPU_MPU_CLKCTRL);
+	else if (soc_id == AM43XX_SOC_ID)
+		module_state_change(MODULE_ENABLE, AM43XX_CM_MPU_MPU_CLKCTRL);
 }
 
 /* CLKDM related */
 void clkdm_sleep(void)
 {
-	clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_OCPWP_L3_CLKSTCTRL);
-	clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_ICSS_CLKSTCTRL);
-	clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_CPSW_CLKSTCTRL);
-	clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_LCDC_CLKSTCTRL);
-	clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_CLK_24MHZ_CLKSTCTRL);
-	clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_L4LS_CLKSTCTRL);
-	clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_L4HS_CLKSTCTRL);
-	clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_L4FW_CLKSTCTRL);
-	clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_L3S_CLKSTCTRL);
-	clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_L3_CLKSTCTRL);
+	if (soc_id == AM335X_SOC_ID) {
+		clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_OCPWP_L3_CLKSTCTRL);
+		clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_ICSS_CLKSTCTRL);
+		clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_CPSW_CLKSTCTRL);
+		clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_LCDC_CLKSTCTRL);
+		clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_CLK_24MHZ_CLKSTCTRL);
+		clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_L4LS_CLKSTCTRL);
+		clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_L4HS_CLKSTCTRL);
+		clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_L4FW_CLKSTCTRL);
+		clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_L3S_CLKSTCTRL);
+		clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_L3_CLKSTCTRL);
+	} else if (soc_id == AM43XX_SOC_ID) {
+		clkdm_state_change(CLKDM_SLEEP, AM43XX_CM_PER_EMIF_CLKSTCTRL);
+		clkdm_state_change(CLKDM_SLEEP, AM43XX_CM_L3S_TSC_CLKSTCTRL);
+		clkdm_state_change(CLKDM_SLEEP, AM43XX_CM_PER_DSS_CLKSTCTRL);
+		clkdm_state_change(CLKDM_SLEEP, AM43XX_CM_PER_LCDC_CLKSTCTRL);
+		clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_CLK_24MHZ_CLKSTCTRL);
+		clkdm_state_change(CLKDM_SLEEP, AM43XX_CM_PER_ICSS_CLKSTCTRL);
+		clkdm_state_change(CLKDM_SLEEP, AM43XX_CM_PER_CPSW_CLKSTCTRL);
+		clkdm_state_change(CLKDM_SLEEP, AM43XX_CM_PER_OCPWP_L3_CLKSTCTRL);
+		clkdm_state_change(CLKDM_SLEEP, AM43XX_CM_PER_L4LS_CLKSTCTRL);
+		clkdm_state_change(CLKDM_SLEEP, AM43XX_CM_PER_L4HS_CLKCTRL);
+		clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_L4FW_CLKSTCTRL);
+		clkdm_state_change(CLKDM_SLEEP, AM43XX_CM_PER_L3S_CLKSTCTRL);
+		clkdm_state_change(CLKDM_SLEEP, AM43XX_CM_PER_L3_CLKSTCTRL);
+	}
 }
 
 void clkdm_wake(void)
 {
-	clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_L3_CLKSTCTRL);
-	clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_L3S_CLKSTCTRL);
-	clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_L4FW_CLKSTCTRL);
-	clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_L4HS_CLKSTCTRL);
-	clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_L4LS_CLKSTCTRL);
-	clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_CLK_24MHZ_CLKSTCTRL);
-	clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_LCDC_CLKSTCTRL);
-	clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_CPSW_CLKSTCTRL);
-	clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_ICSS_CLKSTCTRL);
-	clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_OCPWP_L3_CLKSTCTRL);
+	if (soc_id == AM335X_SOC_ID) {
+		clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_L3_CLKSTCTRL);
+		clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_L3S_CLKSTCTRL);
+		clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_L4FW_CLKSTCTRL);
+		clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_L4HS_CLKSTCTRL);
+		clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_L4LS_CLKSTCTRL);
+		clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_CLK_24MHZ_CLKSTCTRL);
+		clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_LCDC_CLKSTCTRL);
+		clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_CPSW_CLKSTCTRL);
+		clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_ICSS_CLKSTCTRL);
+		clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_OCPWP_L3_CLKSTCTRL);
+	} else if (soc_id == AM43XX_SOC_ID) {
+		clkdm_state_change(CLKDM_WAKE, AM43XX_CM_PER_L3_CLKSTCTRL);
+		clkdm_state_change(CLKDM_WAKE, AM43XX_CM_PER_L3S_CLKSTCTRL);
+		clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_L4FW_CLKSTCTRL);
+		clkdm_state_change(CLKDM_WAKE, AM43XX_CM_PER_L4HS_CLKCTRL);
+		clkdm_state_change(CLKDM_WAKE, AM43XX_CM_PER_L4LS_CLKSTCTRL);
+		clkdm_state_change(CLKDM_WAKE, AM43XX_CM_PER_OCPWP_L3_CLKSTCTRL);
+		clkdm_state_change(CLKDM_WAKE, AM43XX_CM_PER_CPSW_CLKSTCTRL);
+		clkdm_state_change(CLKDM_WAKE, AM43XX_CM_PER_ICSS_CLKSTCTRL);
+		clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_CLK_24MHZ_CLKSTCTRL);
+		clkdm_state_change(CLKDM_WAKE, AM43XX_CM_PER_LCDC_CLKSTCTRL);
+		clkdm_state_change(CLKDM_WAKE, AM43XX_CM_PER_DSS_CLKSTCTRL);
+		clkdm_state_change(CLKDM_WAKE, AM43XX_CM_L3S_TSC_CLKSTCTRL);
+		clkdm_state_change(CLKDM_WAKE, AM43XX_CM_PER_EMIF_CLKSTCTRL);
+	}
 }
 
 void mpu_clkdm_sleep(void)
 {
-	clkdm_state_change(CLKDM_SLEEP, AM335X_CM_MPU_CLKSTCTRL);
+	if (soc_id == AM335X_SOC_ID)
+		clkdm_state_change(CLKDM_SLEEP, AM335X_CM_MPU_CLKSTCTRL);
+	else if (soc_id == AM43XX_SOC_ID)
+		clkdm_state_change(CLKDM_SLEEP, AM43XX_CM_MPU_CLKSTCTRL);
 }
 
 void mpu_clkdm_wake(void)
 {
-	clkdm_state_change(CLKDM_WAKE, AM335X_CM_MPU_CLKSTCTRL);
+	if (soc_id == AM335X_SOC_ID)
+		clkdm_state_change(CLKDM_WAKE, AM335X_CM_MPU_CLKSTCTRL);
+	else if (soc_id == AM43XX_SOC_ID)
+		clkdm_state_change(CLKDM_WAKE, AM43XX_CM_MPU_CLKSTCTRL);
 }
 
 void wkup_clkdm_sleep(void)
 {
-	clkdm_state_change(CLKDM_SLEEP, AM335X_CM_WKUP_CLKSTCTRL);
+	if (soc_id == AM335X_SOC_ID)
+		clkdm_state_change(CLKDM_SLEEP, AM335X_CM_WKUP_CLKSTCTRL);
+	else if (soc_id == AM43XX_SOC_ID)
+		clkdm_state_change(CLKDM_SLEEP, AM43XX_CM_WKUP_CLKSTCTRL);
 }
 
 void wkup_clkdm_wake(void)
 {
-	clkdm_state_change(CLKDM_WAKE, AM335X_CM_WKUP_CLKSTCTRL);
+	if (soc_id == AM335X_SOC_ID)
+		clkdm_state_change(CLKDM_WAKE, AM335X_CM_WKUP_CLKSTCTRL);
+	else if (soc_id == AM43XX_SOC_ID)
+		clkdm_state_change(CLKDM_WAKE, AM43XX_CM_WKUP_CLKSTCTRL);
 }
 
 /* PD related */
@@ -319,12 +534,22 @@ int pd_state_change(int val, int pd)
 {
 	if (pd == PD_MPU) {
 		pd_mpu_stctrl_next_val	= val;
-		pd_mpu_pwrstst_prev_val = __raw_readl(AM335X_PM_MPU_PWRSTST);
-		__raw_writel(val, AM335X_PM_MPU_PWRSTCTRL);
+		if (soc_id == AM335X_SOC_ID) {
+			pd_mpu_pwrstst_prev_val = __raw_readl(AM335X_PM_MPU_PWRSTST);
+			__raw_writel(val, AM335X_PM_MPU_PWRSTCTRL);
+		} else if (soc_id == AM43XX_SOC_ID) {
+			pd_mpu_pwrstst_prev_val = __raw_readl(AM43XX_PM_MPU_PWRSTST);
+			__raw_writel(val, AM43XX_PM_MPU_PWRSTCTRL);
+		}
 	} else if (pd == PD_PER) {
 		pd_per_stctrl_next_val = val;
-		pd_per_pwrstst_prev_val = __raw_readl(AM335X_PM_PER_PWRSTST);
-		__raw_writel(val, AM335X_PM_PER_PWRSTCTRL);
+		if (soc_id == AM335X_SOC_ID) {
+			pd_per_pwrstst_prev_val = __raw_readl(AM335X_PM_PER_PWRSTST);
+			__raw_writel(val, AM335X_PM_PER_PWRSTCTRL);
+		} else if (soc_id == AM43XX_SOC_ID) {
+			pd_per_pwrstst_prev_val = __raw_readl(AM43XX_PM_PER_PWRSTST);
+			__raw_writel(val, AM43XX_PM_PER_PWRSTCTRL);
+		}
 	}
 
 	return 0;
@@ -332,64 +557,68 @@ int pd_state_change(int val, int pd)
 
 int mpu_ram_ret_state_change(int val, int var)
 {
-	var = var_mod(var, MPU_RAM_RETSTATE_MASK,
-				 (val << MPU_RAM_RETSTATE_SHIFT));
+	var = var_mod(var, mpu_bits.ram_retst_mask,
+				 (val << mpu_bits.ram_retst_shift));
 
 	return var;
 }
 
 int mpu_l1_ret_state_change(int val, int var)
 {
-	var = var_mod(var, MPU_L1_RETSTATE_MASK,
-				 (val << MPU_L1_RETSTATE_SHIFT));
+	var = var_mod(var, mpu_bits.l1_retst_mask,
+				 (val << mpu_bits.l1_retst_shift));
 
 	return var;
 }
 
 int mpu_l2_ret_state_change(int val, int var)
 {
-	var = var_mod(var, MPU_L2_RETSTATE_MASK,
-				(val << MPU_L2_RETSTATE_SHIFT));
+	var = var_mod(var, mpu_bits.l2_retst_mask,
+				 (val << mpu_bits.l2_retst_shift));
 
 	return var;
 }
 
 int icss_mem_ret_state_change(int val, int var)
 {
-	var = var_mod(var, PER_ICSS_MEM_RETSTATE_MASK,
-				 (val << PER_ICSS_MEM_RETSTATE_SHIFT));
+	var = var_mod(var, per_bits.icss_retst_mask,
+				 (val << per_bits.icss_retst_shift));
 
 	return var;
 }
 
 int per_mem_ret_state_change(int val, int var)
 {
-	var = var_mod(var, PER_MEM_RETSTATE_MASK,
-				(val << PER_MEM_RETSTATE_SHIFT));
+	var = var_mod(var, per_bits.per_retst_mask,
+				 (val << per_bits.per_retst_shift));
 
 	return var;
 }
 
 int ocmc_mem_ret_state_change(int val, int var)
 {
-	var = var_mod(var, PER_RAM_MEM_RETSTATE_MASK,
-				(val << PER_RAM_MEM_RETSTATE_SHIFT));
+	var = var_mod(var, per_bits.ram1_retst_mask,
+				 (val << per_bits.ram1_retst_shift));
+
+	if (per_bits.ram2_retst_mask != -1)
+		var = var_mod(var, per_bits.ram2_retst_mask,
+				 (val << per_bits.ram2_retst_shift));
 
 	return var;
 }
 
 int per_powerst_change(int val, int var)
 {
-	var = var_mod(var, PER_POWERSTATE_MASK,
-				(val << PER_POWERSTATE_SHIFT));
+	var = var_mod(var, per_bits.pwrst_mask,
+				(val << per_bits.pwrst_shift));
 
 	return var;
 }
 
 int mpu_powerst_change(int val, int var)
 {
-	var = var_mod(var, MPU_POWERSTATE_MASK,
-				(val << MPU_POWERSTATE_SHIFT));
+	var = var_mod(var, mpu_bits.pwrst_mask,
+				(val << mpu_bits.pwrst_shift));
 
 	return var;
 }
@@ -408,8 +637,7 @@ static int _next_pd_per_stctrl_val(state)
 	} else if (state == 2) {
 		v = per_powerst_change(ds2_data.pd_per_state, v);
 	} else if (state == 3) {
-		v = per_powerst_change
-				(standby_data.pd_per_state, v);
+		v = per_powerst_change(standby_data.pd_per_state, v);
 	}
 
 	return v;
@@ -418,7 +646,10 @@ static int _next_pd_per_stctrl_val(state)
 int get_pd_per_stctrl_val(int state)
 {
 	/* Backup the current value for restoration */
-	pd_per_stctrl_prev_val = __raw_readl(AM335X_PM_PER_PWRSTCTRL);
+	if (soc_id == AM335X_SOC_ID)
+		pd_per_stctrl_prev_val = __raw_readl(AM335X_PM_PER_PWRSTCTRL);
+	else if (soc_id == AM43XX_SOC_ID)
+		pd_per_stctrl_prev_val = __raw_readl(AM43XX_PM_PER_PWRSTCTRL);
 
 	return _next_pd_per_stctrl_val(state);
 }
@@ -428,26 +659,38 @@ static int _next_pd_mpu_stctrl_val(state)
 	int v = 0;
 
 	if (state == 0) {
-		v = mpu_powerst_change(ds0_data.pd_mpu_state, v);
-		v = mpu_ram_ret_state_change(ds0_data.pd_mpu_ram_ret_state, v);
-		v = mpu_l1_ret_state_change(ds0_data.pd_mpu_l1_ret_state, v);
-		v = mpu_l2_ret_state_change(ds0_data.pd_mpu_l2_ret_state, v);
+		if (soc_type == SOC_TYPE_GP) {
+			v = mpu_powerst_change(ds0_data.pd_mpu_state, v);
+			v = mpu_ram_ret_state_change(ds0_data.pd_mpu_ram_ret_state, v);
+			v = mpu_l1_ret_state_change(ds0_data.pd_mpu_l1_ret_state, v);
+			v = mpu_l2_ret_state_change(ds0_data.pd_mpu_l2_ret_state, v);
+		} else {
+			/* Treat all non-GP devices the same */
+			v = mpu_powerst_change(ds0_data_hs.pd_mpu_state, v);
+			v = mpu_ram_ret_state_change(ds0_data_hs.pd_mpu_ram_ret_state, v);
+			v = mpu_l1_ret_state_change(ds0_data_hs.pd_mpu_l1_ret_state, v);
+			v = mpu_l2_ret_state_change(ds0_data_hs.pd_mpu_l2_ret_state, v);
+		}
 	} else if (state == 1) {
-		v = mpu_powerst_change(ds1_data.pd_mpu_state, v);
-		v = mpu_ram_ret_state_change(ds1_data.pd_mpu_ram_ret_state, v);
-		v = mpu_l1_ret_state_change(ds1_data.pd_mpu_l1_ret_state, v);
-		v = mpu_l2_ret_state_change(ds1_data.pd_mpu_l2_ret_state, v);
+		if (soc_type == SOC_TYPE_GP) {
+			v = mpu_powerst_change(ds1_data.pd_mpu_state, v);
+			v = mpu_ram_ret_state_change(ds1_data.pd_mpu_ram_ret_state, v);
+			v = mpu_l1_ret_state_change(ds1_data.pd_mpu_l1_ret_state, v);
+			v = mpu_l2_ret_state_change(ds1_data.pd_mpu_l2_ret_state, v);
+		} else {
+			/* Treat all non-GP devices the same */
+			v = mpu_powerst_change(ds1_data_hs.pd_mpu_state, v);
+			v = mpu_ram_ret_state_change(ds1_data_hs.pd_mpu_ram_ret_state, v);
+			v = mpu_l1_ret_state_change(ds1_data_hs.pd_mpu_l1_ret_state, v);
+			v = mpu_l2_ret_state_change(ds1_data_hs.pd_mpu_l2_ret_state, v);
+		}
 	} else if (state == 2) {
 		v = mpu_powerst_change(ds2_data.pd_mpu_state, v);
 	} else if (state == 3) {
-		v = mpu_powerst_change
-			(standby_data.pd_mpu_state, v);
-		v = mpu_ram_ret_state_change
-			(standby_data.pd_mpu_ram_ret_state, v);
-		v = mpu_l1_ret_state_change
-			(standby_data.pd_mpu_l1_ret_state, v);
-		v = mpu_l2_ret_state_change
-			(standby_data.pd_mpu_l2_ret_state, v);
+		v = mpu_powerst_change(standby_data.pd_mpu_state, v);
+		v = mpu_ram_ret_state_change(standby_data.pd_mpu_ram_ret_state, v);
+		v = mpu_l1_ret_state_change(standby_data.pd_mpu_l1_ret_state, v);
+		v = mpu_l2_ret_state_change(standby_data.pd_mpu_l2_ret_state, v);
 	}
 	return v;
 }
@@ -455,7 +698,10 @@ static int _next_pd_mpu_stctrl_val(state)
 int get_pd_mpu_stctrl_val(int state)
 {
 	/* Backup the current value for restoration */
-	pd_mpu_stctrl_prev_val = __raw_readl(AM335X_PM_MPU_PWRSTCTRL);
+	if (soc_id == AM335X_SOC_ID)
+		pd_mpu_stctrl_prev_val = __raw_readl(AM335X_PM_MPU_PWRSTCTRL);
+	else if (soc_id == AM43XX_SOC_ID)
+		pd_per_stctrl_prev_val = __raw_readl(AM43XX_PM_MPU_PWRSTCTRL);
 
 	return _next_pd_mpu_stctrl_val(state);
 }
@@ -585,20 +831,36 @@ void clear_wake_sources(void)
 
 void pd_state_restore(void)
 {
-	__raw_writel(pd_per_stctrl_prev_val, AM335X_PM_PER_PWRSTCTRL);
-	__raw_writel(pd_mpu_stctrl_prev_val, AM335X_PM_MPU_PWRSTCTRL);
+	if (soc_id == AM335X_SOC_ID) {
+		__raw_writel(pd_per_stctrl_prev_val, AM335X_PM_PER_PWRSTCTRL);
+		__raw_writel(pd_mpu_stctrl_prev_val, AM335X_PM_MPU_PWRSTCTRL);
+	} else if (soc_id == AM43XX_SOC_ID) {
+		__raw_writel(pd_per_stctrl_prev_val, AM43XX_PM_PER_PWRSTCTRL);
+		__raw_writel(pd_mpu_stctrl_prev_val, AM43XX_PM_MPU_PWRSTCTRL);
+	}
 }
 
 /* Checking only the stst bits for now */
 int verify_pd_transitions(void)
 {
-	int mpu_ctrl, mpu_stst, per_ctrl, per_stst;
+	int mpu_ctrl = 0;
+	int mpu_stst = 0;
+	int per_ctrl = 0;
+	int per_stst = 0;
 
-	mpu_ctrl = __raw_readl(AM335X_PM_MPU_PWRSTCTRL);
-	per_ctrl = __raw_readl(AM335X_PM_PER_PWRSTCTRL);
+	if (soc_id == AM335X_SOC_ID) {
+		mpu_ctrl = __raw_readl(AM335X_PM_MPU_PWRSTCTRL);
+		per_ctrl = __raw_readl(AM335X_PM_PER_PWRSTCTRL);
 
-	mpu_stst = __raw_readl(AM335X_PM_MPU_PWRSTST);
-	per_stst = __raw_readl(AM335X_PM_PER_PWRSTST);
+		mpu_stst = __raw_readl(AM335X_PM_MPU_PWRSTST);
+		per_stst = __raw_readl(AM335X_PM_PER_PWRSTST);
+	} else if (soc_id == AM43XX_SOC_ID) {
+		mpu_ctrl = __raw_readl(AM43XX_PM_MPU_PWRSTCTRL);
+		per_ctrl = __raw_readl(AM43XX_PM_PER_PWRSTCTRL);
+
+		mpu_stst = __raw_readl(AM43XX_PM_MPU_PWRSTST);
+		per_stst = __raw_readl(AM43XX_PM_PER_PWRSTST);
+	}
 
 	if (((mpu_ctrl & 0x3) == (mpu_stst & 0x3)) &&
 		((per_ctrl & 0x3) == (per_stst & 0x3)))
@@ -755,6 +1017,8 @@ void am33xx_power_down_plls()
 		dpll_power_down(DPLL_DDR);
 		dpll_power_down(DPLL_DISP);
 		dpll_power_down(DPLL_PER);
+	} else if (soc_id == AM43XX_SOC_ID) {
+		/* TODO */
 	}
 }
 
@@ -765,6 +1029,8 @@ void am33xx_power_up_plls()
 		dpll_power_up(DPLL_DDR);
 		dpll_power_up(DPLL_DISP);
 		dpll_power_up(DPLL_PER);
+	} else if (soc_id == AM43XX_SOC_ID) {
+		/* TODO */
 	}
 }
 
@@ -773,12 +1039,17 @@ void core_ldo_power_down(void)
 	unsigned int core_ldo;
 
 	/* Configure RETMODE_ENABLE for CORE LDO */
-	core_ldo = __raw_readl(AM335X_PRM_LDO_SRAM_CORE_CTRL);
-	core_ldo |= RETMODE_ENABLE;
-	__raw_writel(core_ldo, AM335X_PRM_LDO_SRAM_CORE_CTRL);
+	if (soc_id == AM335X_SOC_ID && soc_rev > AM335X_REV_ES1_0) {
+		core_ldo = __raw_readl(AM335X_PRM_LDO_SRAM_CORE_CTRL);
+		core_ldo |= RETMODE_ENABLE;
+		__raw_writel(core_ldo, AM335X_PRM_LDO_SRAM_CORE_CTRL);
 
-	/* Poll for LDO Status to be in retention (SRAMLDO_STATUS) */
-	while (!(__raw_readl(AM335X_PRM_LDO_SRAM_CORE_CTRL) & SRAMLDO_STATUS));
+		/* Poll for LDO Status to be in retention (SRAMLDO_STATUS) */
+		while (!(__raw_readl(AM335X_PRM_LDO_SRAM_CORE_CTRL) & SRAMLDO_STATUS));
+	} else if (soc_id == AM43XX_SOC_ID) {
+		/* TODO */
+		/* Note: Need to additionally check for Voltage Monitoring here */
+	}
 }
 
 void core_ldo_power_up(void)
@@ -786,12 +1057,17 @@ void core_ldo_power_up(void)
 	unsigned int core_ldo;
 
 	/* Disable RETMODE for CORE LDO */
-	core_ldo = __raw_readl(AM335X_PRM_LDO_SRAM_CORE_CTRL);
-	core_ldo &= ~RETMODE_ENABLE;
-	__raw_writel(core_ldo, AM335X_PRM_LDO_SRAM_CORE_CTRL);
+	if (soc_id == AM335X_SOC_ID && soc_rev > AM335X_REV_ES1_0) {
+		core_ldo = __raw_readl(AM335X_PRM_LDO_SRAM_CORE_CTRL);
+		core_ldo &= ~RETMODE_ENABLE;
+		__raw_writel(core_ldo, AM335X_PRM_LDO_SRAM_CORE_CTRL);
 
-	/* Poll for LDO status to be out of retention (SRAMLDO_STATUS) */
-	while (__raw_readl(AM335X_PRM_LDO_SRAM_CORE_CTRL) & SRAMLDO_STATUS);
+		/* Poll for LDO status to be out of retention (SRAMLDO_STATUS) */
+		while (__raw_readl(AM335X_PRM_LDO_SRAM_CORE_CTRL) & SRAMLDO_STATUS);
+	} else if (soc_id == AM43XX_SOC_ID) {
+		/* TODO */
+		/* Note: Need to additionally check for Voltage Monitoring here */
+	}
 }
 
 void ddr_io_suspend()
@@ -836,6 +1112,7 @@ void vtt_low(void)
 	module_state_change(MODULE_DISABLE, AM335X_CM_WKUP_GPIO0_CLKCTRL);
 }
 
+/* same offsets for SA and Aegis */
 void vtp_disable(void)
 {
 	if (mem_type == MEM_TYPE_DDR2)
@@ -934,6 +1211,7 @@ void ddr_io_resume(void)
 	__raw_writel(RESUME_IO_PULL_DATA, AM33XX_DDR_DATA0_IOCTRL);
 }
 
+/* same offsets for SA and Aegis */
 void vtp_enable(void)
 {
 	int var;
@@ -975,6 +1253,9 @@ void set_ddr_reset()
 {
 	int var;
 
+	/*
+	 * TODO: Make this a one-time change in MPU code itself
+	 */
 	if (mem_type == MEM_TYPE_DDR3) {
 		/* hold DDR_RESET high via control module */
 		var = __raw_readl(DDR_IO_CTRL_REG);
@@ -987,6 +1268,9 @@ void clear_ddr_reset()
 {
 	int var;
 
+	/*
+	 * TODO: Make this a one-time change in MPU code itself
+	 */
 	if (mem_type == MEM_TYPE_DDR3) {
 		/* make DDR_RESET low via control module */
 		var = __raw_readl(DDR_IO_CTRL_REG);
@@ -997,43 +1281,47 @@ void clear_ddr_reset()
 
 void ds_save(void)
 {
-	set_ddr_reset();
+	if (soc_id == AM335X_SOC_ID) {
+		set_ddr_reset();
 
-	ddr_io_suspend();
+		ddr_io_suspend();
 
-	vtt_low();
+		vtt_low();
 
-	vtp_disable();
+		vtp_disable();
 
-	sram_ldo_ret_mode(RETMODE_ENABLE);
+		sram_ldo_ret_mode(RETMODE_ENABLE);
 
-	pll_bypass(DPLL_CORE);
-	pll_bypass(DPLL_DDR);
-	pll_bypass(DPLL_DISP);
-	pll_bypass(DPLL_PER);
-	pll_bypass(DPLL_MPU);
+		pll_bypass(DPLL_CORE);
+		pll_bypass(DPLL_DDR);
+		pll_bypass(DPLL_DISP);
+		pll_bypass(DPLL_PER);
+		pll_bypass(DPLL_MPU);
+	}
 }
 
 void ds_restore(void)
 {
-	pll_lock(DPLL_MPU);
-	pll_lock(DPLL_PER);
-	pll_lock(DPLL_DISP);
-	pll_lock(DPLL_DDR);
-	pll_lock(DPLL_CORE);
+	if (soc_id == AM335X_SOC_ID) {
+		pll_lock(DPLL_MPU);
+		pll_lock(DPLL_PER);
+		pll_lock(DPLL_DISP);
+		pll_lock(DPLL_DDR);
+		pll_lock(DPLL_CORE);
 
-	sram_ldo_ret_mode(RETMODE_DISABLE);
+		sram_ldo_ret_mode(RETMODE_DISABLE);
 
-	vtp_enable();
+		vtp_enable();
 
-	/* XXX: Why is this required here for DDR3? */
-	module_state_change(MODULE_ENABLE, AM335X_CM_PER_EMIF_CLKCTRL);
+		/* XXX: Why is this required here for DDR3? */
+		module_state_change(MODULE_ENABLE, AM335X_CM_PER_EMIF_CLKCTRL);
 
-	vtt_high();
+		vtt_high();
 
-	ddr_io_resume();
+		ddr_io_resume();
 
-	clear_ddr_reset();
+		clear_ddr_reset();
+	}
 }
 
 int a8_i2c_sleep_handler(unsigned short i2c_sleep_offset)
@@ -1041,8 +1329,18 @@ int a8_i2c_sleep_handler(unsigned short i2c_sleep_offset)
 	unsigned char *dmem = (unsigned char *) DMEM_BASE;
 	int ret = 0;
 
+	if (soc_id == AM335X_SOC_ID)
+		module_state_change(MODULE_ENABLE, AM335X_CM_WKUP_I2C0_CLKCTRL);
+	else if (soc_id == AM43XX_SOC_ID)
+		module_state_change(MODULE_ENABLE, AM43XX_CM_WKUP_I2C0_CLKCTRL);
+
 	if (i2c_sleep_offset != 0xffff)
 		ret = i2c_write(dmem + i2c_sleep_offset);
+
+	if (soc_id == AM335X_SOC_ID)
+		module_state_change(MODULE_DISABLE, AM335X_CM_WKUP_I2C0_CLKCTRL);
+	else if (soc_id == AM43XX_SOC_ID)
+		module_state_change(MODULE_DISABLE, AM43XX_CM_WKUP_I2C0_CLKCTRL);
 
 	return ret;
 }
@@ -1052,8 +1350,18 @@ int a8_i2c_wake_handler(unsigned short i2c_wake_offset)
 	unsigned char *dmem = (unsigned char *) DMEM_BASE;
 	int ret = 0;
 
+	if (soc_id == AM335X_SOC_ID)
+		module_state_change(MODULE_ENABLE, AM335X_CM_WKUP_I2C0_CLKCTRL);
+	else if (soc_id == AM43XX_SOC_ID)
+		module_state_change(MODULE_ENABLE, AM43XX_CM_WKUP_I2C0_CLKCTRL);
+
 	if (i2c_wake_offset != 0xffff)
 		ret = i2c_write(dmem + i2c_wake_offset);
+
+	if (soc_id == AM335X_SOC_ID)
+		module_state_change(MODULE_DISABLE, AM335X_CM_WKUP_I2C0_CLKCTRL);
+	else if (soc_id == AM43XX_SOC_ID)
+		module_state_change(MODULE_DISABLE, AM43XX_CM_WKUP_I2C0_CLKCTRL);
 
 	return ret;
 }

@@ -76,6 +76,38 @@ struct deep_sleep_data {
 	int reserved :1;			/* Internal use */
 };
 
+struct pd_mpu_bits {
+	int	ram_retst_mask;
+	int	ram_retst_shift;
+	int	l2_retst_mask;
+	int	l2_retst_shift;
+	int	l1_retst_mask;
+	int	l1_retst_shift;
+	int	lpstchg_mask;
+	int	lpstchg_shift;
+	int	logicretst_mask;
+	int	logicretst_shift;
+	int	pwrst_mask;
+	int	pwrst_shift;
+};
+
+struct pd_per_bits {
+	int	per_retst_mask;
+	int	per_retst_shift;
+	int	ram1_retst_mask;
+	int	ram1_retst_shift;
+	int	ram2_retst_mask;
+	int	ram2_retst_shift;
+	int	icss_retst_mask;
+	int	icss_retst_shift;
+	int	lpstchg_mask;
+	int	lpstchg_shift;
+	int	logicretst_mask;
+	int	logicretst_shift;
+	int	pwrst_mask;
+	int	pwrst_shift;
+};
+
 int reg_mod(int, int, int);
 
 int module_state_change(int, int);

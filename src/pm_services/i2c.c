@@ -122,8 +122,6 @@ int i2c_write(const unsigned char *sequence)
 	unsigned short orig_scll;
 	unsigned short orig_sclh;
 
-	module_state_change(MODULE_ENABLE, AM335X_CM_WKUP_I2C0_CLKCTRL);
-
 	/* Save modified registers */
 	orig_sysc = __raw_readl(I2C0_BASE + OMAP_I2C_SYSC_REG);
 	orig_con = i2c_reg_read(OMAP_I2C_CON_REG);
@@ -185,8 +183,6 @@ int i2c_write(const unsigned char *sequence)
 	i2c_reg_write(orig_con, OMAP_I2C_CON_REG);
 	i2c_reg_write(orig_irq_en, OMAP_I2C_IRQENABLE_SET);
 	__raw_writel(orig_sysc, I2C0_BASE + OMAP_I2C_SYSC_REG);
-
-	module_state_change(MODULE_DISABLE, AM335X_CM_WKUP_I2C0_CLKCTRL);
 
 	return 0;
 }

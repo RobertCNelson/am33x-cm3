@@ -176,3 +176,41 @@ void extint51_handler()
 	nvic_disable_irq(AM335X_IRQ_ADC_TSC_WAKE);
 	generic_wake_handler(AM335X_IRQ_ADC_TSC_WAKE);
 }
+
+#if 0
+/* TPM_WAKE */
+void extint52_handler()
+{
+	nvic_disable_irq(AM437X_IRQ_TMP_WAKE);
+	generic_wake_handler(AM437X_IRQ_ADC_TSC_WAKE);
+}
+#endif
+
+/* TPM_WAKE */
+void extint53_handler()
+{
+	nvic_disable_irq(53);
+
+	/*
+	 * If command is not valid, need to update the status to FAIL
+	 * and enable the mailbox interrupt back
+	 */
+	if (!msg_cmd_is_valid()) {
+		msg_cmd_stat_update(CMD_STAT_FAIL);
+		nvic_enable_irq(53);
+		return;
+	}
+
+	/* cmd was valid */
+	if (msg_cmd_needs_trigger()) {
+		a8_m3_low_power_sync(CMD_STAT_WAIT4OK);
+		nvic_enable_irq(53);
+		return;
+	} else {
+		/* For Rev and S/M reset */
+		msg_cmd_dispatcher();
+		/* XXX: Analysis of why this is needed is TBD */
+		nvic_enable_irq(53);
+		return;
+	}
+}

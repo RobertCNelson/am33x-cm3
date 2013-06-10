@@ -56,6 +56,7 @@ void init_m3_state_machine(void)
 
 	/* Enable only the MBX IRQ */
 	nvic_enable_irq(AM335X_IRQ_MBINT0);
+	nvic_enable_irq(53);
 
 	/*
 	 * In the remote case where we disabled the MPU CLOCK

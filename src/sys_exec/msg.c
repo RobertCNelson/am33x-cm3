@@ -150,6 +150,11 @@ void msg_cmd_dispatcher()
 	cmd_global_data.i2c_sleep_offset = a8_m3_data_r.reg6 & 0xffff;
 	cmd_global_data.i2c_wake_offset = a8_m3_data_r.reg6 >> 16;
 
+	/* let's force DS1 for now */
+#if 0
+	cmd_global_data.cmd_id = 0x5;
+#endif
+
 	/* board specific data saved in global variables for now */
 	mem_type = (a8_m3_data_r.reg5 & MEM_TYPE_MASK) >> MEM_TYPE_SHIFT;
 	vtt_toggle = (a8_m3_data_r.reg5 & VTT_STAT_MASK) >> VTT_STAT_SHIFT;

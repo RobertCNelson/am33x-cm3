@@ -85,6 +85,8 @@ void extint48_handler(void) 	__attribute__ ((weak, alias("dummy_handler")));
 void extint49_handler(void) 	__attribute__ ((weak, alias("dummy_handler")));
 void extint50_handler(void) 	__attribute__ ((weak, alias("dummy_handler")));
 void extint51_handler(void) 	__attribute__ ((weak, alias("dummy_handler")));
+void extint52_handler(void) 	__attribute__ ((weak, alias("dummy_handler")));
+void extint53_handler(void) 	__attribute__ ((weak, alias("dummy_handler")));
 
 void dummy_handler(void);
 
@@ -159,6 +161,8 @@ void *vector_table[] __attribute__ ((section(".vectors"))) = {
 	extint49_handler,
 	extint50_handler,
 	extint51_handler,
+	extint52_handler,
+	extint53_handler,
 };
 
 /* so it begins... */

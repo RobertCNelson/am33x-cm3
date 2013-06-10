@@ -69,6 +69,7 @@ int pd_per_pwrstst_prev_val;
 
 unsigned int soc_id;
 unsigned int soc_rev;
+unsigned int soc_type;
 
 /* Placeholder for storing PLL mode */
 unsigned int clk_mode_per_val;
@@ -76,6 +77,11 @@ unsigned int clk_mode_disp_val;
 unsigned int clk_mode_ddr_val;
 unsigned int clk_mode_mpu_val;
 unsigned int clk_mode_core_val;
+
+/* PD_PER registers */
+unsigned int am33xx_per[85];
+
+unsigned int watermark;
 
 void pm_init(void);
 
@@ -129,7 +135,7 @@ void rtc_reg_write(int, int);
 
 int i2c_write(const unsigned char *);
 
-void setup_soc_revision(void);
+void setup_soc(void);
 
 int a8_i2c_sleep_handler(unsigned short);
 int a8_i2c_wake_handler(unsigned short);
@@ -183,5 +189,12 @@ int a8_i2c_wake_handler(unsigned short);
 #define AM335X_REV_ES1_0	0
 #define AM335X_REV_ES2_0	1
 #define AM335X_REV_ES2_1	2
+
+#define AM43XX_SOC_ID		0xB98C
+
+#define SOC_TYPE_TEST	0
+#define SOC_TYPE_EMU	1
+#define SOC_TYPE_HS	2
+#define SOC_TYPE_GP	3
 
 #endif
