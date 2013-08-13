@@ -133,7 +133,7 @@ int msg_cmd_is_valid(void)
 
 #define lp_data(a, b, c) (a ? (void *) b: (void *) c)
 /* Read all the IPC regs and pass it along to the appropriate handler */
-void msg_cmd_dispatcher()
+void msg_cmd_dispatcher(void)
 {
 	char use_default_val = 0;
 

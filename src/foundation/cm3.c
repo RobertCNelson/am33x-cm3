@@ -55,7 +55,7 @@ void nvic_clear_irq(int irq_no)
 
 }
 
-void scr_enable_sleepdeep()
+void scr_enable_sleepdeep(void)
 {
 	int scr_reg;
 
@@ -65,7 +65,7 @@ void scr_enable_sleepdeep()
 	__raw_writel(scr_reg, SYS_SCR);
 }
 
-void scr_enable_sleeponexit()
+void scr_enable_sleeponexit(void)
 {
 	int scr_reg;
 

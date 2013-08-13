@@ -17,7 +17,7 @@
 #include <prmam335x.h>
 #include <system_am335.h>
 
-int rtc_enable_check()
+int rtc_enable_check(void)
 {
 	if (__raw_readl(AM335X_CM_RTC_CLKSTCTRL) == 0x2)
 		return 0;

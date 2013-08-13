@@ -718,7 +718,7 @@ int disable_master_oscillator(void)
 	return 0;
 }
 
-int enable_master_oscillator()
+int enable_master_oscillator(void)
 {
 	int v = __raw_readl(DEEPSLEEP_CTRL);
 
@@ -1011,7 +1011,7 @@ void dpll_power_up(unsigned int dpll)
 }
 
 /* DPLL retention update for PG 2.0 */
-void am33xx_power_down_plls()
+void am33xx_power_down_plls(void)
 {
 	if (soc_id == AM335X_SOC_ID && soc_rev > AM335X_REV_ES1_0) {
 		dpll_power_down(DPLL_DDR);
@@ -1023,7 +1023,7 @@ void am33xx_power_down_plls()
 }
 
 /* DPLL retention update for PG 2.x */
-void am33xx_power_up_plls()
+void am33xx_power_up_plls(void)
 {
 	if (soc_id == AM335X_SOC_ID && soc_rev > AM335X_REV_ES1_0) {
 		dpll_power_up(DPLL_DDR);
@@ -1070,7 +1070,7 @@ void core_ldo_power_up(void)
 	}
 }
 
-void ddr_io_suspend()
+void ddr_io_suspend(void)
 {
 	int var;
 
@@ -1249,7 +1249,7 @@ void vtt_high(void)
 }
 
 /* RESET line is applicable only to DDR3 */
-void set_ddr_reset()
+void set_ddr_reset(void)
 {
 	int var;
 
@@ -1264,7 +1264,7 @@ void set_ddr_reset()
 	}
 }
 
-void clear_ddr_reset()
+void clear_ddr_reset(void)
 {
 	int var;
 

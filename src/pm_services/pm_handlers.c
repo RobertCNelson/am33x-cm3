@@ -542,7 +542,7 @@ void a8_wake_cmd7_handler(void)
  * PD_PER = ON
  * PD_MPU = OFF
  */
-void a8_wake_cmdb_handler()
+void a8_wake_cmdb_handler(void)
 {
 	int result = 0;
 
@@ -562,7 +562,7 @@ void a8_wake_cmdb_handler()
 /* Exit cpuidle
  * MPU_MPU_CLKCTRL = OFF
  */
-void a8_wake_cmd10_handler()
+void a8_wake_cmd10_handler(void)
 {
 	clear_wake_sources();
 
