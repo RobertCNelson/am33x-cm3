@@ -32,28 +32,22 @@ void extint31_handler(void)
 {
 	nvic_disable_irq(AM335X_IRQ_MBINT0);
 
-	/*
-	 * If command is not valid, need to update the status to FAIL
-	 * and enable the mailbox interrupt back
-	 */
 	if (!msg_cmd_is_valid()) {
+		/*
+		 * If command is not valid, need to update the status to FAIL
+		 * and enable the mailbox interrupt back
+		 */
 		msg_cmd_stat_update(CMD_STAT_FAIL);
-		nvic_enable_irq(AM335X_IRQ_MBINT0);
-		return;
-	}
 
-	/* cmd was valid */
-	if (msg_cmd_needs_trigger()) {
+	} else if (msg_cmd_needs_trigger()) {
 		a8_m3_low_power_sync(CMD_STAT_WAIT4OK);
-		nvic_enable_irq(AM335X_IRQ_MBINT0);
-		return;
+
 	} else {
 		/* For Rev and S/M reset */
 		msg_cmd_dispatcher();
-		/* XXX: Analysis of why this is needed is TBD */
-		nvic_enable_irq(AM335X_IRQ_MBINT0);
-		return;
 	}
+
+	nvic_enable_irq(AM335X_IRQ_MBINT0);
 }
 
 /* USBWAKEUP */
