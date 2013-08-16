@@ -264,7 +264,7 @@ void setup_soc(void)
 	}
 }
 
-int var_mod(int var, int mask, int bit_val)
+static int var_mod(int var, int mask, int bit_val)
 {
 	int v;
 
