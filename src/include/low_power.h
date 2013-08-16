@@ -144,7 +144,7 @@ int disable_master_oscillator(void);
 int enable_master_oscillator(void);
 
 void configure_deepsleep_count(int ds_count);
-void configure_wake_sources(int wake_sources,int mod_check);
+void configure_wake_sources(int wake_sources);
 void clear_wake_sources(void);
 
 void dpll_power_down(unsigned int dpll);

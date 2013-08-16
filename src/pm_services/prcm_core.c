@@ -756,12 +756,9 @@ void configure_deepsleep_count(int ds_count)
  * cause a wakeup event. Ideally, this function should just enable
  * the NVIC interrupt
  */
-void configure_wake_sources(int wake_sources, int mod_check)
+void configure_wake_sources(int wake_sources)
 {
-	if (wake_sources != 0 || (mod_check == 0))
-		cmd_wake_sources = wake_sources;
-	else
-		cmd_wake_sources = WAKE_ALL;
+	cmd_wake_sources = wake_sources;
 
 	/* Enable wakeup interrupts from required wake sources */
 	if (BB_USB_WAKE)

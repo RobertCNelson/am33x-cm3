@@ -103,7 +103,7 @@ void a8_lp_cmd3_handler(struct cmd_data *data, char use_default_val)
 
 	a8_i2c_sleep_handler(data->i2c_sleep_offset);
 
-	configure_wake_sources(local_cmd->wake_sources, use_default_val);
+	configure_wake_sources(local_cmd->wake_sources);
 
 	/* TODO: Check for valid range */
 	if (!(use_default_val) && (local_cmd->deepsleep_count))
@@ -195,7 +195,7 @@ void a8_lp_cmd5_handler(struct cmd_data *data, char use_default_val)
 	if (use_default_val || !(local_cmd->mosc_state))
 		disable_master_oscillator();
 
-	configure_wake_sources(local_cmd->wake_sources, use_default_val);
+	configure_wake_sources(local_cmd->wake_sources);
 
 	/* TODO: Check for valid range */
 	if (!(use_default_val) && (local_cmd->deepsleep_count))
@@ -257,7 +257,7 @@ void a8_lp_cmd7_handler(struct cmd_data *data, char use_default_val)
 	if (use_default_val || !(local_cmd->mosc_state))
 		disable_master_oscillator();
 
-	configure_wake_sources(local_cmd->wake_sources, use_default_val);
+	configure_wake_sources(local_cmd->wake_sources);
 
 	/* TODO: Check for valid range */
 	if (!(use_default_val) && (local_cmd->deepsleep_count))
@@ -301,7 +301,7 @@ void a8_standby_handler(struct cmd_data *data, char use_default_val)
 
 	a8_i2c_sleep_handler(data->i2c_sleep_offset);
 
-	configure_wake_sources(local_cmd->wake_sources, use_default_val);
+	configure_wake_sources(local_cmd->wake_sources);
 
 	/* TODO: Check for valid range */
 	if (!(use_default_val) && (local_cmd->deepsleep_count))
@@ -346,7 +346,7 @@ void a8_cpuidle_handler(struct cmd_data *data, char use_default_val)
 {
 	struct deep_sleep_data *local_cmd = (struct deep_sleep_data *)data->data;
 
-	configure_wake_sources(local_cmd->wake_sources, use_default_val);
+	configure_wake_sources(local_cmd->wake_sources);
 
 	mpu_clkdm_sleep();
 }
