@@ -51,6 +51,7 @@ short cmd_stat;
 
 struct state_handler {
 	void *gp_data;
+	void *hs_data;
 	void (*handler)(struct cmd_data *data, char);
 	int needs_trigger;
 	int fast_trigger;

@@ -20,7 +20,9 @@
 extern struct rtc_data rtc_mode_data;
 extern struct deep_sleep_data standby_data;
 extern struct deep_sleep_data ds0_data;
+extern struct deep_sleep_data ds0_data_hs;
 extern struct deep_sleep_data ds1_data;
+extern struct deep_sleep_data ds1_data_hs;
 extern struct deep_sleep_data ds2_data;
 extern struct deep_sleep_data idle_data;
 
@@ -50,12 +52,14 @@ struct state_handler cmd_handlers[] = {
 	/* DS0 */
 	[0x3] = {
 		.gp_data = &ds0_data,
+		.hs_data = &ds0_data_hs,
 		.handler = a8_lp_cmd3_handler,
 		.needs_trigger = 1,
 	},
 	/* DS0_V2 */
 	[0x4] = {
 		.gp_data = &ds0_data,
+		.hs_data = &ds0_data_hs,
 		.handler = a8_lp_cmd3_handler,
 		.needs_trigger = 1,
 		.do_ddr = 1,
@@ -63,12 +67,14 @@ struct state_handler cmd_handlers[] = {
 	/* DS1 */
 	[0x5] = {
 		.gp_data = &ds1_data,
+		.hs_data = &ds1_data_hs,
 		.handler = a8_lp_cmd5_handler,
 		.needs_trigger = 1,
 	},
 	/* DS1_V2 */
 	[0x6] = {
 		.gp_data = &ds1_data,
+		.hs_data = &ds1_data_hs,
 		.handler = a8_lp_cmd5_handler,
 		.needs_trigger = 1,
 		.do_ddr = 1,
@@ -234,7 +240,9 @@ void msg_cmd_dispatcher(void)
 				VTT_GPIO_PIN_SHIFT;
 
 	if (use_default_val) {
-		if (cmd_handlers[cmd_id].gp_data)
+		if (soc_type != SOC_TYPE_GP && cmd_handlers[cmd_id].hs_data)
+			cmd_global_data.data = cmd_handlers[cmd_id].hs_data;
+		else if (cmd_handlers[cmd_id].gp_data)
 			cmd_global_data.data = cmd_handlers[cmd_id].gp_data;
 	} else
 		cmd_global_data.data = &a8_m3_ds_data;
