@@ -330,15 +330,12 @@ void a8_standby_handler(struct cmd_data *data, char use_default_val)
 	/* TODO: In standby ,the only variation that makes sense
 	 * is MPU ON/OFF. So all the code for PER domain manipulation
 	 * can effectively be dropped.
-	 * However, on doing so,the below error messages were seen
-	 * during resume
-	 * [   30.295013] Could not enter low power state
-	 * [   30.295043] Please check for active clocks in PER domain
-	 * Needs further debug.
+	 * However, with a call to get_pd_per_stctrl_val, the PER state
+	 * does not get saved and a random value gets restored instead.
 	 * Retaining PER domain state manipulations for now.
 	 */
-	per_st = get_pd_per_stctrl_val(3);
-	mpu_st = get_pd_mpu_stctrl_val(3);
+	per_st = get_pd_per_stctrl_val(local_cmd);
+	mpu_st = get_pd_mpu_stctrl_val(local_cmd);
 
 	if (!use_default_val) {
 		mpu_st = mpu_powerst_change
