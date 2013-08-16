@@ -98,7 +98,7 @@ void a8_lp_cmd3_handler(struct cmd_data *data, char use_default_val)
 	int mpu_st = 0;
 	int temp;
 
-	if (cmd_global_data.cmd_id == 0x4)
+	if (cmd_handlers[cmd_global_data.cmd_id].do_ddr)
 		ds_save();
 
 	a8_i2c_sleep_handler(data->i2c_sleep_offset);
@@ -186,7 +186,7 @@ void a8_lp_cmd5_handler(struct cmd_data *data, char use_default_val)
 	int per_st = 0;
 	int mpu_st = 0;
 
-	if (cmd_global_data.cmd_id == 0x6)
+	if (cmd_handlers[cmd_global_data.cmd_id].do_ddr)
 		ds_save();
 
 	a8_i2c_sleep_handler(data->i2c_sleep_offset);
@@ -248,7 +248,7 @@ void a8_lp_cmd7_handler(struct cmd_data *data, char use_default_val)
 	int per_st = 0;
 	int mpu_st = 0;
 
-	if (cmd_global_data.cmd_id == 0x8)
+	if (cmd_handlers[cmd_global_data.cmd_id].do_ddr)
 		ds_save();
 
 	a8_i2c_sleep_handler(data->i2c_sleep_offset);
@@ -296,7 +296,7 @@ void a8_standby_handler(struct cmd_data *data, char use_default_val)
 	int mpu_st = 0;
 	int per_st = 0;
 
-	if (cmd_global_data.cmd_id == 0xc)
+	if (cmd_handlers[cmd_global_data.cmd_id].do_ddr)
 		ds_save();
 
 	a8_i2c_sleep_handler(data->i2c_sleep_offset);
@@ -352,7 +352,7 @@ void a8_cpuidle_handler(struct cmd_data *data, char use_default_val)
 }
 
 /* Standalone application handler */
-void a8_standalone_handler(struct cmd_data *data)
+void a8_standalone_handler(struct cmd_data *data, char use_default_val)
 {
 	/* TBD */
 }
@@ -400,20 +400,16 @@ void generic_wake_handler(int wakeup_reason)
 
 	enable_master_oscillator();
 
-	switch (cmd_global_data.cmd_id) {
-	case 0x4:
-	case 0x6:
-	case 0x8:
-	case 0xc:
+	if (cmd_handlers[cmd_global_data.cmd_id].do_ddr)
 		ds_restore();
-	default:
-		/*
-		 * PSP kernels have a long standing bug in sleep33xx.S,
-		 * they don't re-enable the EMIF hwmod in their resume
-		 * path. Keep compatibily with these kernels.
-		 */
+
+	/*
+	 * PSP kernels have a long standing bug in sleep33xx.S,
+	 * they don't re-enable the EMIF hwmod in their resume
+	 * path. Keep compatibily with these kernels.
+	 */
+	if (!cmd_handlers[cmd_global_data.cmd_id].do_ddr)
 		module_state_change(MODULE_ENABLE, AM335X_CM_PER_EMIF_CLKCTRL);
-	}
 
 	/* If everything is done, we init things again */
 	/* Flush out NVIC interrupts */

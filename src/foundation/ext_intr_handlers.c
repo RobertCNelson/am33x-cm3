@@ -42,6 +42,9 @@ void extint31_handler(void)
 	} else if (msg_cmd_needs_trigger()) {
 		a8_m3_low_power_sync(CMD_STAT_WAIT4OK);
 
+	} else if (msg_cmd_fast_trigger()) {
+		a8_m3_low_power_fast(CMD_STAT_PASS);
+
 	} else {
 		/* For Rev and S/M reset */
 		msg_cmd_dispatcher();

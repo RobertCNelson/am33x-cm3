@@ -142,6 +142,13 @@ struct deep_sleep_data standby_data =  {
 	.reserved			= 0
 };
 
+struct deep_sleep_data idle_data = {
+	.mosc_state			= MOSC_ON,
+	.pd_mpu_state			= PD_ON,
+	.pd_per_state			= PD_ON,
+	.wake_sources			= MPU_WAKE,
+};
+
 struct pd_mpu_bits mpu_bits = {
 	.ram_retst_mask		= -1,
 	.ram_retst_shift	= -1,

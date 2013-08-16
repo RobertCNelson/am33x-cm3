@@ -12,6 +12,7 @@
 
 #include <stdint.h>
 
+#include <stddef.h>
 #include <device_am335x.h>
 #include <low_power.h>
 #include <system_am335.h>
@@ -21,23 +22,104 @@ extern struct deep_sleep_data standby_data;
 extern struct deep_sleep_data ds0_data;
 extern struct deep_sleep_data ds1_data;
 extern struct deep_sleep_data ds2_data;
+extern struct deep_sleep_data idle_data;
 
-short valid_cmd_id[] = {
-	0x1,	/* RTC */
-	0x2, 	/* RTC_FAST */
-	0x3,	/* DS0 */
-	0x4,	/* DS0_V2 */
-	0x5,	/* DS1 */
-	0x6,	/* DS1_V2 */
-	0x7,	/* DS2 */
-	0x8,	/* DS2_V2 */
-	0x9,	/* Standalone app */
-	0xb,	/* Standby */
-	0xc,	/* Standby_v2 */
-	0xe,	/* Reset State Machine */
-	0xf,	/* Version */
-	0x10,	/* CPUIdle MPU Clock gating*/
+static void a8_version_handler(struct cmd_data *data, char use_default_value)
+{
+	m3_firmware_version();
+}
+
+static void a8_reset_handler(struct cmd_data *data, char use_default_value)
+{
+	init_m3_state_machine();
+}
+
+struct state_handler cmd_handlers[] = {
+	/* RTC */
+	[0x1] = {
+		.gp_data = &rtc_mode_data,
+		.handler = a8_lp_cmd1_handler,
+		.needs_trigger = 1,
+	},
+	/* RTC_FAST */
+	[0x2] = {
+		.gp_data = &rtc_mode_data,
+		.handler = a8_lp_cmd2_handler,
+		.needs_trigger = 1,
+	},
+	/* DS0 */
+	[0x3] = {
+		.gp_data = &ds0_data,
+		.handler = a8_lp_cmd3_handler,
+		.needs_trigger = 1,
+	},
+	/* DS0_V2 */
+	[0x4] = {
+		.gp_data = &ds0_data,
+		.handler = a8_lp_cmd3_handler,
+		.needs_trigger = 1,
+		.do_ddr = 1,
+	},
+	/* DS1 */
+	[0x5] = {
+		.gp_data = &ds1_data,
+		.handler = a8_lp_cmd5_handler,
+		.needs_trigger = 1,
+	},
+	/* DS1_V2 */
+	[0x6] = {
+		.gp_data = &ds1_data,
+		.handler = a8_lp_cmd5_handler,
+		.needs_trigger = 1,
+		.do_ddr = 1,
+	},
+	/* DS2 */
+	[0x7] = {
+		.gp_data = &ds2_data,
+		.handler = a8_lp_cmd7_handler,
+		.needs_trigger = 1,
+	},
+	/* DS2_V2 */
+	[0x8] = {
+		.gp_data = &ds2_data,
+		.handler = a8_lp_cmd7_handler,
+		.needs_trigger = 1,
+		.do_ddr = 1,
+	},
+	/* Standalone app */
+	[0x9] = {
+		.handler = a8_standalone_handler,
+		.needs_trigger = 1,
+	},
+	/* Standby */
+	[0xb] = {
+		.gp_data = &standby_data,
+		.handler = a8_standby_handler,
+		.needs_trigger = 1,
+	},
+	/* Standby */
+	[0xc] = {
+		.gp_data = &standby_data,
+		.handler = a8_standby_handler,
+		.needs_trigger = 1,
+		.do_ddr = 1,
+	},
+	/* Reset State Machine */
+	[0xe] = {
+		.handler = a8_reset_handler,
+	},
+	/* Version */
+	[0xf] = {
+		.handler = a8_version_handler,
+	},
+	/* Idle */
+	[0x10] = {
+		.gp_data = &idle_data,
+		.handler = a8_cpuidle_handler,
+		.fast_trigger = 1,
+	},
 };
+
 
 /* Clear out the IPC regs */
 void msg_init(void)
@@ -116,22 +198,17 @@ void msg_write(char reg)
  */
 int msg_cmd_is_valid(void)
 {
-	int cmd_cnt = 0;
-
 	msg_read(STAT_ID_REG);
 
 	/* Extract the CMD_ID field of 16 bits */
 	cmd_id = ipc_reg_r & 0xffff;
 
-	for(; cmd_cnt < sizeof(valid_cmd_id)/sizeof(short); cmd_cnt++) {
-		if(valid_cmd_id[cmd_cnt] == cmd_id)
-			return 1;
-	}
+	if (cmd_id >= ARRAY_SIZE(cmd_handlers) || cmd_id < 0)
+		return 0;
 
-	return 0;
+	return cmd_handlers[cmd_id].handler != NULL;
 }
 
-#define lp_data(a, b, c) (a ? (void *) b: (void *) c)
 /* Read all the IPC regs and pass it along to the appropriate handler */
 void msg_cmd_dispatcher(void)
 {
@@ -150,60 +227,19 @@ void msg_cmd_dispatcher(void)
 	cmd_global_data.i2c_sleep_offset = a8_m3_data_r.reg6 & 0xffff;
 	cmd_global_data.i2c_wake_offset = a8_m3_data_r.reg6 >> 16;
 
-	/* let's force DS1 for now */
-#if 0
-	cmd_global_data.cmd_id = 0x5;
-#endif
-
 	/* board specific data saved in global variables for now */
 	mem_type = (a8_m3_data_r.reg5 & MEM_TYPE_MASK) >> MEM_TYPE_SHIFT;
 	vtt_toggle = (a8_m3_data_r.reg5 & VTT_STAT_MASK) >> VTT_STAT_SHIFT;
 	vtt_gpio_pin = (a8_m3_data_r.reg5 & VTT_GPIO_PIN_MASK) >>
 				VTT_GPIO_PIN_SHIFT;
 
-	switch(cmd_id) {
-	case 0x1:
-		cmd_global_data.data = lp_data(use_default_val, &rtc_mode_data, &a8_m3_ds_data);
-		a8_lp_cmd1_handler(&cmd_global_data, use_default_val);	/* RTC */
-		break;
-	case 0x2:
-		cmd_global_data.data = lp_data(use_default_val, &rtc_mode_data, &a8_m3_ds_data);
-		a8_lp_cmd2_handler(&cmd_global_data, use_default_val);	/* RTC_fast */
-		break;
-	case 0x3:
-	case 0x4:
-		cmd_global_data.data = lp_data(use_default_val, &ds0_data, &a8_m3_ds_data);
-		a8_lp_cmd3_handler(&cmd_global_data, use_default_val);	/* DS0 */
-		break;
-	case 0x5:
-	case 0x6:
-		cmd_global_data.data = lp_data(use_default_val, &ds1_data, &a8_m3_ds_data);
-		a8_lp_cmd5_handler(&cmd_global_data, use_default_val);	/* DS1 */
-		break;
-	case 0x7:
-	case 0x8:
-		cmd_global_data.data = lp_data(use_default_val, &ds2_data, &a8_m3_ds_data);
-		a8_lp_cmd7_handler(&cmd_global_data, use_default_val);	/* DS2 */
-		break;
-	case 0x9:
+	if (use_default_val) {
+		if (cmd_handlers[cmd_id].gp_data)
+			cmd_global_data.data = cmd_handlers[cmd_id].gp_data;
+	} else
 		cmd_global_data.data = &a8_m3_ds_data;
-		a8_standalone_handler(&cmd_global_data);
-		break;
-	case 0xb:
-	case 0xc:
-		cmd_global_data.data = lp_data(use_default_val, &standby_data, &a8_m3_ds_data);
-		a8_standby_handler(&cmd_global_data, use_default_val);	/* Standby */
-		break;
-	case 0xe:
-		init_m3_state_machine();	/* Reset M3 state machine */
-		break;
-	case 0x10:
-		a8_cpuidle_handler(&cmd_global_data, use_default_val);	/* cpuidle MPU Clock gating */
-		break;
-	case 0xf:
-	default:
-		m3_firmware_version();
-	}
+
+	cmd_handlers[cmd_id].handler(&cmd_global_data, use_default_val);
 }
 
 void m3_firmware_version(void)
@@ -239,9 +275,10 @@ int msg_cmd_needs_trigger(void)
 {
 	msg_read(STAT_ID_REG);
 
-	/* Version and state machine reset commands do not need a trigger */
-	if ((cmd_id == 0xf || cmd_id == 0xe))
-		return 0;
-	else
-		return 1;
+	return cmd_handlers[cmd_id].needs_trigger;
+}
+
+int msg_cmd_fast_trigger(void)
+{
+	return cmd_handlers[cmd_global_data.cmd_id].fast_trigger;
 }

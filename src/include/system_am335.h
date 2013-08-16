@@ -49,6 +49,16 @@ int ipc_reg_w;
 short cmd_id;
 short cmd_stat;
 
+struct state_handler {
+	void *gp_data;
+	void (*handler)(struct cmd_data *data, char);
+	int needs_trigger;
+	int fast_trigger;
+	int do_ddr;
+};
+
+extern struct state_handler cmd_handlers[];
+
 /* Board specifics populated in IPC_REG4 */
 int mem_type;			/* Memory Type 2 = DDR2, 3 = DDR3 */
 int vtt_toggle; 		/* VTT Toggle  1 = required */
@@ -94,19 +104,21 @@ void msg_write_all(void);
 
 int msg_cmd_is_valid(void);
 int msg_cmd_needs_trigger(void);
+int msg_cmd_fast_trigger(void);
 void msg_cmd_dispatcher(void);
 void msg_cmd_stat_update(int);
 void msg_cmd_wakeup_reason_update(int);
 
 void a8_notify(int);
 void a8_m3_low_power_sync(int);
+void a8_m3_low_power_fast(int);
 
 void a8_lp_cmd1_handler(struct cmd_data *, char);
 void a8_lp_cmd2_handler(struct cmd_data *, char);
 void a8_lp_cmd3_handler(struct cmd_data *, char);
 void a8_lp_cmd5_handler(struct cmd_data *, char);
 void a8_lp_cmd7_handler(struct cmd_data *, char);
-void a8_standalone_handler(struct cmd_data *);
+void a8_standalone_handler(struct cmd_data *, char);
 void a8_standby_handler(struct cmd_data *, char);
 void a8_cpuidle_handler(struct cmd_data *, char);
 
