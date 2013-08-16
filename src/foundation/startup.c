@@ -22,8 +22,6 @@ extern unsigned int _end_bss;
 
 extern int main(void);
 
-#define DUMMY_ATTRIB __atrribute__ ((weak, alias ("dummy_handler")));
-
 void reset_handler(void);
 void nmi_handler(void) 		__attribute__ ((weak, alias("dummy_handler")));
 void hardfault_handler(void)	__attribute__ ((weak, alias("dummy_handler")));
