@@ -125,9 +125,6 @@ void msg_init(void)
 	a8_m3_data_r.reg6 = 0;
 	a8_m3_data_r.reg7 = 0;
 	a8_m3_data_r.reg8 = 0;
-
-	ipc_reg_r = 0;
-	ipc_reg_w = 0;
 }
 
 /* Read all the IPC registers in one-shot */
@@ -144,20 +141,20 @@ void msg_read_all(void)
 }
 
 /* Read one specific IPC register */
-void msg_read(char reg)
+unsigned int msg_read(char reg)
 {
-	ipc_reg_r = __raw_readl(IPC_MSG_REG1 + (0x4*reg));
-	__raw_writel(ipc_reg_r, (int)(&a8_m3_data_r) + (0x4*reg));
+	unsigned int ret = __raw_readl(IPC_MSG_REG1 + (0x4*reg));
+	__raw_writel(ret, (int)(&a8_m3_data_r) + (0x4*reg));
+	return ret;
 }
 
 /*
  * Write to one specific IPC register
- * Before calling this fn, make sure ipc_reg_w has the correct val
  * TODO: Should check for the reg no. as some are reserved?
  */
-void msg_write(char reg)
+void msg_write(unsigned int value, char reg)
 {
-	__raw_writel(ipc_reg_w, IPC_MSG_REG1 + (0x4*reg));
+	__raw_writel(value, IPC_MSG_REG1 + (0x4*reg));
 }
 
 /*
@@ -166,10 +163,8 @@ void msg_write(char reg)
  */
 int msg_cmd_is_valid(void)
 {
-	msg_read(STAT_ID_REG);
-
 	/* Extract the CMD_ID field of 16 bits */
-	cmd_id = (enum cmd_ids) ipc_reg_r & 0xffff;
+	cmd_id = (enum cmd_ids) (msg_read(STAT_ID_REG) & 0xffff);
 
 	if (cmd_id >= CMD_ID_COUNT || cmd_id <= CMD_ID_INVALID)
 		return 0;
@@ -214,26 +209,32 @@ void msg_cmd_dispatcher(void)
 
 void m3_firmware_version(void)
 {
-	msg_read(PARAM1_REG);
-	ipc_reg_r &= 0xffff0000;
-	ipc_reg_w = ipc_reg_r | CM3_VERSION;
-	msg_write(PARAM1_REG);
+	unsigned int value;
+
+	value = msg_read(PARAM1_REG);
+	value &= 0xffff0000;
+	value |= CM3_VERSION;
+	msg_write(value, PARAM1_REG);
 }
 
 void msg_cmd_stat_update(int cmd_stat_value)
 {
-	msg_read(STAT_ID_REG);
-	ipc_reg_r &= 0x0000ffff;
-	ipc_reg_w = ipc_reg_r | (cmd_stat_value << 16);
-	msg_write(STAT_ID_REG);
+	unsigned int value;
+
+	value = msg_read(STAT_ID_REG);
+	value &= 0x0000ffff;
+	value |= cmd_stat_value << 16;
+	msg_write(value, STAT_ID_REG);
 }
 
 void msg_cmd_wakeup_reason_update(int wakeup_source)
 {
-	msg_read(TRACE_REG);
-	ipc_reg_r &= 0xffffff00;
-	ipc_reg_w = ipc_reg_r | wakeup_source;
-	msg_write(TRACE_REG);
+	unsigned int value;
+
+	value = msg_read(TRACE_REG);
+	value &= 0xffffff00;
+	value |= wakeup_source;
+	msg_write(value, TRACE_REG);
 }
 
 /*
