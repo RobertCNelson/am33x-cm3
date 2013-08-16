@@ -154,7 +154,7 @@ void a8_lp_cmd3_handler(struct cmd_data *data, char use_default_val)
 	clkdm_sleep();
 
 	/* Disable MOSC if defaults are required or if user asked for it */
-	if (use_default_val || !(local_cmd->mosc_state)) {
+	if (local_cmd->mosc_state == MOSC_OFF) {
 		disable_master_oscillator();
 		/* Core LDO retention for PG 2.0 if PD_PER is in RET */
 		if (soc_id == AM335X_SOC_ID && soc_rev > AM335X_REV_ES1_0) {
@@ -192,7 +192,7 @@ void a8_lp_cmd5_handler(struct cmd_data *data, char use_default_val)
 	a8_i2c_sleep_handler(data->i2c_sleep_offset);
 
 	/* Disable MOSC if possible */
-	if (use_default_val || !(local_cmd->mosc_state))
+	if (local_cmd->mosc_state == MOSC_OFF)
 		disable_master_oscillator();
 
 	configure_wake_sources(local_cmd->wake_sources);
@@ -254,7 +254,7 @@ void a8_lp_cmd7_handler(struct cmd_data *data, char use_default_val)
 	a8_i2c_sleep_handler(data->i2c_sleep_offset);
 
 	/* Disable MOSC if possible */
-	if (use_default_val || !(local_cmd->mosc_state))
+	if (local_cmd->mosc_state == MOSC_OFF)
 		disable_master_oscillator();
 
 	configure_wake_sources(local_cmd->wake_sources);
