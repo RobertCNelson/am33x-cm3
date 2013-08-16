@@ -62,9 +62,7 @@ int pd_mpu_stctrl_next_val;
 int pd_mpu_stctrl_prev_val;
 int pd_per_stctrl_next_val;
 int pd_per_stctrl_prev_val;
-int pd_mpu_pwrstst_next_val;
 int pd_mpu_pwrstst_prev_val;
-int pd_per_pwrstst_next_val;
 int pd_per_pwrstst_prev_val;
 
 unsigned int soc_id;

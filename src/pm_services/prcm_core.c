@@ -184,8 +184,6 @@ void pm_init(void)
 
 	pd_mpu_stctrl_next_val 	= 0;
 	pd_per_stctrl_next_val 	= 0;
-	pd_mpu_pwrstst_next_val	= 0;
-	pd_per_pwrstst_next_val	= 0;
 	pd_mpu_stctrl_prev_val	= 0;
 	pd_per_stctrl_prev_val	= 0;
 	pd_mpu_pwrstst_prev_val	= 0;
