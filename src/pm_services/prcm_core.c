@@ -621,7 +621,7 @@ int mpu_powerst_change(int val, int var)
 	return var;
 }
 
-static int _next_pd_per_stctrl_val(state)
+static int _next_pd_per_stctrl_val(int state)
 {
 	int v = 0;
 
@@ -652,7 +652,7 @@ int get_pd_per_stctrl_val(int state)
 	return _next_pd_per_stctrl_val(state);
 }
 
-static int _next_pd_mpu_stctrl_val(state)
+static int _next_pd_mpu_stctrl_val(int state)
 {
 	int v = 0;
 
