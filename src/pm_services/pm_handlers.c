@@ -111,8 +111,8 @@ void a8_lp_cmd3_handler(struct cmd_data *data, char use_default_val)
 	else
 		configure_deepsleep_count(DS_COUNT_DEFAULT);
 
-	per_st = get_pd_per_stctrl_val(0);
-	mpu_st = get_pd_mpu_stctrl_val(0);
+	per_st = get_pd_per_stctrl_val(local_cmd);
+	mpu_st = get_pd_mpu_stctrl_val(local_cmd);
 
 	/* VDD MPU lowering does not make sense here so ignore that field */
 
@@ -203,8 +203,8 @@ void a8_lp_cmd5_handler(struct cmd_data *data, char use_default_val)
 	else
 		configure_deepsleep_count(DS_COUNT_DEFAULT);
 
-	per_st = get_pd_per_stctrl_val(1);
-	mpu_st = get_pd_mpu_stctrl_val(1);
+	per_st = get_pd_per_stctrl_val(local_cmd);
+	mpu_st = get_pd_mpu_stctrl_val(local_cmd);
 
 	if (!use_default_val) {
 		mpu_st = mpu_powerst_change
@@ -271,8 +271,8 @@ void a8_lp_cmd7_handler(struct cmd_data *data, char use_default_val)
 	else
 		configure_deepsleep_count(DS_COUNT_DEFAULT);
 
-	per_st = get_pd_per_stctrl_val(2);
-	mpu_st = get_pd_mpu_stctrl_val(2);
+	per_st = get_pd_per_stctrl_val(local_cmd);
+	mpu_st = get_pd_mpu_stctrl_val(local_cmd);
 
 	if (!use_default_val) {
 		mpu_st = mpu_powerst_change

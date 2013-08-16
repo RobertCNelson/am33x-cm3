@@ -628,27 +628,9 @@ int mpu_powerst_change(int val, int var)
 	return var;
 }
 
-static int _next_pd_per_stctrl_val(int state)
+static int _next_pd_per_stctrl_val(struct deep_sleep_data *data)
 {
 	int v = 0;
-	struct deep_sleep_data *data;
-
-	switch (state) {
-	case 0:
-		data = &ds0_data;
-		break;
-	case 1:
-		data = &ds1_data;
-		break;
-	case 2:
-		data = &ds2_data;
-		break;
-	case 3:
-		data = &standby_data;
-		break;
-	default:
-		return 0;
-	}
 
 	v = per_powerst_change(data->pd_per_state, v);
 	v = icss_mem_ret_state_change(data->pd_per_icss_mem_ret_state, v);
@@ -658,40 +640,14 @@ static int _next_pd_per_stctrl_val(int state)
 	return v;
 }
 
-int get_pd_per_stctrl_val(int state)
+int get_pd_per_stctrl_val(struct deep_sleep_data *data)
 {
-	return _next_pd_per_stctrl_val(state);
+	return _next_pd_per_stctrl_val(data);
 }
 
-static int _next_pd_mpu_stctrl_val(int state)
+static int _next_pd_mpu_stctrl_val(struct deep_sleep_data *data)
 {
 	int v = 0;
-	struct deep_sleep_data *data;
-
-	switch (state) {
-	case 0:
-		if (soc_type == SOC_TYPE_GP)
-			data = &ds0_data;
-		else
-			/* Treat all non-GP devices the same */
-			data = &ds0_data_hs;
-		break;
-	case 1:
-		if (soc_type == SOC_TYPE_GP)
-			data = &ds1_data;
-		else
-			/* Treat all non-GP devices the same */
-			data = &ds1_data_hs;
-		break;
-	case 2:
-		data = &ds2_data;
-		break;
-	case 3:
-		data = &standby_data;
-		break;
-	default:
-		return 0;
-	}
 
 	v = mpu_powerst_change(data->pd_mpu_state, v);
 	v = mpu_ram_ret_state_change(data->pd_mpu_ram_ret_state, v);
@@ -701,9 +657,9 @@ static int _next_pd_mpu_stctrl_val(int state)
 	return v;
 }
 
-int get_pd_mpu_stctrl_val(int state)
+int get_pd_mpu_stctrl_val(struct deep_sleep_data *data)
 {
-	return _next_pd_mpu_stctrl_val(state);
+	return _next_pd_mpu_stctrl_val(data);
 }
 
 /* DeepSleep related */

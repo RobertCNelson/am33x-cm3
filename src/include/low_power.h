@@ -135,8 +135,8 @@ int ocmc_mem_ret_state_change(int, int);
 int per_powerst_change(int, int);
 int mpu_powerst_change(int, int);
 
-int get_pd_per_stctrl_val(int);
-int get_pd_mpu_stctrl_val(int);
+int get_pd_per_stctrl_val(struct deep_sleep_data *data);
+int get_pd_mpu_stctrl_val(struct deep_sleep_data *data);
 
 int verify_pd_transitions(void);
 
