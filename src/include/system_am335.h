@@ -120,7 +120,6 @@ void msg_init(void);
 void msg_read(char);
 void msg_read_all(void);
 void msg_write(char);
-void msg_write_all(void);
 
 int msg_cmd_is_valid(void);
 int msg_cmd_needs_trigger(void);

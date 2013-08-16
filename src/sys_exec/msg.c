@@ -159,20 +159,6 @@ void msg_read(char reg)
 	__raw_writel(ipc_reg_r, (int)(&a8_m3_data_r) + (0x4*reg));
 }
 
-/* Write all the IPC registers in one-shot */
-void msg_write_all(void)
-{
-	__raw_writel(a8_m3_data_w.reg1, IPC_MSG_REG1);
-	__raw_writel(a8_m3_data_w.reg2, IPC_MSG_REG2);
-	__raw_writel(a8_m3_data_w.reg3, IPC_MSG_REG3);
-	__raw_writel(a8_m3_data_w.reg4, IPC_MSG_REG4);
-	__raw_writel(a8_m3_data_w.reg5, IPC_MSG_REG5);
-	__raw_writel(a8_m3_data_w.reg6, IPC_MSG_REG6);
-	__raw_writel(a8_m3_data_w.reg7, IPC_MSG_REG7);
-	/* TODO: Has to the removed since this is reserved */
-	__raw_writel(a8_m3_data_w.reg8, IPC_MSG_REG8);
-}
-
 /*
  * Write to one specific IPC register
  * Before calling this fn, make sure ipc_reg_w has the correct val
