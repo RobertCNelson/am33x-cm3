@@ -106,7 +106,7 @@ void a8_lp_cmd3_handler(struct cmd_data *data, char use_default_val)
 	configure_wake_sources(local_cmd->wake_sources);
 
 	/* TODO: Check for valid range */
-	if (!(use_default_val) && (local_cmd->deepsleep_count))
+	if (local_cmd->deepsleep_count)
 		configure_deepsleep_count(local_cmd->deepsleep_count);
 	else
 		configure_deepsleep_count(DS_COUNT_DEFAULT);
@@ -198,7 +198,7 @@ void a8_lp_cmd5_handler(struct cmd_data *data, char use_default_val)
 	configure_wake_sources(local_cmd->wake_sources);
 
 	/* TODO: Check for valid range */
-	if (!(use_default_val) && (local_cmd->deepsleep_count))
+	if (local_cmd->deepsleep_count)
 		configure_deepsleep_count(local_cmd->deepsleep_count);
 	else
 		configure_deepsleep_count(DS_COUNT_DEFAULT);
@@ -260,7 +260,7 @@ void a8_lp_cmd7_handler(struct cmd_data *data, char use_default_val)
 	configure_wake_sources(local_cmd->wake_sources);
 
 	/* TODO: Check for valid range */
-	if (!(use_default_val) && (local_cmd->deepsleep_count))
+	if (local_cmd->deepsleep_count)
 		configure_deepsleep_count(local_cmd->deepsleep_count);
 	else
 		configure_deepsleep_count(DS_COUNT_DEFAULT);
@@ -304,7 +304,7 @@ void a8_standby_handler(struct cmd_data *data, char use_default_val)
 	configure_wake_sources(local_cmd->wake_sources);
 
 	/* TODO: Check for valid range */
-	if (!(use_default_val) && (local_cmd->deepsleep_count))
+	if (local_cmd->deepsleep_count)
 		configure_deepsleep_count(local_cmd->deepsleep_count);
 	else
 		configure_deepsleep_count(DS_COUNT_DEFAULT);
