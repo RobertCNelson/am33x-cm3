@@ -541,18 +541,22 @@ int pd_state_change(int val, int pd)
 	if (pd == PD_MPU) {
 		pd_mpu_stctrl_next_val	= val;
 		if (soc_id == AM335X_SOC_ID) {
+			pd_mpu_stctrl_prev_val = __raw_readl(AM335X_PM_MPU_PWRSTCTRL);
 			pd_mpu_pwrstst_prev_val = __raw_readl(AM335X_PM_MPU_PWRSTST);
 			__raw_writel(val, AM335X_PM_MPU_PWRSTCTRL);
 		} else if (soc_id == AM43XX_SOC_ID) {
+			pd_mpu_stctrl_prev_val = __raw_readl(AM43XX_PM_MPU_PWRSTCTRL);
 			pd_mpu_pwrstst_prev_val = __raw_readl(AM43XX_PM_MPU_PWRSTST);
 			__raw_writel(val, AM43XX_PM_MPU_PWRSTCTRL);
 		}
 	} else if (pd == PD_PER) {
 		pd_per_stctrl_next_val = val;
 		if (soc_id == AM335X_SOC_ID) {
+			pd_per_stctrl_prev_val = __raw_readl(AM335X_PM_PER_PWRSTCTRL);
 			pd_per_pwrstst_prev_val = __raw_readl(AM335X_PM_PER_PWRSTST);
 			__raw_writel(val, AM335X_PM_PER_PWRSTCTRL);
 		} else if (soc_id == AM43XX_SOC_ID) {
+			pd_per_stctrl_prev_val = __raw_readl(AM43XX_PM_PER_PWRSTCTRL);
 			pd_per_pwrstst_prev_val = __raw_readl(AM43XX_PM_PER_PWRSTST);
 			__raw_writel(val, AM43XX_PM_PER_PWRSTCTRL);
 		}
@@ -661,12 +665,6 @@ static int _next_pd_per_stctrl_val(int state)
 
 int get_pd_per_stctrl_val(int state)
 {
-	/* Backup the current value for restoration */
-	if (soc_id == AM335X_SOC_ID)
-		pd_per_stctrl_prev_val = __raw_readl(AM335X_PM_PER_PWRSTCTRL);
-	else if (soc_id == AM43XX_SOC_ID)
-		pd_per_stctrl_prev_val = __raw_readl(AM43XX_PM_PER_PWRSTCTRL);
-
 	return _next_pd_per_stctrl_val(state);
 }
 
@@ -710,12 +708,6 @@ static int _next_pd_mpu_stctrl_val(int state)
 
 int get_pd_mpu_stctrl_val(int state)
 {
-	/* Backup the current value for restoration */
-	if (soc_id == AM335X_SOC_ID)
-		pd_mpu_stctrl_prev_val = __raw_readl(AM335X_PM_MPU_PWRSTCTRL);
-	else if (soc_id == AM43XX_SOC_ID)
-		pd_per_stctrl_prev_val = __raw_readl(AM43XX_PM_MPU_PWRSTCTRL);
-
 	return _next_pd_mpu_stctrl_val(state);
 }
 
