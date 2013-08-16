@@ -217,6 +217,12 @@ void a8_lp_cmd5_handler(struct cmd_data *data, char use_default_val)
 				(local_cmd->pd_mpu_l2_ret_state, mpu_st);
 		per_st = per_powerst_change
 				(local_cmd->pd_per_state, per_st);
+		per_st = icss_mem_ret_state_change
+				(local_cmd->pd_per_icss_mem_ret_state, per_st);
+		per_st = per_mem_ret_state_change
+				(local_cmd->pd_per_mem_ret_state, per_st);
+		per_st = ocmc_mem_ret_state_change
+				(local_cmd->pd_per_ocmc_ret_state, per_st);
 	}
 
 	/* MPU power domain state change */
