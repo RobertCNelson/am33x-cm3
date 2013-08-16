@@ -191,20 +191,15 @@ void extint53_handler(void)
 	 */
 	if (!msg_cmd_is_valid()) {
 		msg_cmd_stat_update(CMD_STAT_FAIL);
-		nvic_enable_irq(53);
-		return;
-	}
 
-	/* cmd was valid */
-	if (msg_cmd_needs_trigger()) {
+	} else if (msg_cmd_needs_trigger()) {
+		/* cmd was valid */
 		a8_m3_low_power_sync(CMD_STAT_WAIT4OK);
-		nvic_enable_irq(53);
-		return;
+
 	} else {
 		/* For Rev and S/M reset */
 		msg_cmd_dispatcher();
-		/* XXX: Analysis of why this is needed is TBD */
-		nvic_enable_irq(53);
-		return;
 	}
+
+	nvic_enable_irq(53);
 }
