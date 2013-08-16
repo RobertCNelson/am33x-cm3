@@ -244,8 +244,6 @@ void msg_cmd_wakeup_reason_update(int wakeup_source)
  */
 int msg_cmd_needs_trigger(void)
 {
-	msg_read(STAT_ID_REG);
-
 	return cmd_handlers[cmd_id].needs_trigger;
 }
 
