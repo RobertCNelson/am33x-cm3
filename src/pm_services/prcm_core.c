@@ -831,14 +831,18 @@ void clear_wake_sources(void)
 	/* TODO: Clear all the pending interrupts */
 }
 
-void pd_state_restore(void)
+void pd_state_restore(int pd)
 {
-	if (soc_id == AM335X_SOC_ID) {
-		__raw_writel(pd_per_stctrl_prev_val, AM335X_PM_PER_PWRSTCTRL);
-		__raw_writel(pd_mpu_stctrl_prev_val, AM335X_PM_MPU_PWRSTCTRL);
-	} else if (soc_id == AM43XX_SOC_ID) {
-		__raw_writel(pd_per_stctrl_prev_val, AM43XX_PM_PER_PWRSTCTRL);
-		__raw_writel(pd_mpu_stctrl_prev_val, AM43XX_PM_MPU_PWRSTCTRL);
+	if (pd == PD_MPU) {
+		if (soc_id == AM335X_SOC_ID)
+			__raw_writel(pd_mpu_stctrl_prev_val, AM335X_PM_MPU_PWRSTCTRL);
+		else if (soc_id == AM43XX_SOC_ID)
+			__raw_writel(pd_mpu_stctrl_prev_val, AM43XX_PM_MPU_PWRSTCTRL);
+	} else if (pd == PD_PER) {
+		if (soc_id == AM335X_SOC_ID)
+			__raw_writel(pd_per_stctrl_prev_val, AM335X_PM_PER_PWRSTCTRL);
+		else if (soc_id == AM43XX_SOC_ID)
+			__raw_writel(pd_per_stctrl_prev_val, AM43XX_PM_PER_PWRSTCTRL);
 	}
 }
 

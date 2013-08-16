@@ -476,7 +476,8 @@ void a8_wake_cmd3_handler(void)
 
 	result = verify_pd_transitions();
 
-	pd_state_restore();
+	pd_state_restore(PD_PER);
+	pd_state_restore(PD_MPU);
 
 	wkup_clkdm_wake();
 
@@ -507,7 +508,8 @@ void a8_wake_cmd5_handler(void)
 
 	result = verify_pd_transitions();
 
-	pd_state_restore();
+	pd_state_restore(PD_PER);
+	pd_state_restore(PD_MPU);
 
 	wkup_clkdm_wake();
 
@@ -534,7 +536,8 @@ void a8_wake_cmd7_handler(void)
 
 	result = verify_pd_transitions();
 
-	pd_state_restore();
+	pd_state_restore(PD_PER);
+	pd_state_restore(PD_MPU);
 
 	wkup_clkdm_wake();
 
@@ -559,7 +562,8 @@ void a8_wake_cmdb_handler(void)
 
 	result = verify_pd_transitions();
 
-	pd_state_restore();
+	pd_state_restore(PD_PER);
+	pd_state_restore(PD_MPU);
 
 	essential_modules_enable();
 

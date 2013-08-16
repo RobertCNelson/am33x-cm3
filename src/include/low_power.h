@@ -123,7 +123,7 @@ void mpu_clkdm_wake(void);
 void wkup_clkdm_sleep(void);
 void wkup_clkdm_wake(void);
 int pd_state_change(int, int);
-void pd_state_restore(void);
+void pd_state_restore(int);
 
 int mpu_ram_ret_state_change(int, int);
 int mpu_l1_ret_state_change(int, int);
