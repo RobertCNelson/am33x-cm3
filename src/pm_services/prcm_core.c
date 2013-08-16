@@ -624,19 +624,29 @@ int mpu_powerst_change(int val, int var)
 static int _next_pd_per_stctrl_val(int state)
 {
 	int v = 0;
+	struct deep_sleep_data *data;
 
-	if (state == 0) {
-		v = per_powerst_change(ds0_data.pd_per_state, v);
-		v = icss_mem_ret_state_change(ds0_data.pd_per_icss_mem_ret_state, v);
-		v = per_mem_ret_state_change(ds0_data.pd_per_mem_ret_state, v);
-		v = ocmc_mem_ret_state_change(ds0_data.pd_per_ocmc_ret_state, v);
-	} else if (state == 1) {
-		v = per_powerst_change(ds1_data.pd_per_state, v);
-	} else if (state == 2) {
-		v = per_powerst_change(ds2_data.pd_per_state, v);
-	} else if (state == 3) {
-		v = per_powerst_change(standby_data.pd_per_state, v);
+	switch (state) {
+	case 0:
+		data = &ds0_data;
+		break;
+	case 1:
+		data = &ds1_data;
+		break;
+	case 2:
+		data = &ds2_data;
+		break;
+	case 3:
+		data = &standby_data;
+		break;
+	default:
+		return 0;
 	}
+
+	v = per_powerst_change(data->pd_per_state, v);
+	v = icss_mem_ret_state_change(data->pd_per_icss_mem_ret_state, v);
+	v = per_mem_ret_state_change(data->pd_per_mem_ret_state, v);
+	v = ocmc_mem_ret_state_change(data->pd_per_ocmc_ret_state, v);
 
 	return v;
 }
@@ -655,41 +665,38 @@ int get_pd_per_stctrl_val(int state)
 static int _next_pd_mpu_stctrl_val(int state)
 {
 	int v = 0;
+	struct deep_sleep_data *data;
 
-	if (state == 0) {
-		if (soc_type == SOC_TYPE_GP) {
-			v = mpu_powerst_change(ds0_data.pd_mpu_state, v);
-			v = mpu_ram_ret_state_change(ds0_data.pd_mpu_ram_ret_state, v);
-			v = mpu_l1_ret_state_change(ds0_data.pd_mpu_l1_ret_state, v);
-			v = mpu_l2_ret_state_change(ds0_data.pd_mpu_l2_ret_state, v);
-		} else {
+	switch (state) {
+	case 0:
+		if (soc_type == SOC_TYPE_GP)
+			data = &ds0_data;
+		else
 			/* Treat all non-GP devices the same */
-			v = mpu_powerst_change(ds0_data_hs.pd_mpu_state, v);
-			v = mpu_ram_ret_state_change(ds0_data_hs.pd_mpu_ram_ret_state, v);
-			v = mpu_l1_ret_state_change(ds0_data_hs.pd_mpu_l1_ret_state, v);
-			v = mpu_l2_ret_state_change(ds0_data_hs.pd_mpu_l2_ret_state, v);
-		}
-	} else if (state == 1) {
-		if (soc_type == SOC_TYPE_GP) {
-			v = mpu_powerst_change(ds1_data.pd_mpu_state, v);
-			v = mpu_ram_ret_state_change(ds1_data.pd_mpu_ram_ret_state, v);
-			v = mpu_l1_ret_state_change(ds1_data.pd_mpu_l1_ret_state, v);
-			v = mpu_l2_ret_state_change(ds1_data.pd_mpu_l2_ret_state, v);
-		} else {
+			data = &ds0_data_hs;
+		break;
+	case 1:
+		if (soc_type == SOC_TYPE_GP)
+			data = &ds1_data;
+		else
 			/* Treat all non-GP devices the same */
-			v = mpu_powerst_change(ds1_data_hs.pd_mpu_state, v);
-			v = mpu_ram_ret_state_change(ds1_data_hs.pd_mpu_ram_ret_state, v);
-			v = mpu_l1_ret_state_change(ds1_data_hs.pd_mpu_l1_ret_state, v);
-			v = mpu_l2_ret_state_change(ds1_data_hs.pd_mpu_l2_ret_state, v);
-		}
-	} else if (state == 2) {
-		v = mpu_powerst_change(ds2_data.pd_mpu_state, v);
-	} else if (state == 3) {
-		v = mpu_powerst_change(standby_data.pd_mpu_state, v);
-		v = mpu_ram_ret_state_change(standby_data.pd_mpu_ram_ret_state, v);
-		v = mpu_l1_ret_state_change(standby_data.pd_mpu_l1_ret_state, v);
-		v = mpu_l2_ret_state_change(standby_data.pd_mpu_l2_ret_state, v);
+			data = &ds1_data_hs;
+		break;
+	case 2:
+		data = &ds2_data;
+		break;
+	case 3:
+		data = &standby_data;
+		break;
+	default:
+		return 0;
 	}
+
+	v = mpu_powerst_change(data->pd_mpu_state, v);
+	v = mpu_ram_ret_state_change(data->pd_mpu_ram_ret_state, v);
+	v = mpu_l1_ret_state_change(data->pd_mpu_l1_ret_state, v);
+	v = mpu_l2_ret_state_change(data->pd_mpu_l2_ret_state, v);
+
 	return v;
 }
 
