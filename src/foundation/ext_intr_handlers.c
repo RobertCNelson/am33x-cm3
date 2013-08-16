@@ -32,6 +32,8 @@ void extint31_handler(void)
 {
 	nvic_disable_irq(AM335X_IRQ_MBINT0);
 
+	msg_cmd_read_id();
+
 	if (!msg_cmd_is_valid()) {
 		/*
 		 * If command is not valid, need to update the status to FAIL
@@ -186,6 +188,8 @@ void extint52_handler(void)
 void extint53_handler(void)
 {
 	nvic_disable_irq(53);
+
+	msg_cmd_read_id();
 
 	/*
 	 * If command is not valid, need to update the status to FAIL

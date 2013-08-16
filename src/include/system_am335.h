@@ -117,6 +117,7 @@ unsigned int msg_read(char);
 void msg_read_all(void);
 void msg_write(unsigned int, char);
 
+void msg_cmd_read_id(void);
 int msg_cmd_is_valid(void);
 int msg_cmd_needs_trigger(void);
 int msg_cmd_fast_trigger(void);

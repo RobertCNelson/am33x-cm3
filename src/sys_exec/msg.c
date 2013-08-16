@@ -157,15 +157,18 @@ void msg_write(unsigned int value, char reg)
 	__raw_writel(value, IPC_MSG_REG1 + (0x4*reg));
 }
 
+void msg_cmd_read_id(void)
+{
+	/* Extract the CMD_ID field of 16 bits */
+	cmd_id = (enum cmd_ids) (msg_read(STAT_ID_REG) & 0xffff);
+}
+
 /*
  * Check if the cmd_id is valid or not
  * return 1 on success, 0 on failure
  */
 int msg_cmd_is_valid(void)
 {
-	/* Extract the CMD_ID field of 16 bits */
-	cmd_id = (enum cmd_ids) (msg_read(STAT_ID_REG) & 0xffff);
-
 	if (cmd_id >= CMD_ID_COUNT || cmd_id <= CMD_ID_INVALID)
 		return 0;
 
