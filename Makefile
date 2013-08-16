@@ -13,7 +13,10 @@ SRCDIR = src
 BINDIR = bin
 
 INCLUDES = $(SRCDIR)/include
-CFLAGS =-mcpu=cortex-m3 -mthumb -nostdlib -Wall -g -I$(INCLUDES) -O2
+CFLAGS =-mcpu=cortex-m3 -mthumb -nostdlib -Wall -Wundef \
+	-Werror-implicit-function-declaration -Wstrict-prototypes \
+	-Wdeclaration-after-statement -fno-delete-null-pointer-checks \
+	-Wempty-body -fno-strict-overflow  -g -I$(INCLUDES) -O2
 LDFLAGS =-nostartfiles -fno-exceptions -Tfirmware.ld
 
 EXECUTABLE=am335x-pm-firmware.elf
