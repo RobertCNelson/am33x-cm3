@@ -26,12 +26,12 @@ extern struct deep_sleep_data ds1_data_hs;
 extern struct deep_sleep_data ds2_data;
 extern struct deep_sleep_data idle_data;
 
-static void a8_version_handler(struct cmd_data *data, char use_default_value)
+static void a8_version_handler(struct cmd_data *data)
 {
 	m3_firmware_version();
 }
 
-static void a8_reset_handler(struct cmd_data *data, char use_default_value)
+static void a8_reset_handler(struct cmd_data *data)
 {
 	init_m3_state_machine();
 }
@@ -247,7 +247,7 @@ void msg_cmd_dispatcher(void)
 	} else
 		cmd_global_data.data = &a8_m3_ds_data;
 
-	cmd_handlers[cmd_id].handler(&cmd_global_data, use_default_val);
+	cmd_handlers[cmd_id].handler(&cmd_global_data);
 }
 
 void m3_firmware_version(void)
