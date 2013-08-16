@@ -628,7 +628,7 @@ int mpu_powerst_change(int val, int var)
 	return var;
 }
 
-static int _next_pd_per_stctrl_val(struct deep_sleep_data *data)
+int get_pd_per_stctrl_val(struct deep_sleep_data *data)
 {
 	int v = 0;
 
@@ -640,12 +640,7 @@ static int _next_pd_per_stctrl_val(struct deep_sleep_data *data)
 	return v;
 }
 
-int get_pd_per_stctrl_val(struct deep_sleep_data *data)
-{
-	return _next_pd_per_stctrl_val(data);
-}
-
-static int _next_pd_mpu_stctrl_val(struct deep_sleep_data *data)
+int get_pd_mpu_stctrl_val(struct deep_sleep_data *data)
 {
 	int v = 0;
 
@@ -655,11 +650,6 @@ static int _next_pd_mpu_stctrl_val(struct deep_sleep_data *data)
 	v = mpu_l2_ret_state_change(data->pd_mpu_l2_ret_state, v);
 
 	return v;
-}
-
-int get_pd_mpu_stctrl_val(struct deep_sleep_data *data)
-{
-	return _next_pd_mpu_stctrl_val(data);
 }
 
 /* DeepSleep related */
