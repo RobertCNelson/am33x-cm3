@@ -126,15 +126,6 @@ void msg_init(void)
 	a8_m3_data_r.reg7 = 0;
 	a8_m3_data_r.reg8 = 0;
 
-	a8_m3_data_w.reg1 = 0;
-	a8_m3_data_w.reg2 = 0;
-	a8_m3_data_w.reg3 = 0;
-	a8_m3_data_w.reg4 = 0;
-	a8_m3_data_w.reg5 = 0;
-	a8_m3_data_w.reg6 = 0;
-	a8_m3_data_w.reg7 = 0;
-	a8_m3_data_w.reg8 = 0;
-
 	ipc_reg_r = 0;
 	ipc_reg_w = 0;
 }
@@ -167,7 +158,6 @@ void msg_read(char reg)
 void msg_write(char reg)
 {
 	__raw_writel(ipc_reg_w, IPC_MSG_REG1 + (0x4*reg));
-	__raw_writel(ipc_reg_w, (int)(&a8_m3_data_w) + (0x4*reg));
 }
 
 /*
