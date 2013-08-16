@@ -312,7 +312,6 @@ void a8_standby_handler(struct cmd_data *data, char use_default_val)
 	struct deep_sleep_data *local_cmd =
 		(struct deep_sleep_data *)data->data;
 	int mpu_st = 0;
-	int per_st = 0;
 
 	if (cmd_handlers[cmd_global_data.cmd_id].do_ddr)
 		ds_save();
@@ -327,14 +326,6 @@ void a8_standby_handler(struct cmd_data *data, char use_default_val)
 	else
 		configure_deepsleep_count(DS_COUNT_DEFAULT);
 
-	/* TODO: In standby ,the only variation that makes sense
-	 * is MPU ON/OFF. So all the code for PER domain manipulation
-	 * can effectively be dropped.
-	 * However, with a call to get_pd_per_stctrl_val, the PER state
-	 * does not get saved and a random value gets restored instead.
-	 * Retaining PER domain state manipulations for now.
-	 */
-	per_st = get_pd_per_stctrl_val(local_cmd);
 	mpu_st = get_pd_mpu_stctrl_val(local_cmd);
 
 	if (!use_default_val) {
@@ -350,9 +341,6 @@ void a8_standby_handler(struct cmd_data *data, char use_default_val)
 
 	/* MPU power domain state change */
 	pd_state_change(mpu_st, PD_MPU);
-
-	/* PER power domain state change */
-	pd_state_change(per_st, PD_PER);
 
 	mpu_clkdm_sleep();
 }
@@ -562,7 +550,6 @@ void a8_wake_cmdb_handler(void)
 
 	result = verify_pd_transitions();
 
-	pd_state_restore(PD_PER);
 	pd_state_restore(PD_MPU);
 
 	essential_modules_enable();

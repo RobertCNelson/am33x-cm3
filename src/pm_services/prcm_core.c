@@ -133,11 +133,6 @@ struct deep_sleep_data standby_data =  {
 	.pd_mpu_l1_ret_state		= MEM_BANK_RET_ST_OFF,
 	.pd_mpu_l2_ret_state		= MEM_BANK_RET_ST_OFF,
 
-	.pd_per_state			= PD_ON,
-	.pd_per_icss_mem_ret_state	= 0,
-	.pd_per_mem_ret_state		= 0,
-	.pd_per_ocmc_ret_state		= 0,
-
 	.wake_sources			= WAKE_ALL | MPU_WAKE,
 	.reserved			= 0
 };
