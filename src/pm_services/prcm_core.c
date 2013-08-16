@@ -12,6 +12,7 @@
 
 #include <stdint.h>
 
+#include <stddef.h>
 #include <cm3.h>
 #include <device_am335x.h>
 #include <low_power.h>
@@ -180,7 +181,7 @@ void pm_init(void)
 	cmd_stat 		= 0;
 
 	cmd_global_data.cmd_id 	= 0;
-	cmd_global_data.data 	= 0;
+	cmd_global_data.data 	= NULL;
 
 	pd_mpu_stctrl_next_val 	= 0;
 	pd_per_stctrl_next_val 	= 0;
