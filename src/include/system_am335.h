@@ -16,17 +16,6 @@
 #include <stdint.h>
 #include <low_power.h>
 
-struct ipc_data {
-	int reg1;
-	int reg2;
-	int reg3;
-	int reg4;
-	int reg5;
-	int reg6;
-	int reg7;
-	int reg8;
-};
-
 enum cmd_ids {
 	CMD_ID_INVALID		= 0x0,
 	CMD_ID_RTC		= 0x1,
@@ -54,7 +43,6 @@ struct cmd_data {
 };
 
 struct cmd_data cmd_global_data;
-struct ipc_data a8_m3_data_r;
 
 struct state_handler {
 	union state_data *gp_data;
@@ -104,9 +92,7 @@ void pm_init(void);
 void system_init(void);
 void system_core_clock_update(void);
 
-void msg_init(void);
 unsigned int msg_read(char);
-void msg_read_all(void);
 void msg_write(unsigned int, char);
 
 void msg_cmd_read_id(void);

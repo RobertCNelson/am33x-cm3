@@ -54,8 +54,6 @@ void init_m3_state_machine(void)
 		nvic_clear_irq(i);
 	}
 
-	msg_init();
-
 	trace_init();
 
 	pm_init();

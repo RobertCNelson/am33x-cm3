@@ -114,40 +114,10 @@ struct state_handler cmd_handlers[] = {
 	},
 };
 
-
-/* Clear out the IPC regs */
-void msg_init(void)
-{
-	/* TODO: Global data related to msg also? */
-	a8_m3_data_r.reg1 = 0;
-	a8_m3_data_r.reg2 = 0;
-	a8_m3_data_r.reg3 = 0;
-	a8_m3_data_r.reg4 = 0;
-	a8_m3_data_r.reg5 = 0;
-	a8_m3_data_r.reg6 = 0;
-	a8_m3_data_r.reg7 = 0;
-	a8_m3_data_r.reg8 = 0;
-}
-
-/* Read all the IPC registers in one-shot */
-void msg_read_all(void)
-{
-	a8_m3_data_r.reg1 = __raw_readl(IPC_MSG_REG1);
-	a8_m3_data_r.reg2 = __raw_readl(IPC_MSG_REG2);
-	a8_m3_data_r.reg3 = __raw_readl(IPC_MSG_REG3);
-	a8_m3_data_r.reg4 = __raw_readl(IPC_MSG_REG4);
-	a8_m3_data_r.reg5 = __raw_readl(IPC_MSG_REG5);
-	a8_m3_data_r.reg6 = __raw_readl(IPC_MSG_REG6);
-	a8_m3_data_r.reg7 = __raw_readl(IPC_MSG_REG7);
-	a8_m3_data_r.reg8 = __raw_readl(IPC_MSG_REG8);
-}
-
 /* Read one specific IPC register */
 unsigned int msg_read(char reg)
 {
-	unsigned int ret = __raw_readl(IPC_MSG_REG1 + (0x4*reg));
-	__raw_writel(ret, (int)(&a8_m3_data_r) + (0x4*reg));
-	return ret;
+	return __raw_readl(IPC_MSG_REG1 + (0x4*reg));
 }
 
 /*

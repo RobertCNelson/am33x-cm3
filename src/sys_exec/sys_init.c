@@ -34,8 +34,6 @@ int am335_init(void)
 	for (i=0; i<AM335X_NUM_EXT_INTERRUPTS; i++)
 		nvic_disable_irq(i);
 
-	msg_init();
-
 	trace_init();
 
 	pm_init();

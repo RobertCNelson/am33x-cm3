@@ -351,8 +351,6 @@ void generic_wake_handler(int wakeup_reason)
 		nvic_clear_irq(i);
 	}
 
-	msg_init();
-
 	trace_init();
 
 	pm_init();
