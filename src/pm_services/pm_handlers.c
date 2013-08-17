@@ -299,32 +299,11 @@ void generic_wake_handler(int wakeup_reason)
 	/*
 	 * Assuming that cmd_id is a valid reflection of what we did
 	 */
-	switch (cmd_global_data.cmd_id) {
-	case CMD_ID_RTC:
-		a8_wake_rtc_handler();
-		break;
-	case CMD_ID_RTC_FAST:
-		a8_wake_rtc_fast_handler();
-		break;
-	case CMD_ID_DS0:
-		a8_wake_ds0_handler();
-		break;
-	case CMD_ID_DS1:
-		a8_wake_ds1_handler();
-		break;
-	case CMD_ID_DS2:
-		a8_wake_ds2_handler();
-		break;
-	case CMD_ID_STANDBY:
-		a8_wake_standby_handler();
-		break;
-	case CMD_ID_CPUIDLE:
-		a8_wake_cpuidle_handler();
-		break;
-	default:
-		while(1)
-		;
-	}
+	if (!msg_cmd_is_valid() ||
+	    !cmd_handlers[cmd_global_data.cmd_id].wake_handler)
+		while(1);
+
+	cmd_handlers[cmd_global_data.cmd_id].wake_handler();
 
 	msg_cmd_wakeup_reason_update(wakeup_reason);
 

@@ -48,7 +48,8 @@ struct cmd_data cmd_global_data;
 struct state_handler {
 	union state_data *gp_data;
 	union state_data *hs_data;
-	void (*handler)(struct cmd_data *data);
+	void (*cmd_handler)(struct cmd_data *data);
+	void (*wake_handler)(void);
 	bool needs_trigger;
 	bool fast_trigger;
 	bool do_ddr;
