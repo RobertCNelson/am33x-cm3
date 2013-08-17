@@ -179,8 +179,6 @@ struct pd_per_bits per_bits = {
 /* Clear out the global variables here */
 void pm_init(void)
 {
-	cmd_stat 		= 0;
-
 	cmd_global_data.cmd_id 	= CMD_ID_INVALID;
 	cmd_global_data.data 	= NULL;
 

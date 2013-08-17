@@ -61,8 +61,6 @@ struct cmd_data cmd_global_data;
 struct ipc_data a8_m3_data_r;
 struct ds_data	a8_m3_ds_data;
 
-short cmd_stat;
-
 struct state_handler {
 	void *gp_data;
 	void *hs_data;
