@@ -181,14 +181,11 @@ int msg_cmd_is_valid(void)
 /* Read all the IPC regs and pass it along to the appropriate handler */
 void msg_cmd_dispatcher(void)
 {
-	char use_default_val = 0;
 	int id;
+	unsigned int param1;
+	unsigned int param2;
 
 	msg_read_all();
-
-	if ((a8_m3_data_r.reg3 == 0xffffffff) &&
-		(a8_m3_data_r.reg4 == 0xffffffff))
-		use_default_val = 1;
 
 	cmd_global_data.i2c_sleep_offset = a8_m3_data_r.reg6 & 0xffff;
 	cmd_global_data.i2c_wake_offset = a8_m3_data_r.reg6 >> 16;
@@ -199,15 +196,18 @@ void msg_cmd_dispatcher(void)
 	vtt_gpio_pin = (a8_m3_data_r.reg5 & VTT_GPIO_PIN_MASK) >>
 				VTT_GPIO_PIN_SHIFT;
 
+	param1 = a8_m3_data_r.reg3;
+	param2 = a8_m3_data_r.reg4;
 	id = cmd_global_data.cmd_id;
-	if (use_default_val) {
+
+	if (param1 == DS_IPC_DEFAULT && param2 == DS_IPC_DEFAULT) {
 		if (soc_type != SOC_TYPE_GP && cmd_handlers[id].hs_data)
 			cmd_global_data.data = cmd_handlers[id].hs_data;
 		else if (cmd_handlers[id].gp_data)
 			cmd_global_data.data = cmd_handlers[id].gp_data;
 	} else {
-		custom_state_data.raw.param1 = a8_m3_data_r.reg3;
-		custom_state_data.raw.param2 = a8_m3_data_r.reg4;
+		custom_state_data.raw.param1 = param1;
+		custom_state_data.raw.param2 = param2;
 		cmd_global_data.data = &custom_state_data;
 	}
 

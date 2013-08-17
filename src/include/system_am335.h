@@ -196,6 +196,8 @@ int a8_i2c_wake_handler(unsigned short);
 #define TRACE_REG	0x6
 #define CUST_REG	0x7
 
+#define DS_IPC_DEFAULT	0xffffffff
+
 #define CMD_STAT_PASS		0x0
 #define CMD_STAT_FAIL		0x1
 #define CMD_STAT_WAIT4OK	0x2
