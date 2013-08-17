@@ -61,7 +61,6 @@ struct cmd_data cmd_global_data;
 struct ipc_data a8_m3_data_r;
 struct ds_data	a8_m3_ds_data;
 
-enum cmd_ids cmd_id;
 short cmd_stat;
 
 struct state_handler {

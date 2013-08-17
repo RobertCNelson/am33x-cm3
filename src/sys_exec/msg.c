@@ -160,7 +160,7 @@ void msg_write(unsigned int value, char reg)
 void msg_cmd_read_id(void)
 {
 	/* Extract the CMD_ID field of 16 bits */
-	cmd_id = (enum cmd_ids) (msg_read(STAT_ID_REG) & 0xffff);
+	cmd_global_data.cmd_id = msg_read(STAT_ID_REG) & 0xffff;
 }
 
 /*
@@ -169,16 +169,18 @@ void msg_cmd_read_id(void)
  */
 int msg_cmd_is_valid(void)
 {
-	if (cmd_id >= CMD_ID_COUNT || cmd_id <= CMD_ID_INVALID)
+	if (cmd_global_data.cmd_id >= CMD_ID_COUNT ||
+	    cmd_global_data.cmd_id <= CMD_ID_INVALID)
 		return 0;
 
-	return cmd_handlers[cmd_id].handler != NULL;
+	return cmd_handlers[cmd_global_data.cmd_id].handler != NULL;
 }
 
 /* Read all the IPC regs and pass it along to the appropriate handler */
 void msg_cmd_dispatcher(void)
 {
 	char use_default_val = 0;
+	int id;
 
 	msg_read_all();
 
@@ -189,7 +191,6 @@ void msg_cmd_dispatcher(void)
 	a8_m3_ds_data.reg1 = a8_m3_data_r.reg3;
 	a8_m3_ds_data.reg2 = a8_m3_data_r.reg4;
 
-	cmd_global_data.cmd_id = cmd_id;
 	cmd_global_data.i2c_sleep_offset = a8_m3_data_r.reg6 & 0xffff;
 	cmd_global_data.i2c_wake_offset = a8_m3_data_r.reg6 >> 16;
 
@@ -199,15 +200,16 @@ void msg_cmd_dispatcher(void)
 	vtt_gpio_pin = (a8_m3_data_r.reg5 & VTT_GPIO_PIN_MASK) >>
 				VTT_GPIO_PIN_SHIFT;
 
+	id = cmd_global_data.cmd_id;
 	if (use_default_val) {
-		if (soc_type != SOC_TYPE_GP && cmd_handlers[cmd_id].hs_data)
-			cmd_global_data.data = cmd_handlers[cmd_id].hs_data;
-		else if (cmd_handlers[cmd_id].gp_data)
-			cmd_global_data.data = cmd_handlers[cmd_id].gp_data;
+		if (soc_type != SOC_TYPE_GP && cmd_handlers[id].hs_data)
+			cmd_global_data.data = cmd_handlers[id].hs_data;
+		else if (cmd_handlers[id].gp_data)
+			cmd_global_data.data = cmd_handlers[id].gp_data;
 	} else
 		cmd_global_data.data = &a8_m3_ds_data;
 
-	cmd_handlers[cmd_id].handler(&cmd_global_data);
+	cmd_handlers[id].handler(&cmd_global_data);
 }
 
 void m3_firmware_version(void)
@@ -247,7 +249,7 @@ void msg_cmd_wakeup_reason_update(int wakeup_source)
  */
 int msg_cmd_needs_trigger(void)
 {
-	return cmd_handlers[cmd_id].needs_trigger;
+	return cmd_handlers[cmd_global_data.cmd_id].needs_trigger;
 }
 
 int msg_cmd_fast_trigger(void)
