@@ -65,10 +65,10 @@ void extint33_handler(void)
 /* PRCM_M3_IRQ2: Triggered when A8 executes WFI */
 void extint34_handler(void)
 {
-	int i = 0;
+	int i;
 
 	/* Flush out ALL the NVIC interrupts */
-	for (i=0; i<AM335X_NUM_EXT_INTERRUPTS; i++)
+	for (i = 0; i < AM335X_NUM_EXT_INTERRUPTS; i++)
 	{
 		nvic_disable_irq(i);
 		nvic_clear_irq(i);

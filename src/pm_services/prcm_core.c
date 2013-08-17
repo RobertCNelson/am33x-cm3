@@ -27,12 +27,10 @@ union state_data rtc_mode_data = {
 	},
 };
 
-/* Explicit 0s imply don't care */
 union state_data ds0_data = {
 	.deep_sleep = {
 		.mosc_state 			= MOSC_OFF,
 		.deepsleep_count 		= DS_COUNT_DEFAULT,
-		.vdd_mpu_val 			= 0,
 
 		.pd_mpu_state 			= PD_OFF,
 		.pd_mpu_ram_ret_state 		= MEM_BANK_RET_ST_OFF,
@@ -45,7 +43,6 @@ union state_data ds0_data = {
 		.pd_per_ocmc_ret_state 		= MEM_BANK_RET_ST_RET,
 
 		.wake_sources 			= WAKE_ALL,
-		.reserved 			= 0,
 	},
 };
 
@@ -54,7 +51,6 @@ union state_data ds0_data_hs = {
 	.deep_sleep = {
 		.mosc_state 			= MOSC_OFF,
 		.deepsleep_count 		= DS_COUNT_DEFAULT,
-		.vdd_mpu_val 			= 0,
 
 		.pd_mpu_state 			= PD_RET,
 		.pd_mpu_ram_ret_state 		= MEM_BANK_RET_ST_RET,
@@ -67,7 +63,6 @@ union state_data ds0_data_hs = {
 		.pd_per_ocmc_ret_state 		= MEM_BANK_RET_ST_RET,
 
 		.wake_sources 			= WAKE_ALL,
-		.reserved 			= 0,
 	},
 };
 
@@ -75,7 +70,6 @@ union state_data ds1_data = {
 	.deep_sleep = {
 		.mosc_state 			= MOSC_OFF,
 		.deepsleep_count 		= DS_COUNT_DEFAULT,
-		.vdd_mpu_val 			= 0,
 
 		.pd_mpu_state 			= PD_OFF,
 		.pd_mpu_ram_ret_state 		= MEM_BANK_RET_ST_OFF,
@@ -83,12 +77,8 @@ union state_data ds1_data = {
 		.pd_mpu_l2_ret_state 		= MEM_BANK_RET_ST_OFF,
 
 		.pd_per_state 			= PD_ON,
-		.pd_per_icss_mem_ret_state 	= 0,
-		.pd_per_mem_ret_state 		= 0,
-		.pd_per_ocmc_ret_state 		= 0,
 
 		.wake_sources 			= WAKE_ALL,
-		.reserved 			= 0,
 	},
 };
 
@@ -97,7 +87,6 @@ union state_data ds1_data_hs = {
 	.deep_sleep = {
 		.mosc_state 			= MOSC_OFF,
 		.deepsleep_count 		= DS_COUNT_DEFAULT,
-		.vdd_mpu_val 			= 0,
 
 		.pd_mpu_state 			= PD_RET,
 		.pd_mpu_ram_ret_state 		= MEM_BANK_RET_ST_RET,
@@ -105,12 +94,8 @@ union state_data ds1_data_hs = {
 		.pd_mpu_l2_ret_state 		= MEM_BANK_RET_ST_OFF,
 
 		.pd_per_state 			= PD_ON,
-		.pd_per_icss_mem_ret_state 	= 0,
-		.pd_per_mem_ret_state 		= 0,
-		.pd_per_ocmc_ret_state 		= 0,
 
 		.wake_sources 			= WAKE_ALL,
-		.reserved 			= 0,
 	},
 };
 
@@ -118,20 +103,12 @@ union state_data ds2_data = {
 	.deep_sleep = {
 		.mosc_state 			= MOSC_OFF,
 		.deepsleep_count 		= DS_COUNT_DEFAULT,
-		.vdd_mpu_val 			= 0,
 
 		.pd_mpu_state 			= PD_ON,
-		.pd_mpu_ram_ret_state 		= 0,
-		.pd_mpu_l1_ret_state 		= 0,
-		.pd_mpu_l2_ret_state 		= 0,
 
 		.pd_per_state 			= PD_ON,
-		.pd_per_icss_mem_ret_state 	= 0,
-		.pd_per_mem_ret_state 		= 0,
-		.pd_per_ocmc_ret_state 		= 0,
 
 		.wake_sources 			= WAKE_ALL,
-		.reserved 			= 0,
 	},
 };
 
@@ -139,7 +116,6 @@ union state_data standby_data = {
 	.deep_sleep = {
 		.mosc_state			= MOSC_ON,
 		.deepsleep_count		= DS_COUNT_DEFAULT,
-		.vdd_mpu_val			= 0,
 
 		.pd_mpu_state			= PD_OFF,
 		.pd_mpu_ram_ret_state		= MEM_BANK_RET_ST_OFF,
@@ -147,7 +123,6 @@ union state_data standby_data = {
 		.pd_mpu_l2_ret_state		= MEM_BANK_RET_ST_OFF,
 
 		.wake_sources			= WAKE_ALL | MPU_WAKE,
-		.reserved			= 0
 	},
 };
 
@@ -331,7 +306,7 @@ int module_state_change(int state, int reg)
 
 static void _clkdm_sleep(int reg)
 {
-	int var = 0;
+	int var;
 
 	var = __raw_readl(reg);
 	var = var_mod(var, DEFAULT_CLKTRCTRL_MASK, DEFAULT_CLKTRCTRL_SLEEP);
@@ -340,7 +315,7 @@ static void _clkdm_sleep(int reg)
 
 static void _clkdm_wakeup(int reg)
 {
-	int var = 0;
+	int var;
 
 	var = __raw_readl(reg);
 	var = var_mod(var, DEFAULT_CLKTRCTRL_MASK, DEFAULT_CLKTRCTRL_WAKE);

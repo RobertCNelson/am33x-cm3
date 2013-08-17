@@ -45,10 +45,10 @@ void a8_m3_low_power_fast(int cmd_stat_value)
 
 void init_m3_state_machine(void)
 {
-	int i = 0;
+	int i;
 
 	/* Flush out NVIC interrupts */
-	for (i=0; i<AM335X_NUM_EXT_INTERRUPTS; i++)
+	for (i = 0; i < AM335X_NUM_EXT_INTERRUPTS; i++)
 	{
 		nvic_disable_irq(i);
 		nvic_clear_irq(i);
