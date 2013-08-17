@@ -135,37 +135,74 @@ union state_data idle_data = {
 	},
 };
 
-struct pd_mpu_bits mpu_bits = {
-	.ram_retst_mask		= -1,
-	.ram_retst_shift	= -1,
-	.l2_retst_mask		= -1,
-	.l2_retst_shift		= -1,
-	.l1_retst_mask		= -1,
-	.l1_retst_shift		= -1,
-	.lpstchg_mask		= -1,
-	.lpstchg_shift		= -1,
-	.logicretst_mask	= -1,
-	.logicretst_shift	= -1,
-	.pwrst_mask		= -1,
-	.pwrst_shift		= -1,
+/* PRM_MPU bits */
+static const struct pd_mpu_bits am335x_mpu_bits = {
+	.ram_retst_mask		= AM335X_MPU_RAM_RETSTATE_MASK,
+	.ram_retst_shift	= AM335X_MPU_RAM_RETSTATE_SHIFT,
+	.l2_retst_mask		= AM335X_MPU_L2_RETSTATE_MASK,
+	.l2_retst_shift		= AM335X_MPU_L2_RETSTATE_SHIFT,
+	.l1_retst_mask		= AM335X_MPU_L1_RETSTATE_MASK,
+	.l1_retst_shift		= AM335X_MPU_L1_RETSTATE_SHIFT,
+	.lpstchg_mask		= AM335X_MPU_LOWPOWERSTATECHANGE_MASK,
+	.lpstchg_shift		= AM335X_MPU_LOWPOWERSTATECHANGE_SHIFT,
+	.logicretst_mask	= AM335X_MPU_LOGICRETSTATE_MASK,
+	.logicretst_shift	= AM335X_MPU_LOGICRETSTATE_SHIFT,
+	.pwrst_mask		= AM335X_MPU_POWERSTATE_MASK,
+	.pwrst_shift		= AM335X_MPU_POWERSTATE_SHIFT,
 };
 
-struct pd_per_bits per_bits = {
-	.per_retst_mask		= -1,
-	.per_retst_shift	= -1,
-	.ram1_retst_mask	= -1,
-	.ram1_retst_shift	= -1,
-	.ram2_retst_mask	= -1,
-	.ram2_retst_shift	= -1,
-	.icss_retst_mask	= -1,
-	.icss_retst_shift	= -1,
-	.lpstchg_mask		= -1,
-	.lpstchg_shift		= -1,
-	.logicretst_mask	= -1,
-	.logicretst_shift	= -1,
-	.pwrst_mask		= -1,
-	.pwrst_shift		= -1,
+/* PRM_MPU bits */
+static const struct pd_mpu_bits am43xx_mpu_bits = {
+	.ram_retst_mask		= AM43XX_MPU_RAM_RETSTATE_MASK,
+	.ram_retst_shift	= AM43XX_MPU_RAM_RETSTATE_SHIFT,
+	.l2_retst_mask		= AM43XX_MPU_L2_RETSTATE_MASK,
+	.l2_retst_shift		= AM43XX_MPU_L2_RETSTATE_SHIFT,
+	.l1_retst_mask		= AM43XX_MPU_L1_RETSTATE_MASK,
+	.l1_retst_shift		= AM43XX_MPU_L1_RETSTATE_SHIFT,
+	.lpstchg_mask		= AM43XX_MPU_LOWPOWERSTATECHANGE_MASK,
+	.lpstchg_shift		= AM43XX_MPU_LOWPOWERSTATECHANGE_SHIFT,
+	.logicretst_mask	= AM43XX_MPU_LOGICRETSTATE_MASK,
+	.logicretst_shift	= AM43XX_MPU_LOGICRETSTATE_SHIFT,
+	.pwrst_mask		= AM43XX_MPU_POWERSTATE_MASK,
+	.pwrst_shift		= AM43XX_MPU_POWERSTATE_SHIFT,
 };
+
+/* PRM_PER bits */
+static const struct pd_per_bits am335x_per_bits = {
+	.per_retst_mask		= AM335X_PER_MEM_RETSTATE_MASK,
+	.per_retst_shift	= AM335X_PER_MEM_RETSTATE_SHIFT,
+	.ram1_retst_mask	= AM335X_PER_RAM_MEM_RETSTATE_MASK,
+	.ram1_retst_shift	= AM335X_PER_RAM_MEM_RETSTATE_SHIFT,
+	.icss_retst_mask	= AM335X_PER_ICSS_MEM_RETSTATE_MASK,
+	.icss_retst_shift	= AM335X_PER_ICSS_MEM_RETSTATE_SHIFT,
+	.lpstchg_mask		= AM335X_PER_LOWPOWERSTATECHANGE_MASK,
+	.lpstchg_shift		= AM335X_PER_LOWPOWERSTATECHANGE_SHIFT,
+	.logicretst_mask	= AM335X_PER_LOGICRETSTATE_MASK,
+	.logicretst_shift	= AM335X_PER_LOGICRETSTATE_SHIFT,
+	.pwrst_mask		= AM335X_PER_POWERSTATE_MASK,
+	.pwrst_shift		= AM335X_PER_POWERSTATE_SHIFT,
+};
+
+/* PRM_PER bits */
+static const struct pd_per_bits am43xx_per_bits = {
+	.per_retst_mask		= AM43XX_PER_MEM_RETSTATE_MASK,
+	.per_retst_shift	= AM43XX_PER_MEM_RETSTATE_SHIFT,
+	.ram1_retst_mask	= AM43XX_PER_RAM1_MEM_RETSTATE_MASK,
+	.ram1_retst_shift	= AM43XX_PER_RAM1_MEM_RETSTATE_SHIFT,
+	.ram2_retst_mask	= AM43XX_PER_RAM2_MEM_RETSTATE_MASK,
+	.ram2_retst_shift	= AM43XX_PER_RAM2_MEM_RETSTATE_SHIFT,
+	.icss_retst_mask	= AM43XX_PER_ICSS_MEM_RETSTATE_MASK,
+	.icss_retst_shift	= AM43XX_PER_ICSS_MEM_RETSTATE_SHIFT,
+	.lpstchg_mask		= AM43XX_PER_LOWPOWERSTATECHANGE_MASK,
+	.lpstchg_shift		= AM43XX_PER_LOWPOWERSTATECHANGE_SHIFT,
+	.logicretst_mask	= AM43XX_PER_LOGICRETSTATE_MASK,
+	.logicretst_shift	= AM43XX_PER_LOGICRETSTATE_SHIFT,
+	.pwrst_mask		= AM43XX_PER_POWERSTATE_MASK,
+	.pwrst_shift		= AM43XX_PER_POWERSTATE_SHIFT,
+};
+
+static const struct pd_mpu_bits *mpu_bits;
+static const struct pd_per_bits *per_bits;
 
 /* Clear out the global variables here */
 void pm_init(void)
@@ -193,63 +230,11 @@ void setup_soc(void)
 
 	/* yes this is ugly */
 	if (soc_id == AM335X_SOC_ID) {
-		/* PRM_MPU bits */
-		mpu_bits.ram_retst_mask		= AM335X_MPU_RAM_RETSTATE_MASK;
-		mpu_bits.ram_retst_shift	= AM335X_MPU_RAM_RETSTATE_SHIFT;
-		mpu_bits.l2_retst_mask		= AM335X_MPU_L2_RETSTATE_MASK;
-		mpu_bits.l2_retst_shift		= AM335X_MPU_L2_RETSTATE_SHIFT;
-		mpu_bits.l1_retst_mask		= AM335X_MPU_L1_RETSTATE_MASK;
-		mpu_bits.l1_retst_shift		= AM335X_MPU_L1_RETSTATE_SHIFT;
-		mpu_bits.lpstchg_mask		= AM335X_MPU_LOWPOWERSTATECHANGE_MASK;
-		mpu_bits.lpstchg_shift		= AM335X_MPU_LOWPOWERSTATECHANGE_SHIFT;
-		mpu_bits.logicretst_mask	= AM335X_MPU_LOGICRETSTATE_MASK;
-		mpu_bits.logicretst_shift	= AM335X_MPU_LOGICRETSTATE_SHIFT;
-		mpu_bits.pwrst_mask		= AM335X_MPU_POWERSTATE_MASK;
-		mpu_bits.pwrst_shift		= AM335X_MPU_POWERSTATE_SHIFT;
-
-		/* PRM_PER bits */
-		per_bits.per_retst_mask		= AM335X_PER_MEM_RETSTATE_MASK;
-		per_bits.per_retst_shift	= AM335X_PER_MEM_RETSTATE_SHIFT;
-		per_bits.ram1_retst_mask	= AM335X_PER_RAM_MEM_RETSTATE_MASK;
-		per_bits.ram1_retst_shift	= AM335X_PER_RAM_MEM_RETSTATE_SHIFT;
-		per_bits.icss_retst_mask	= AM335X_PER_ICSS_MEM_RETSTATE_MASK;
-		per_bits.icss_retst_shift	= AM335X_PER_ICSS_MEM_RETSTATE_SHIFT;
-		per_bits.lpstchg_mask		= AM335X_PER_LOWPOWERSTATECHANGE_MASK;
-		per_bits.lpstchg_shift		= AM335X_PER_LOWPOWERSTATECHANGE_SHIFT;
-		per_bits.logicretst_mask	= AM335X_PER_LOGICRETSTATE_MASK;
-		per_bits.logicretst_shift	= AM335X_PER_LOGICRETSTATE_SHIFT;
-		per_bits.pwrst_mask		= AM335X_PER_POWERSTATE_MASK;
-		per_bits.pwrst_shift		= AM335X_PER_POWERSTATE_SHIFT;
+		mpu_bits = &am335x_mpu_bits;
+		per_bits = &am335x_per_bits;
 	} else if (soc_id == AM43XX_SOC_ID) {
-		/* PRM_MPU bits */
-		mpu_bits.ram_retst_mask		= AM43XX_MPU_RAM_RETSTATE_MASK;
-		mpu_bits.ram_retst_shift	= AM43XX_MPU_RAM_RETSTATE_SHIFT;
-		mpu_bits.l2_retst_mask		= AM43XX_MPU_L2_RETSTATE_MASK;
-		mpu_bits.l2_retst_shift		= AM43XX_MPU_L2_RETSTATE_SHIFT;
-		mpu_bits.l1_retst_mask		= AM43XX_MPU_L1_RETSTATE_MASK;
-		mpu_bits.l1_retst_shift		= AM43XX_MPU_L1_RETSTATE_SHIFT;
-		mpu_bits.lpstchg_mask		= AM43XX_MPU_LOWPOWERSTATECHANGE_MASK;
-		mpu_bits.lpstchg_shift		= AM43XX_MPU_LOWPOWERSTATECHANGE_SHIFT;
-		mpu_bits.logicretst_mask	= AM43XX_MPU_LOGICRETSTATE_MASK;
-		mpu_bits.logicretst_shift	= AM43XX_MPU_LOGICRETSTATE_SHIFT;
-		mpu_bits.pwrst_mask		= AM43XX_MPU_POWERSTATE_MASK;
-		mpu_bits.pwrst_shift		= AM43XX_MPU_POWERSTATE_SHIFT;
-
-		/* PRM_PER bits */
-		per_bits.per_retst_mask		= AM43XX_PER_MEM_RETSTATE_MASK;
-		per_bits.per_retst_shift	= AM43XX_PER_MEM_RETSTATE_SHIFT;
-		per_bits.ram1_retst_mask	= AM43XX_PER_RAM1_MEM_RETSTATE_MASK;
-		per_bits.ram1_retst_shift	= AM43XX_PER_RAM1_MEM_RETSTATE_SHIFT;
-		per_bits.ram2_retst_mask	= AM43XX_PER_RAM2_MEM_RETSTATE_MASK;
-		per_bits.ram2_retst_shift	= AM43XX_PER_RAM2_MEM_RETSTATE_SHIFT;
-		per_bits.icss_retst_mask	= AM43XX_PER_ICSS_MEM_RETSTATE_MASK;
-		per_bits.icss_retst_shift	= AM43XX_PER_ICSS_MEM_RETSTATE_SHIFT;
-		per_bits.lpstchg_mask		= AM43XX_PER_LOWPOWERSTATECHANGE_MASK;
-		per_bits.lpstchg_shift		= AM43XX_PER_LOWPOWERSTATECHANGE_SHIFT;
-		per_bits.logicretst_mask	= AM43XX_PER_LOGICRETSTATE_MASK;
-		per_bits.logicretst_shift	= AM43XX_PER_LOGICRETSTATE_SHIFT;
-		per_bits.pwrst_mask		= AM43XX_PER_POWERSTATE_MASK;
-		per_bits.pwrst_shift		= AM43XX_PER_POWERSTATE_SHIFT;
+		mpu_bits = &am43xx_mpu_bits;
+		per_bits = &am43xx_per_bits;
 	}
 }
 
@@ -550,68 +535,68 @@ int pd_state_change(int val, int pd)
 
 int mpu_ram_ret_state_change(int val, int var)
 {
-	var = var_mod(var, mpu_bits.ram_retst_mask,
-				 (val << mpu_bits.ram_retst_shift));
+	var = var_mod(var, mpu_bits->ram_retst_mask,
+				 (val << mpu_bits->ram_retst_shift));
 
 	return var;
 }
 
 int mpu_l1_ret_state_change(int val, int var)
 {
-	var = var_mod(var, mpu_bits.l1_retst_mask,
-				 (val << mpu_bits.l1_retst_shift));
+	var = var_mod(var, mpu_bits->l1_retst_mask,
+				 (val << mpu_bits->l1_retst_shift));
 
 	return var;
 }
 
 int mpu_l2_ret_state_change(int val, int var)
 {
-	var = var_mod(var, mpu_bits.l2_retst_mask,
-				 (val << mpu_bits.l2_retst_shift));
+	var = var_mod(var, mpu_bits->l2_retst_mask,
+				 (val << mpu_bits->l2_retst_shift));
 
 	return var;
 }
 
 int icss_mem_ret_state_change(int val, int var)
 {
-	var = var_mod(var, per_bits.icss_retst_mask,
-				 (val << per_bits.icss_retst_shift));
+	var = var_mod(var, per_bits->icss_retst_mask,
+				 (val << per_bits->icss_retst_shift));
 
 	return var;
 }
 
 int per_mem_ret_state_change(int val, int var)
 {
-	var = var_mod(var, per_bits.per_retst_mask,
-				 (val << per_bits.per_retst_shift));
+	var = var_mod(var, per_bits->per_retst_mask,
+				 (val << per_bits->per_retst_shift));
 
 	return var;
 }
 
 int ocmc_mem_ret_state_change(int val, int var)
 {
-	var = var_mod(var, per_bits.ram1_retst_mask,
-				 (val << per_bits.ram1_retst_shift));
+	var = var_mod(var, per_bits->ram1_retst_mask,
+				 (val << per_bits->ram1_retst_shift));
 
-	if (per_bits.ram2_retst_mask != -1)
-		var = var_mod(var, per_bits.ram2_retst_mask,
-				 (val << per_bits.ram2_retst_shift));
+	if (per_bits->ram2_retst_mask)
+		var = var_mod(var, per_bits->ram2_retst_mask,
+				 (val << per_bits->ram2_retst_shift));
 
 	return var;
 }
 
 int per_powerst_change(int val, int var)
 {
-	var = var_mod(var, per_bits.pwrst_mask,
-				(val << per_bits.pwrst_shift));
+	var = var_mod(var, per_bits->pwrst_mask,
+				(val << per_bits->pwrst_shift));
 
 	return var;
 }
 
 int mpu_powerst_change(int val, int var)
 {
-	var = var_mod(var, mpu_bits.pwrst_mask,
-				(val << mpu_bits.pwrst_shift));
+	var = var_mod(var, mpu_bits->pwrst_mask,
+				(val << mpu_bits->pwrst_shift));
 
 	return var;
 }
