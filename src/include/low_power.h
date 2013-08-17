@@ -108,8 +108,6 @@ struct pd_per_bits {
 	int	pwrst_shift;
 };
 
-int reg_mod(int, int, int);
-
 int module_state_change(int, int);
 int clkdm_state_change(int state, int reg);
 int interconnect_modules_enable(void);
