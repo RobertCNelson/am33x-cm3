@@ -15,4 +15,7 @@
 
 #define NULL ((void *) 0)
 
+typedef _Bool bool;
+enum { false, true };
+
 #endif

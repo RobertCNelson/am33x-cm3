@@ -14,6 +14,7 @@
 #define __SYSTEM_AM335_H__
 
 #include <stdint.h>
+#include <stddef.h>
 #include <low_power.h>
 
 enum cmd_ids {
@@ -48,20 +49,20 @@ struct state_handler {
 	union state_data *gp_data;
 	union state_data *hs_data;
 	void (*handler)(struct cmd_data *data);
-	int needs_trigger;
-	int fast_trigger;
-	int do_ddr;
+	bool needs_trigger;
+	bool fast_trigger;
+	bool do_ddr;
 };
 
 extern struct state_handler cmd_handlers[];
 
 /* Board specifics populated in IPC_REG4 */
 int mem_type;			/* Memory Type 2 = DDR2, 3 = DDR3 */
-int vtt_toggle; 		/* VTT Toggle  1 = required */
+bool vtt_toggle; 		/* VTT Toggle  true = required */
 int vtt_gpio_pin; 		/* VTT GPIO Pin */
 
 /* Debug info */
-int halt_on_resume;
+bool halt_on_resume;
 
 int cmd_wake_sources;
 int pd_mpu_stctrl_next_val;
@@ -96,9 +97,9 @@ unsigned int msg_read(char);
 void msg_write(unsigned int, char);
 
 void msg_cmd_read_id(void);
-int msg_cmd_is_valid(void);
-int msg_cmd_needs_trigger(void);
-int msg_cmd_fast_trigger(void);
+bool msg_cmd_is_valid(void);
+bool msg_cmd_needs_trigger(void);
+bool msg_cmd_fast_trigger(void);
 void msg_cmd_dispatcher(void);
 void msg_cmd_stat_update(int);
 void msg_cmd_wakeup_reason_update(int);

@@ -1037,7 +1037,7 @@ void ddr_io_suspend(void)
 
 void vtt_low(void)
 {
-	if (vtt_toggle == 0)
+	if (vtt_toggle == false)
 		return;
 
 	module_state_change(MODULE_ENABLE, AM335X_CM_WKUP_GPIO0_CLKCTRL);
@@ -1173,7 +1173,7 @@ void vtp_enable(void)
 
 void vtt_high(void)
 {
-	if (vtt_toggle == 0)
+	if (vtt_toggle == false)
 		return;
 
 	module_state_change(MODULE_ENABLE, AM335X_CM_WKUP_GPIO0_CLKCTRL);
