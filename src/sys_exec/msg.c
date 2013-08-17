@@ -184,20 +184,21 @@ void msg_cmd_dispatcher(void)
 	int id;
 	unsigned int param1;
 	unsigned int param2;
+	unsigned int param3;
+	unsigned int param4;
 
-	msg_read_all();
-
-	cmd_global_data.i2c_sleep_offset = a8_m3_data_r.reg6 & 0xffff;
-	cmd_global_data.i2c_wake_offset = a8_m3_data_r.reg6 >> 16;
+	param4 = msg_read(PARAM4_REG);
+	cmd_global_data.i2c_sleep_offset = param4 & 0xffff;
+	cmd_global_data.i2c_wake_offset = param4 >> 16;
 
 	/* board specific data saved in global variables for now */
-	mem_type = (a8_m3_data_r.reg5 & MEM_TYPE_MASK) >> MEM_TYPE_SHIFT;
-	vtt_toggle = (a8_m3_data_r.reg5 & VTT_STAT_MASK) >> VTT_STAT_SHIFT;
-	vtt_gpio_pin = (a8_m3_data_r.reg5 & VTT_GPIO_PIN_MASK) >>
-				VTT_GPIO_PIN_SHIFT;
+	param3 = msg_read(PARAM3_REG);
+	mem_type = (param3 & MEM_TYPE_MASK) >> MEM_TYPE_SHIFT;
+	vtt_toggle = (param3 & VTT_STAT_MASK) >> VTT_STAT_SHIFT;
+	vtt_gpio_pin = (param3 & VTT_GPIO_PIN_MASK) >> VTT_GPIO_PIN_SHIFT;
 
-	param1 = a8_m3_data_r.reg3;
-	param2 = a8_m3_data_r.reg4;
+	param1 = msg_read(PARAM1_REG);
+	param2 = msg_read(PARAM2_REG);
 	id = cmd_global_data.cmd_id;
 
 	if (param1 == DS_IPC_DEFAULT && param2 == DS_IPC_DEFAULT) {
