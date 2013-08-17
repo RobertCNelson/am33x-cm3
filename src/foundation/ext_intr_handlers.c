@@ -69,7 +69,6 @@ void extint34_handler(void)
 		nvic_clear_irq(i);
 	}
 
-	nvic_disable_irq(AM335X_IRQ_PRCM_M3_IRQ2);
 	msg_cmd_dispatcher();
 }
 
