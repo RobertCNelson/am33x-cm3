@@ -332,6 +332,15 @@ int clkdm_state_change(int state, int reg)
 	return 0;
 }
 
+static int clkdms_state_change(int state, const unsigned int *reg)
+{
+	int ret = 0;
+	int i;
+	for (i = 0; reg[i] && !ret; i++)
+		ret = clkdm_state_change(state, reg[i]);
+	return ret;
+}
+
 static const unsigned int am335x_essential_modules[] = {
 	AM335X_CM_PER_CLKDIV32K_CLKCTRL,
 	AM335X_CM_PER_IEEE5000_CLKCTRL,
@@ -428,65 +437,52 @@ void mpu_enable(void)
 		module_state_change(MODULE_ENABLE, AM43XX_CM_MPU_MPU_CLKCTRL);
 }
 
+static const unsigned int am335x_clkdms[] = {
+	AM335X_CM_PER_OCPWP_L3_CLKSTCTRL,
+	AM335X_CM_PER_ICSS_CLKSTCTRL,
+	AM335X_CM_PER_CPSW_CLKSTCTRL,
+	AM335X_CM_PER_LCDC_CLKSTCTRL,
+	AM335X_CM_PER_CLK_24MHZ_CLKSTCTRL,
+	AM335X_CM_PER_L4LS_CLKSTCTRL,
+	AM335X_CM_PER_L4HS_CLKSTCTRL,
+	AM335X_CM_PER_L4FW_CLKSTCTRL,
+	AM335X_CM_PER_L3S_CLKSTCTRL,
+	AM335X_CM_PER_L3_CLKSTCTRL,
+	0,
+};
+
+static const unsigned int am43xx_clkdms[] = {
+	AM43XX_CM_PER_EMIF_CLKSTCTRL,
+	AM43XX_CM_L3S_TSC_CLKSTCTRL,
+	AM43XX_CM_PER_DSS_CLKSTCTRL,
+	AM43XX_CM_PER_LCDC_CLKSTCTRL,
+	AM335X_CM_PER_CLK_24MHZ_CLKSTCTRL,
+	AM43XX_CM_PER_ICSS_CLKSTCTRL,
+	AM43XX_CM_PER_CPSW_CLKSTCTRL,
+	AM43XX_CM_PER_OCPWP_L3_CLKSTCTRL,
+	AM43XX_CM_PER_L4LS_CLKSTCTRL,
+	AM43XX_CM_PER_L4HS_CLKCTRL,
+	AM335X_CM_PER_L4FW_CLKSTCTRL,
+	AM43XX_CM_PER_L3S_CLKSTCTRL,
+	AM43XX_CM_PER_L3_CLKSTCTRL,
+	0,
+};
+
 /* CLKDM related */
 void clkdm_sleep(void)
 {
-	if (soc_id == AM335X_SOC_ID) {
-		clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_OCPWP_L3_CLKSTCTRL);
-		clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_ICSS_CLKSTCTRL);
-		clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_CPSW_CLKSTCTRL);
-		clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_LCDC_CLKSTCTRL);
-		clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_CLK_24MHZ_CLKSTCTRL);
-		clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_L4LS_CLKSTCTRL);
-		clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_L4HS_CLKSTCTRL);
-		clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_L4FW_CLKSTCTRL);
-		clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_L3S_CLKSTCTRL);
-		clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_L3_CLKSTCTRL);
-	} else if (soc_id == AM43XX_SOC_ID) {
-		clkdm_state_change(CLKDM_SLEEP, AM43XX_CM_PER_EMIF_CLKSTCTRL);
-		clkdm_state_change(CLKDM_SLEEP, AM43XX_CM_L3S_TSC_CLKSTCTRL);
-		clkdm_state_change(CLKDM_SLEEP, AM43XX_CM_PER_DSS_CLKSTCTRL);
-		clkdm_state_change(CLKDM_SLEEP, AM43XX_CM_PER_LCDC_CLKSTCTRL);
-		clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_CLK_24MHZ_CLKSTCTRL);
-		clkdm_state_change(CLKDM_SLEEP, AM43XX_CM_PER_ICSS_CLKSTCTRL);
-		clkdm_state_change(CLKDM_SLEEP, AM43XX_CM_PER_CPSW_CLKSTCTRL);
-		clkdm_state_change(CLKDM_SLEEP, AM43XX_CM_PER_OCPWP_L3_CLKSTCTRL);
-		clkdm_state_change(CLKDM_SLEEP, AM43XX_CM_PER_L4LS_CLKSTCTRL);
-		clkdm_state_change(CLKDM_SLEEP, AM43XX_CM_PER_L4HS_CLKCTRL);
-		clkdm_state_change(CLKDM_SLEEP, AM335X_CM_PER_L4FW_CLKSTCTRL);
-		clkdm_state_change(CLKDM_SLEEP, AM43XX_CM_PER_L3S_CLKSTCTRL);
-		clkdm_state_change(CLKDM_SLEEP, AM43XX_CM_PER_L3_CLKSTCTRL);
-	}
+	if (soc_id == AM335X_SOC_ID)
+		clkdms_state_change(CLKDM_SLEEP, am335x_clkdms);
+	else if (soc_id == AM43XX_SOC_ID)
+		clkdms_state_change(CLKDM_SLEEP, am43xx_clkdms);
 }
 
 void clkdm_wake(void)
 {
-	if (soc_id == AM335X_SOC_ID) {
-		clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_L3_CLKSTCTRL);
-		clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_L3S_CLKSTCTRL);
-		clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_L4FW_CLKSTCTRL);
-		clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_L4HS_CLKSTCTRL);
-		clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_L4LS_CLKSTCTRL);
-		clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_CLK_24MHZ_CLKSTCTRL);
-		clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_LCDC_CLKSTCTRL);
-		clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_CPSW_CLKSTCTRL);
-		clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_ICSS_CLKSTCTRL);
-		clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_OCPWP_L3_CLKSTCTRL);
-	} else if (soc_id == AM43XX_SOC_ID) {
-		clkdm_state_change(CLKDM_WAKE, AM43XX_CM_PER_L3_CLKSTCTRL);
-		clkdm_state_change(CLKDM_WAKE, AM43XX_CM_PER_L3S_CLKSTCTRL);
-		clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_L4FW_CLKSTCTRL);
-		clkdm_state_change(CLKDM_WAKE, AM43XX_CM_PER_L4HS_CLKCTRL);
-		clkdm_state_change(CLKDM_WAKE, AM43XX_CM_PER_L4LS_CLKSTCTRL);
-		clkdm_state_change(CLKDM_WAKE, AM43XX_CM_PER_OCPWP_L3_CLKSTCTRL);
-		clkdm_state_change(CLKDM_WAKE, AM43XX_CM_PER_CPSW_CLKSTCTRL);
-		clkdm_state_change(CLKDM_WAKE, AM43XX_CM_PER_ICSS_CLKSTCTRL);
-		clkdm_state_change(CLKDM_WAKE, AM335X_CM_PER_CLK_24MHZ_CLKSTCTRL);
-		clkdm_state_change(CLKDM_WAKE, AM43XX_CM_PER_LCDC_CLKSTCTRL);
-		clkdm_state_change(CLKDM_WAKE, AM43XX_CM_PER_DSS_CLKSTCTRL);
-		clkdm_state_change(CLKDM_WAKE, AM43XX_CM_L3S_TSC_CLKSTCTRL);
-		clkdm_state_change(CLKDM_WAKE, AM43XX_CM_PER_EMIF_CLKSTCTRL);
-	}
+	if (soc_id == AM335X_SOC_ID)
+		clkdms_state_change(CLKDM_WAKE, am335x_clkdms);
+	else if (soc_id == AM43XX_SOC_ID)
+		clkdms_state_change(CLKDM_WAKE, am43xx_clkdms);
 }
 
 void mpu_clkdm_sleep(void)
