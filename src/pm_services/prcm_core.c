@@ -374,17 +374,6 @@ void setup_soc(void)
 	}
 }
 
-static int var_mod(int var, int mask, int bit_val)
-{
-	int v;
-
-	v = var;
-	v &= ~mask;
-	v |= bit_val;
-
-	return v;
-}
-
 #define DEFAULT_IDLEST_SHIFT		16
 #define DEFAULT_IDLEST_MASK		(3 << DEFAULT_IDLEST_SHIFT)
 #define DEFAULT_IDLEST_IDLE_VAL		3

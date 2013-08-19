@@ -284,4 +284,10 @@
 #define __raw_readw(a)		(*(volatile short *)(a))
 #define __raw_writew(v, a)	(*(volatile short *)(a) = v)
 
+static inline int var_mod(unsigned int var, unsigned int mask,
+							unsigned int bit_val)
+{
+	return (var & ~mask) | bit_val;
+}
+
 #endif
