@@ -144,12 +144,6 @@ int essential_modules_disable(void);
 int essential_modules_enable(void);
 void mpu_disable(void);
 void mpu_enable(void);
-void clkdm_sleep(void);
-void clkdm_wake(void);
-void mpu_clkdm_sleep(void);
-void mpu_clkdm_wake(void);
-void wkup_clkdm_sleep(void);
-void wkup_clkdm_wake(void);
 int pd_state_change(int, int);
 void pd_state_restore(int);
 
