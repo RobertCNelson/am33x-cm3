@@ -281,6 +281,21 @@ int module_state_change(int state, int reg)
 	return 0;
 }
 
+static int modules_state_change(int state, const unsigned int *reg)
+{
+	int i;
+
+	for (i = 0; reg[i]; i++)
+		if (state == MODULE_DISABLE)
+			_module_disable(reg[i]);
+
+	for (i--; i >= 0; i--)
+		if (state == MODULE_ENABLE)
+			_module_enable(reg[i]);
+
+	return 0;
+}
+
 #define DEFAULT_CLKTRCTRL_SHIFT		0
 #define DEFAULT_CLKTRCTRL_MASK		(3 << DEFAULT_CLKTRCTRL_SHIFT)
 #define DEFAULT_CLKTRCTRL_WAKE		0x2
@@ -317,6 +332,21 @@ int clkdm_state_change(int state, int reg)
 	return 0;
 }
 
+static const unsigned int am335x_essential_modules[] = {
+	AM335X_CM_PER_CLKDIV32K_CLKCTRL,
+	AM335X_CM_PER_IEEE5000_CLKCTRL,
+	AM335X_CM_PER_EMIF_FW_CLKCTRL,
+	AM335X_CM_PER_OCMCRAM_CLKCTRL,
+	0,
+};
+
+static const unsigned int am43xx_essential_modules[] = {
+	AM43XX_CM_PER_EMIF_FW_CLKCTRL,
+	AM43XX_CM_PER_OTFA_EMIF_CLKCTRL,
+	AM43XX_CM_PER_OCMCRAM_CLKCTRL,
+	0,
+};
+
 /*
  * Looks like we'll have to ensure that we disable some modules when going down
  * ideally this list should have 0 entries but we need to check
@@ -325,16 +355,10 @@ int clkdm_state_change(int state, int reg)
 int essential_modules_disable(void)
 {
 	/* Disable only the bare essential modules */
-	if (soc_id == AM335X_SOC_ID) {
-		module_state_change(MODULE_DISABLE, AM335X_CM_PER_CLKDIV32K_CLKCTRL);
-		module_state_change(MODULE_DISABLE, AM335X_CM_PER_IEEE5000_CLKCTRL);
-		module_state_change(MODULE_DISABLE, AM335X_CM_PER_EMIF_FW_CLKCTRL);
-		module_state_change(MODULE_DISABLE, AM335X_CM_PER_OCMCRAM_CLKCTRL);
-	} else if (soc_id == AM43XX_SOC_ID) {
-		module_state_change(MODULE_DISABLE, AM43XX_CM_PER_EMIF_FW_CLKCTRL);
-		module_state_change(MODULE_DISABLE, AM43XX_CM_PER_OTFA_EMIF_CLKCTRL);
-		module_state_change(MODULE_DISABLE, AM43XX_CM_PER_OCMCRAM_CLKCTRL);
-	}
+	if (soc_id == AM335X_SOC_ID)
+		modules_state_change(MODULE_DISABLE, am335x_essential_modules);
+	else if (soc_id == AM43XX_SOC_ID)
+		modules_state_change(MODULE_DISABLE, am43xx_essential_modules);
 
 	return 0;
 }
@@ -342,54 +366,48 @@ int essential_modules_disable(void)
 int essential_modules_enable(void)
 {
 	/* Enable only the bare essential modules */
-	if (soc_id == AM335X_SOC_ID) {
-		module_state_change(MODULE_ENABLE, AM335X_CM_PER_CLKDIV32K_CLKCTRL);
-		module_state_change(MODULE_ENABLE, AM335X_CM_PER_IEEE5000_CLKCTRL);
-		module_state_change(MODULE_ENABLE, AM335X_CM_PER_EMIF_FW_CLKCTRL);
-		module_state_change(MODULE_ENABLE, AM335X_CM_PER_OCMCRAM_CLKCTRL);
-	} else if (soc_id == AM43XX_SOC_ID) {
-		module_state_change(MODULE_ENABLE, AM43XX_CM_PER_EMIF_FW_CLKCTRL);
-		module_state_change(MODULE_ENABLE, AM43XX_CM_PER_OTFA_EMIF_CLKCTRL);
-		module_state_change(MODULE_ENABLE, AM43XX_CM_PER_OCMCRAM_CLKCTRL);
-	}
+	if (soc_id == AM335X_SOC_ID)
+		modules_state_change(MODULE_ENABLE, am335x_essential_modules);
+	else if (soc_id == AM43XX_SOC_ID)
+		modules_state_change(MODULE_ENABLE, am43xx_essential_modules);
 
 	return 0;
 }
 
+static const unsigned int am335x_interconnect_modules[] = {
+	AM335X_CM_PER_L4LS_CLKCTRL,
+	AM335X_CM_PER_L4HS_CLKCTRL,
+	AM335X_CM_PER_L4FW_CLKCTRL,
+	AM335X_CM_PER_L3_INSTR_CLKCTRL,
+	AM335X_CM_PER_L3_CLKCTRL,
+	0,
+};
+
+static const unsigned int am43xx_interconnect_modules[] = {
+	AM43XX_CM_PER_L4LS_CLKCTRL,
+	AM43XX_CM_PER_L4HS_CLKCTRL,
+	AM43XX_CM_PER_L4FW_CLKCTRL,
+	AM43XX_CM_PER_L3_INSTR_CLKCTRL,
+	AM43XX_CM_PER_L3_CLKCTRL,
+	0,
+};
+
 int interconnect_modules_disable(void)
 {
-	if (soc_id == AM335X_SOC_ID) {
-		module_state_change(MODULE_DISABLE, AM335X_CM_PER_L4LS_CLKCTRL);
-		module_state_change(MODULE_DISABLE, AM335X_CM_PER_L4HS_CLKCTRL);
-		module_state_change(MODULE_DISABLE, AM335X_CM_PER_L4FW_CLKCTRL);
-		module_state_change(MODULE_DISABLE, AM335X_CM_PER_L3_INSTR_CLKCTRL);
-		module_state_change(MODULE_DISABLE, AM335X_CM_PER_L3_CLKCTRL);
-	} else if (soc_id == AM43XX_SOC_ID) {
-		module_state_change(MODULE_DISABLE, AM43XX_CM_PER_L4LS_CLKCTRL);
-		module_state_change(MODULE_DISABLE, AM43XX_CM_PER_L4HS_CLKCTRL);
-		module_state_change(MODULE_DISABLE, AM43XX_CM_PER_L4FW_CLKCTRL);
-		module_state_change(MODULE_DISABLE, AM43XX_CM_PER_L3_INSTR_CLKCTRL);
-		module_state_change(MODULE_DISABLE, AM43XX_CM_PER_L3_CLKCTRL);
-	}
+	if (soc_id == AM335X_SOC_ID)
+		modules_state_change(MODULE_DISABLE, am335x_interconnect_modules);
+	else if (soc_id == AM43XX_SOC_ID)
+		modules_state_change(MODULE_DISABLE, am43xx_interconnect_modules);
 
 	return 0;
 }
 
 int interconnect_modules_enable(void)
 {
-	if (soc_id == AM335X_SOC_ID) {
-		module_state_change(MODULE_ENABLE, AM335X_CM_PER_L3_CLKCTRL);
-		module_state_change(MODULE_ENABLE, AM335X_CM_PER_L3_INSTR_CLKCTRL);
-		module_state_change(MODULE_ENABLE, AM335X_CM_PER_L4FW_CLKCTRL);
-		module_state_change(MODULE_ENABLE, AM335X_CM_PER_L4HS_CLKCTRL);
-		module_state_change(MODULE_ENABLE, AM335X_CM_PER_L4LS_CLKCTRL);
-	} else if (soc_id == AM43XX_SOC_ID) {
-		module_state_change(MODULE_ENABLE, AM43XX_CM_PER_L3_CLKCTRL);
-		module_state_change(MODULE_ENABLE, AM43XX_CM_PER_L3_INSTR_CLKCTRL);
-		module_state_change(MODULE_ENABLE, AM43XX_CM_PER_L4FW_CLKCTRL);
-		module_state_change(MODULE_ENABLE, AM43XX_CM_PER_L4HS_CLKCTRL);
-		module_state_change(MODULE_ENABLE, AM43XX_CM_PER_L4LS_CLKCTRL);
-	}
+	if (soc_id == AM335X_SOC_ID)
+		modules_state_change(MODULE_ENABLE, am335x_interconnect_modules);
+	else if (soc_id == AM43XX_SOC_ID)
+		modules_state_change(MODULE_ENABLE, am43xx_interconnect_modules);
 
 	return 0;
 }
