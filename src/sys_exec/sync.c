@@ -19,6 +19,7 @@
 #include <msg.h>
 #include <hwmod.h>
 #include <trace.h>
+#include <sync.h>
 
 void a8_notify(int cmd_stat_value)
 {

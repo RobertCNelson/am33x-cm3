@@ -18,6 +18,7 @@
 #include <prcm_core.h>
 #include <msg.h>
 #include <trace.h>
+#include <sync.h>
 
 int am335_init(void)
 {

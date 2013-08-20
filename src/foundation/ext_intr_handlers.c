@@ -17,6 +17,7 @@
 #include <system_am335.h>
 #include <msg.h>
 #include <pm_handlers.h>
+#include <sync.h>
 
 /*
  * PRCM_M3_IRQ1: Triggered for events like PLL needs recalibration,

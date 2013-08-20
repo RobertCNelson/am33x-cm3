@@ -10,16 +10,12 @@
  *  software download.
 */
 
-#ifndef __SYSTEM_AM335_H__
-#define __SYSTEM_AM335_H__
+#ifndef __SYNC_H__
+#define __SYNC_H__
 
-void system_init(void);
-void system_core_clock_update(void);
-
-int rtc_enable_check(void);
-unsigned int rtc_reg_read(int);
-void rtc_reg_write(unsigned int, int);
-
-int i2c_write(const unsigned char *);
+void a8_notify(int);
+void a8_m3_low_power_sync(int);
+void a8_m3_low_power_fast(int);
+void init_m3_state_machine(void);
 
 #endif
