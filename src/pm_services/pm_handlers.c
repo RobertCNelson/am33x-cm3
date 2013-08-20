@@ -43,45 +43,23 @@ void a8_lp_rtc_handler(struct cmd_data *data)
 
 	rtc_reg_write(RTC_ALARM2_SECONDS_REG, timeout);
 
-	/* Turn off interconnect */
-	interconnect_modules_disable();
+	if (cmd_global_data.cmd_id == CMD_ID_RTC) {
+		/* Turn off interconnect */
+		interconnect_modules_disable();
 
-	/* Disable the clock domains except MPU */
-	clkdm_sleep();
+		/* Disable the clock domains except MPU */
+		clkdm_sleep();
 
-	/* Disable MPU clock domain */
-	mpu_clkdm_sleep();
+		/* Disable MPU clock domain */
+		mpu_clkdm_sleep();
 
-	wkup_clkdm_sleep();
+		wkup_clkdm_sleep();
 
-	/* TODO: wait for power domain state change interrupt from PRCM */
-}
-
-/* Enter RTC_fast mode */
-void a8_lp_rtc_fast_handler(struct cmd_data *data)
-{
-	struct rtc_data *rtc_data = &data->data->rtc;
-	int timeout;
-
-	a8_i2c_sleep_handler(data->i2c_sleep_offset);
-
-	if (!rtc_data->rtc_timeout_val &&
-		(rtc_data->rtc_timeout_val < RTC_TIMEOUT_MAX))
-		timeout = rtc_data->rtc_timeout_val;
-	else
-		timeout = RTC_TIMEOUT_DEFAULT;
-
-	/* If RTC module if not already configured... cannot continue */
-	rtc_enable_check();
-
-	/* Program the RTC_PMIC register for deasseting pmic_pwr_enable */
-	__raw_writel(0x00010000, RTC_PMIC_REG);
-
-	/* Read the RTC_ALARM2_SECS */
-	timeout += __raw_readl(RTC_ALARM2_SECONDS_REG);
-
-	/* Write val + timeout to RTC_ALARM */
-	__raw_writel(timeout, RTC_ALARM2_SECONDS_REG);
+		/*
+		 * TODO: wait for power domain state change interrupt from
+		 * PRCM
+		 */
+	}
 }
 
 /*
@@ -345,12 +323,6 @@ void generic_wake_handler(int wakeup_reason)
 void a8_wake_rtc_handler(void)
 {
 	/* RTC wake is a cold boot... so this doesn't make sense */
-}
-
-/* Exit RTC_fast mode */
-void a8_wake_rtc_fast_handler(void)
-{
-	/* RTC fast wake is also similar to cold boot... */
 }
 
 /*

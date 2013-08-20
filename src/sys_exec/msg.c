@@ -47,8 +47,8 @@ struct state_handler cmd_handlers[] = {
 	},
 	[CMD_ID_RTC_FAST] = {
 		.gp_data = &rtc_mode_data,
-		.cmd_handler = a8_lp_rtc_fast_handler,
-		.wake_handler = a8_wake_rtc_fast_handler,
+		.cmd_handler = a8_lp_rtc_handler,
+		.wake_handler = a8_wake_rtc_handler,
 		.needs_trigger = true,
 	},
 	[CMD_ID_DS0] = {
