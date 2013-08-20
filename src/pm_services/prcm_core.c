@@ -48,6 +48,12 @@
 #define BB_MPU_WAKE		*((volatile int *)(BITBAND_SRAM(&cmd_wake_sources, 11)))
 #define BB_USBWOUT1		*((volatile int *)(BITBAND_SRAM(&cmd_wake_sources, 12)))
 
+static unsigned int cmd_wake_sources;
+
+unsigned int soc_id;
+unsigned int soc_rev;
+unsigned int soc_type;
+
 /* Clear out the global variables here */
 void pm_reset(void)
 {

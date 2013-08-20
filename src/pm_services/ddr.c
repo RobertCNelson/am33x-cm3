@@ -12,6 +12,7 @@
 
 #include <device_am335x.h>
 #include <prcm.h>
+#include <prcm_core.h>
 #include <system_am335.h>
 #include <hwmod.h>
 #include <ddr.h>

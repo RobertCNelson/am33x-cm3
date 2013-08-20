@@ -30,6 +30,25 @@
 #define RTC_TIMEOUT_DEFAULT	0x2
 #define RTC_TIMEOUT_MAX		0xf
 
+#define AM335X_SOC_ID		0xB944
+#define AM335X_REV_ES1_0	0
+#define AM335X_REV_ES2_0	1
+#define AM335X_REV_ES2_1	2
+
+#define AM43XX_SOC_ID		0xB98C
+
+#define SOC_TYPE_TEST	0
+#define SOC_TYPE_EMU	1
+#define SOC_TYPE_HS	2
+#define SOC_TYPE_GP	3
+
+extern unsigned int soc_id;
+extern unsigned int soc_rev;
+extern unsigned int soc_type;
+
+void pm_reset(void);
+void setup_soc(void);
+
 int disable_master_oscillator(void);
 int enable_master_oscillator(void);
 
@@ -39,5 +58,8 @@ void clear_wake_sources(void);
 
 void ds_save(void);
 void ds_restore(void);
+
+int a8_i2c_sleep_handler(unsigned short);
+int a8_i2c_wake_handler(unsigned short);
 
 #endif

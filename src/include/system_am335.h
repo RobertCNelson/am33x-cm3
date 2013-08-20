@@ -21,14 +21,6 @@ struct cmd_data;
 /* Debug info */
 bool halt_on_resume;
 
-int cmd_wake_sources;
-
-unsigned int soc_id;
-unsigned int soc_rev;
-unsigned int soc_type;
-
-void pm_reset(void);
-
 void system_init(void);
 void system_core_clock_update(void);
 
@@ -64,22 +56,5 @@ unsigned int rtc_reg_read(int);
 void rtc_reg_write(unsigned int, int);
 
 int i2c_write(const unsigned char *);
-
-void setup_soc(void);
-
-int a8_i2c_sleep_handler(unsigned short);
-int a8_i2c_wake_handler(unsigned short);
-
-#define AM335X_SOC_ID		0xB944
-#define AM335X_REV_ES1_0	0
-#define AM335X_REV_ES2_0	1
-#define AM335X_REV_ES2_1	2
-
-#define AM43XX_SOC_ID		0xB98C
-
-#define SOC_TYPE_TEST	0
-#define SOC_TYPE_EMU	1
-#define SOC_TYPE_HS	2
-#define SOC_TYPE_GP	3
 
 #endif

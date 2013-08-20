@@ -15,6 +15,7 @@
 #include <cm3.h>
 #include <device_am335x.h>
 #include <system_am335.h>
+#include <prcm_core.h>
 #include <msg.h>
 
 int am335_init(void)
