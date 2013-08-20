@@ -10,7 +10,7 @@
  *  software download.
 */
 
-#include <device_am335x.h>
+#include <device_common.h>
 #include <io.h>
 #include <clockdomain.h>
 #include <rtc.h>

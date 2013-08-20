@@ -10,8 +10,8 @@
  *  software download.
 */
 
-#ifndef __DEVICE_AM335X_H__
-#define __DEVICE_AM335X_H__
+#ifndef __DEVICE_COMMON_H__
+#define __DEVICE_COMMON_H__
 
 #define PRCM_BASE	0x44E00000
 #define DMTIMER_BASE	0x44E05000

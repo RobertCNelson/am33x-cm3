@@ -13,7 +13,7 @@
 #include <stdint.h>
 
 #include <stddef.h>
-#include <device_am335x.h>
+#include <device_common.h>
 #include <io.h>
 #include <prcm_core.h>
 #include <msg.h>
