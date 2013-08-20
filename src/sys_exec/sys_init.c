@@ -13,7 +13,7 @@
 #include <stdint.h>
 
 #include <cm3.h>
-#include <device_am335x.h>
+#include <device_cm3.h>
 #include <system_am335.h>
 #include <prcm_core.h>
 #include <msg.h>
@@ -35,7 +35,7 @@ int am335_init(void)
 	scr_enable_sleeponexit();
 
 	/* Disable all the external interrupts */
-	for (i=0; i<AM335X_NUM_EXT_INTERRUPTS; i++)
+	for (i=0; i < CM3_NUM_EXT_INTERRUPTS; i++)
 		nvic_disable_irq(i);
 
 	trace_init();
@@ -45,7 +45,7 @@ int am335_init(void)
 	setup_soc();
 
 	/* Enable only the MBX IRQ */
-	nvic_enable_irq(AM335X_IRQ_MBINT0);
+	nvic_enable_irq(CM3_IRQ_MBINT0);
 	nvic_enable_irq(53);
 
 	m3_firmware_version();

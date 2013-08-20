@@ -14,6 +14,7 @@
 
 #include <stddef.h>
 #include <cm3.h>
+#include <device_cm3.h>
 #include <device_am335x.h>
 #include <io.h>
 #include <prcm_core.h>
@@ -125,52 +126,52 @@ void configure_wake_sources(int wake_sources)
 
 	/* Enable wakeup interrupts from required wake sources */
 	if (BB_USB_WAKE)
-		nvic_enable_irq(AM335X_IRQ_USBWAKEUP);
+		nvic_enable_irq(CM3_IRQ_USBWAKEUP);
 
 	if(BB_I2C0_WAKE)
-		nvic_enable_irq(AM335X_IRQ_I2C0_WAKE);
+		nvic_enable_irq(CM3_IRQ_I2C0_WAKE);
 
 	if(BB_ADTSC_WAKE)
-		nvic_enable_irq(AM335X_IRQ_ADC_TSC_WAKE);
+		nvic_enable_irq(CM3_IRQ_ADC_TSC_WAKE);
 
 	if(BB_UART0_WAKE)
-		nvic_enable_irq(AM335X_IRQ_UART0_WAKE);
+		nvic_enable_irq(CM3_IRQ_UART0_WAKE);
 
 	if(BB_GPIO0_WAKE0)
-		nvic_enable_irq(AM335X_IRQ_GPIO0_WAKE0);
+		nvic_enable_irq(CM3_IRQ_GPIO0_WAKE0);
 
 	if(BB_GPIO0_WAKE1)
-		nvic_enable_irq(AM335X_IRQ_GPIO0_WAKE1);
+		nvic_enable_irq(CM3_IRQ_GPIO0_WAKE1);
 
 	if(BB_RTC_ALARM_WAKE)
-		nvic_enable_irq(AM335X_IRQ_RTC_ALARM_WAKE);
+		nvic_enable_irq(CM3_IRQ_RTC_ALARM_WAKE);
 
 	if(BB_TIMER1_WAKE)
-		nvic_enable_irq(AM335X_IRQ_TIMER1_WAKE);
+		nvic_enable_irq(CM3_IRQ_TIMER1_WAKE);
 
 	if(BB_WDT1_WAKE)
-		nvic_enable_irq(AM335X_IRQ_WDT1_WAKE);
+		nvic_enable_irq(CM3_IRQ_WDT1_WAKE);
 
 #if 0
 	/* Not recommended */
 	if(BB_RTC_TIMER_WAKE)
-		nvic_enable_irq(AM335X_IRQ_RTC_TIMER_WAKE);
+		nvic_enable_irq(CM3_IRQ_RTC_TIMER_WAKE);
 
 	if(BB_TIMER0_WAKE)
-		nvic_enable_irq(AM335X_IRQ_TIMER0_WAKE);
+		nvic_enable_irq(CM3_IRQ_TIMER0_WAKE);
 
 	if(BB_WDT0_WAKE)
-		nvic_enable_irq(AM335X_IRQ_WDT0_WAKE);
+		nvic_enable_irq(CM3_IRQ_WDT0_WAKE);
 #endif
 
 	if(BB_USBWOUT0)
-		nvic_enable_irq(AM335X_IRQ_USB0WOUT);
+		nvic_enable_irq(CM3_IRQ_USB0WOUT);
 
 	if(BB_USBWOUT1)
-		nvic_enable_irq(AM335X_IRQ_USB1WOUT);
+		nvic_enable_irq(CM3_IRQ_USB1WOUT);
 
 	if(BB_MPU_WAKE)
-		nvic_enable_irq(AM335X_IRQ_MPU_WAKE);
+		nvic_enable_irq(CM3_IRQ_MPU_WAKE);
 }
 
 void clear_wake_sources(void)
@@ -183,21 +184,21 @@ void clear_wake_sources(void)
 	cmd_wake_sources = 0x0;	/* All disabled */
 
 	/* Disable the wake interrupts */
-	nvic_disable_irq(AM335X_IRQ_USBWAKEUP);
-	nvic_disable_irq(AM335X_IRQ_I2C0_WAKE);
-	nvic_disable_irq(AM335X_IRQ_RTC_TIMER_WAKE);
-	nvic_disable_irq(AM335X_IRQ_RTC_ALARM_WAKE);
-	nvic_disable_irq(AM335X_IRQ_TIMER0_WAKE);
-	nvic_disable_irq(AM335X_IRQ_TIMER1_WAKE);
-	nvic_disable_irq(AM335X_IRQ_UART0_WAKE);
-	nvic_disable_irq(AM335X_IRQ_GPIO0_WAKE0);
-	nvic_disable_irq(AM335X_IRQ_GPIO0_WAKE1);
-	nvic_disable_irq(AM335X_IRQ_MPU_WAKE);
-	nvic_disable_irq(AM335X_IRQ_WDT0_WAKE);
-	nvic_disable_irq(AM335X_IRQ_WDT1_WAKE);
-	nvic_disable_irq(AM335X_IRQ_ADC_TSC_WAKE);
-	nvic_disable_irq(AM335X_IRQ_USB0WOUT);
-	nvic_disable_irq(AM335X_IRQ_USB1WOUT);
+	nvic_disable_irq(CM3_IRQ_USBWAKEUP);
+	nvic_disable_irq(CM3_IRQ_I2C0_WAKE);
+	nvic_disable_irq(CM3_IRQ_RTC_TIMER_WAKE);
+	nvic_disable_irq(CM3_IRQ_RTC_ALARM_WAKE);
+	nvic_disable_irq(CM3_IRQ_TIMER0_WAKE);
+	nvic_disable_irq(CM3_IRQ_TIMER1_WAKE);
+	nvic_disable_irq(CM3_IRQ_UART0_WAKE);
+	nvic_disable_irq(CM3_IRQ_GPIO0_WAKE0);
+	nvic_disable_irq(CM3_IRQ_GPIO0_WAKE1);
+	nvic_disable_irq(CM3_IRQ_MPU_WAKE);
+	nvic_disable_irq(CM3_IRQ_WDT0_WAKE);
+	nvic_disable_irq(CM3_IRQ_WDT1_WAKE);
+	nvic_disable_irq(CM3_IRQ_ADC_TSC_WAKE);
+	nvic_disable_irq(CM3_IRQ_USB0WOUT);
+	nvic_disable_irq(CM3_IRQ_USB1WOUT);
 
 	/* TODO: Clear all the pending interrupts */
 }

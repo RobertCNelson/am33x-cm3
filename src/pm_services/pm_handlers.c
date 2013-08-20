@@ -13,6 +13,7 @@
 #include <stdint.h>
 
 #include <cm3.h>
+#include <device_cm3.h>
 #include <device_am335x.h>
 #include <io.h>
 #include <prcm_core.h>
@@ -314,7 +315,7 @@ void generic_wake_handler(int wakeup_reason)
 
 	/* If everything is done, we init things again */
 	/* Flush out NVIC interrupts */
-	for (i = 0; i < AM335X_NUM_EXT_INTERRUPTS; i++) {
+	for (i = 0; i < CM3_NUM_EXT_INTERRUPTS; i++) {
 		nvic_disable_irq(i);
 		nvic_clear_irq(i);
 	}
@@ -326,7 +327,7 @@ void generic_wake_handler(int wakeup_reason)
 	a8_i2c_wake_handler(cmd_global_data.i2c_wake_offset);
 
 	/* Enable only the MBX IRQ */
-	nvic_enable_irq(AM335X_IRQ_MBINT0);
+	nvic_enable_irq(CM3_IRQ_MBINT0);
 	nvic_enable_irq(53);
 
 	/* Enable MPU only after we are sure that we are done with the wakeup */

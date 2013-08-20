@@ -30,20 +30,20 @@ void ddr_io_suspend(void)
 	}
 
 	/* Weak pull down for DQ, DM */
-	__raw_writel(SUSP_IO_PULL_DATA, AM33XX_DDR_DATA0_IOCTRL);
-	__raw_writel(SUSP_IO_PULL_DATA, AM33XX_DDR_DATA1_IOCTRL);
+	__raw_writel(SUSP_IO_PULL_DATA, DDR_DATA0_IOCTRL);
+	__raw_writel(SUSP_IO_PULL_DATA, DDR_DATA1_IOCTRL);
 
 	/* Different sleep sequences for DDR2 and DDR3 */
 	if (mem_type == MEM_TYPE_DDR3) {
 		/* Weak pull down for macro CMD0/1 */
-		__raw_writel(SUSP_IO_PULL_CMD1, AM33XX_DDR_CMD0_IOCTRL);
-		__raw_writel(SUSP_IO_PULL_CMD1, AM33XX_DDR_CMD1_IOCTRL);
+		__raw_writel(SUSP_IO_PULL_CMD1, DDR_CMD0_IOCTRL);
+		__raw_writel(SUSP_IO_PULL_CMD1, DDR_CMD1_IOCTRL);
 
 		/*
 		 * Weak pull down for macro CMD2
 		 * exception: keep DDR_RESET pullup
 		 */
-		__raw_writel(SUSP_IO_PULL_CMD2, AM33XX_DDR_CMD2_IOCTRL);
+		__raw_writel(SUSP_IO_PULL_CMD2, DDR_CMD2_IOCTRL);
 
 	}
 }
@@ -63,14 +63,14 @@ void ddr_io_resume(void)
 	/* Different sleep sequences for DDR2 and DDR3 */
 	if (mem_type == MEM_TYPE_DDR3) {
 	/* Disable the pull for CMD2/1/0 */
-		__raw_writel(RESUME_IO_PULL_CMD, AM33XX_DDR_CMD2_IOCTRL);
-		__raw_writel(RESUME_IO_PULL_CMD, AM33XX_DDR_CMD1_IOCTRL);
-		__raw_writel(RESUME_IO_PULL_CMD, AM33XX_DDR_CMD0_IOCTRL);
+		__raw_writel(RESUME_IO_PULL_CMD, DDR_CMD2_IOCTRL);
+		__raw_writel(RESUME_IO_PULL_CMD, DDR_CMD1_IOCTRL);
+		__raw_writel(RESUME_IO_PULL_CMD, DDR_CMD0_IOCTRL);
 	}
 
 	/* Disable the pull for DATA1/0 */
-	__raw_writel(RESUME_IO_PULL_DATA, AM33XX_DDR_DATA1_IOCTRL);
-	__raw_writel(RESUME_IO_PULL_DATA, AM33XX_DDR_DATA0_IOCTRL);
+	__raw_writel(RESUME_IO_PULL_DATA, DDR_DATA1_IOCTRL);
+	__raw_writel(RESUME_IO_PULL_DATA, DDR_DATA0_IOCTRL);
 }
 
 /* same offsets for SA and Aegis */

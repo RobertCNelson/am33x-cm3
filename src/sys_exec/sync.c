@@ -13,7 +13,7 @@
 #include <stdint.h>
 
 #include <cm3.h>
-#include <device_am335x.h>
+#include <device_cm3.h>
 #include <prcm_core.h>
 #include <msg.h>
 #include <hwmod.h>
@@ -33,8 +33,8 @@ void a8_m3_low_power_sync(int cmd_stat_value)
 	a8_notify(cmd_stat_value);
 
 	/* Enable the PRCM interrupt for MPU gated state */
-	nvic_clear_irq(AM335X_IRQ_PRCM_M3_IRQ2);
-	nvic_enable_irq(AM335X_IRQ_PRCM_M3_IRQ2);
+	nvic_clear_irq(CM3_IRQ_PRCM_M3_IRQ2);
+	nvic_enable_irq(CM3_IRQ_PRCM_M3_IRQ2);
 }
 
 void a8_m3_low_power_fast(int cmd_stat_value)
@@ -42,8 +42,8 @@ void a8_m3_low_power_fast(int cmd_stat_value)
 	msg_cmd_stat_update(cmd_stat_value);
 
 	/* Enable the PRCM interrupt for MPU gated state */
-	nvic_clear_irq(AM335X_IRQ_PRCM_M3_IRQ2);
-	nvic_enable_irq(AM335X_IRQ_PRCM_M3_IRQ2);
+	nvic_clear_irq(CM3_IRQ_PRCM_M3_IRQ2);
+	nvic_enable_irq(CM3_IRQ_PRCM_M3_IRQ2);
 }
 
 void init_m3_state_machine(void)
@@ -51,7 +51,7 @@ void init_m3_state_machine(void)
 	int i;
 
 	/* Flush out NVIC interrupts */
-	for (i = 0; i < AM335X_NUM_EXT_INTERRUPTS; i++)
+	for (i = 0; i < CM3_NUM_EXT_INTERRUPTS; i++)
 	{
 		nvic_disable_irq(i);
 		nvic_clear_irq(i);
@@ -62,7 +62,7 @@ void init_m3_state_machine(void)
 	pm_reset();
 
 	/* Enable only the MBX IRQ */
-	nvic_enable_irq(AM335X_IRQ_MBINT0);
+	nvic_enable_irq(CM3_IRQ_MBINT0);
 	nvic_enable_irq(53);
 
 	/*

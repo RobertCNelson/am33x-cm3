@@ -12,7 +12,6 @@
 
 #include <stdint.h>
 
-#include <device_am335x.h>
 #include <system_am335.h>
 
 /* uint32_t system_core_clock; */
