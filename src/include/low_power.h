@@ -85,18 +85,6 @@ void core_ldo_power_up(void);
 
 void sram_ldo_ret_mode(int state);
 
-void ddr_io_suspend(void);
-void ddr_io_resume(void);
-
-void vtp_disable(void);
-void vtp_enable(void);
-
-void set_ddr_reset(void);
-void clear_ddr_reset(void);
-
-void vtt_low(void);
-void vtt_high(void);
-
 void ds_save(void);
 void ds_restore(void);
 
