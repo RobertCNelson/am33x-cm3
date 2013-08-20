@@ -75,6 +75,19 @@ static int clkdms_state_change(int state, const enum clkdm_id *ids)
 	return ret;
 }
 
+bool clkdm_active(enum clkdm_id id)
+{
+	unsigned int var;
+
+	if (!clkdms[id])
+		return false;
+
+	var = __raw_readl(clkdms[id]);
+	var &= DEFAULT_CLKTRCTRL_MASK;
+
+	return var == DEFAULT_CLKTRCTRL_WAKE;
+}
+
 void clkdm_sleep(void)
 {
 	clkdms_state_change(CLKDM_SLEEP, sleep_clkdms);

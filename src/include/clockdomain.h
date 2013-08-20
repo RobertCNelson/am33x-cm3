@@ -13,6 +13,8 @@
 #ifndef __CLOCKDOMAIN_H__
 #define __CLOCKDOMAIN_H__
 
+#include <stddef.h>
+
 enum clkdm_id {
 	CLKDM_L3S_TSC,
 	CLKDM_MPU,
@@ -38,6 +40,7 @@ enum clkdm_id {
 void clockdomain_init(void);
 void clkdm_sleep(void);
 void clkdm_wake(void);
+bool clkdm_active(enum clkdm_id id);
 void mpu_clkdm_sleep(void);
 void mpu_clkdm_wake(void);
 void wkup_clkdm_sleep(void);
