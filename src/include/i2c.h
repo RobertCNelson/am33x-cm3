@@ -10,10 +10,9 @@
  *  software download.
 */
 
-#ifndef __SYSTEM_AM335_H__
-#define __SYSTEM_AM335_H__
+#ifndef __I2C_H__
+#define __I2C_H__
 
-void system_init(void);
-void system_core_clock_update(void);
+int i2c_write(const unsigned char *);
 
 #endif

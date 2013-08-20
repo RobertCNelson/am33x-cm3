@@ -24,6 +24,7 @@
 #include <ddr.h>
 #include <ldo.h>
 #include <msg.h>
+#include <i2c.h>
 
 #define BITBAND_SRAM_REF 	UMEM_ALIAS
 #define BITBAND_SRAM_BASE 	0x22000000

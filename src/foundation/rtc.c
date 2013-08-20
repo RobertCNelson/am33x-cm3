@@ -11,8 +11,8 @@
 */
 
 #include <device_am335x.h>
-#include <system_am335.h>
 #include <clockdomain.h>
+#include <rtc.h>
 
 int rtc_enable_check(void)
 {

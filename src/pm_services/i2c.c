@@ -13,6 +13,7 @@
 #include <device_am335x.h>
 #include <system_am335.h>
 #include <prcm.h>
+#include <i2c.h>
 
 static void i2c_reg_write(unsigned short val, int reg)
 {
