@@ -63,6 +63,11 @@ struct pd_per_bits {
 	unsigned int	pwrst_shift;
 };
 
+struct powerdomain_regs {
+	unsigned int stctrl;
+	unsigned int pwrstst;
+};
+
 void powerdomain_reset(void);
 void powerdomain_init(void);
 
