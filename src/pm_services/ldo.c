@@ -11,11 +11,16 @@
 */
 
 #include <io.h>
-#include <prm335x.h>
 #include <prcm_core.h>
 #include <ldo.h>
 #include <ldo_335x.h>
 #include <ldo_43xx.h>
+
+/* AM*_PRM_LDO_SRAM_CORE_CTRL register bit-fields */
+#define SRAM_IN_TRANSITION	(1 << 9)
+#define SRAMLDO_STATUS		(1 << 8)
+#define RETMODE_ENABLE		(1 << 0)
+#define RETMODE_DISABLE		(0 << 0)
 
 static const unsigned int *ldo_regs;
 
