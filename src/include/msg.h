@@ -130,9 +130,9 @@ extern struct cmd_data cmd_global_data;
 extern struct state_handler cmd_handlers[];
 
 /* Board specifics populated in IPC_REG4 */
-int mem_type;			/* Memory Type 2 = DDR2, 3 = DDR3 */
-bool vtt_toggle; 		/* VTT Toggle  true = required */
-int vtt_gpio_pin; 		/* VTT GPIO Pin */
+extern int mem_type;		/* Memory Type 2 = DDR2, 3 = DDR3 */
+extern bool vtt_toggle; 	/* VTT Toggle  true = required */
+extern int vtt_gpio_pin; 	/* VTT GPIO Pin */
 
 void m3_firmware_version(void);
 

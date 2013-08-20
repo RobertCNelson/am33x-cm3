@@ -20,6 +20,9 @@
 #include <sync.h>
 
 struct cmd_data cmd_global_data;
+int mem_type;
+bool vtt_toggle;
+int vtt_gpio_pin;
 
 static union state_data custom_state_data;
 
