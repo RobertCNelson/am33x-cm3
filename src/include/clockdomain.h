@@ -38,13 +38,11 @@ enum clkdm_id {
 };
 
 void clockdomain_init(void);
-void clkdm_sleep(void);
-void clkdm_wake(void);
+void clkdm_sleep(enum clkdm_id id);
+void clkdm_wake(enum clkdm_id id);
+void clkdms_sleep(void);
+void clkdms_wake(void);
 bool clkdm_active(enum clkdm_id id);
-void mpu_clkdm_sleep(void);
-void mpu_clkdm_wake(void);
-void wkup_clkdm_sleep(void);
-void wkup_clkdm_wake(void);
 
 #endif
 

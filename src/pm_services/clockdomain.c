@@ -16,6 +16,9 @@
 #include <clockdomain_335x.h>
 #include <clockdomain_43xx.h>
 
+#define CLKDM_SLEEP	0x1
+#define CLKDM_WAKE	0x2
+
 static const unsigned int *clkdms;
 static const enum clkdm_id *sleep_clkdms;
 
@@ -34,9 +37,6 @@ void clockdomain_init(void)
 #define DEFAULT_CLKTRCTRL_MASK		(3 << DEFAULT_CLKTRCTRL_SHIFT)
 #define DEFAULT_CLKTRCTRL_WAKE		0x2
 #define DEFAULT_CLKTRCTRL_SLEEP		0x1
-
-#define CLKDM_SLEEP	0x1
-#define CLKDM_WAKE	0x2
 
 static void _clkdm_sleep(int reg)
 {
@@ -88,32 +88,22 @@ bool clkdm_active(enum clkdm_id id)
 	return var == DEFAULT_CLKTRCTRL_WAKE;
 }
 
-void clkdm_sleep(void)
+void clkdm_sleep(enum clkdm_id id)
+{
+	_clkdm_sleep(clkdms[id]);
+}
+
+void clkdm_wake(enum clkdm_id id)
+{
+	_clkdm_wakeup(clkdms[id]);
+}
+
+void clkdms_sleep(void)
 {
 	clkdms_state_change(CLKDM_SLEEP, sleep_clkdms);
 }
 
-void clkdm_wake(void)
+void clkdms_wake(void)
 {
 	clkdms_state_change(CLKDM_WAKE, sleep_clkdms);
-}
-
-void mpu_clkdm_sleep(void)
-{
-	clkdm_state_change(CLKDM_SLEEP, CLKDM_MPU);
-}
-
-void mpu_clkdm_wake(void)
-{
-	clkdm_state_change(CLKDM_WAKE, CLKDM_MPU);
-}
-
-void wkup_clkdm_sleep(void)
-{
-	clkdm_state_change(CLKDM_SLEEP, CLKDM_WKUP);
-}
-
-void wkup_clkdm_wake(void)
-{
-	clkdm_state_change(CLKDM_WAKE, CLKDM_WKUP);
 }
