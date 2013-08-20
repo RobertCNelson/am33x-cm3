@@ -14,7 +14,6 @@
 
 #include <cm3.h>
 #include <device_cm3.h>
-#include <system_am335.h>
 #include <prcm_core.h>
 #include <msg.h>
 #include <trace.h>
@@ -62,8 +61,6 @@ int am335_init(void)
 
 int main(void)
 {
-	system_init();	/* Setup Systick and global freq val */
-
 	/*
 	 * need to configure bit 2 of System control register for sleepdeep
 	 * bit 1 of SCR will enable sleeponexit and this needs to be explored
