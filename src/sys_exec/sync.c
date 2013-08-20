@@ -57,7 +57,7 @@ void init_m3_state_machine(void)
 
 	trace_init();
 
-	pm_init();
+	pm_reset();
 
 	/* Enable only the MBX IRQ */
 	nvic_enable_irq(AM335X_IRQ_MBINT0);

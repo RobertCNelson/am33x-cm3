@@ -141,7 +141,7 @@ union state_data idle_data = {
 };
 
 /* Clear out the global variables here */
-void pm_init(void)
+void pm_reset(void)
 {
 	cmd_global_data.cmd_id 	= CMD_ID_INVALID;
 	cmd_global_data.data 	= NULL;

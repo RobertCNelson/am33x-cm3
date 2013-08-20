@@ -83,7 +83,7 @@ unsigned int am33xx_per[85];
 
 unsigned int watermark;
 
-void pm_init(void);
+void pm_reset(void);
 
 void system_init(void);
 void system_core_clock_update(void);

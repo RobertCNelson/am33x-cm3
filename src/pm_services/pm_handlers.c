@@ -310,7 +310,7 @@ void generic_wake_handler(int wakeup_reason)
 
 	trace_init();
 
-	pm_init();
+	pm_reset();
 
 	a8_i2c_wake_handler(cmd_global_data.i2c_wake_offset);
 

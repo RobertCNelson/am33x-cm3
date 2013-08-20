@@ -36,7 +36,7 @@ int am335_init(void)
 
 	trace_init();
 
-	pm_init();
+	pm_reset();
 
 	setup_soc();
 
