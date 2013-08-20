@@ -296,7 +296,8 @@ void generic_wake_handler(int wakeup_reason)
 
 	msg_cmd_wakeup_reason_update(wakeup_reason);
 
-	enable_master_oscillator();
+	if (cmd_global_data.data->deep_sleep.mosc_state == MOSC_OFF)
+		enable_master_oscillator();
 
 	if (cmd_handlers[cmd_global_data.cmd_id].do_ddr)
 		ds_restore();
