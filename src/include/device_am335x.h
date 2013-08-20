@@ -205,13 +205,6 @@
 #define AM33XX_DDR_DATA0_IOCTRL		(CONTROL_BASE + 0x1440)
 #define AM33XX_DDR_DATA1_IOCTRL		(CONTROL_BASE + 0x1444)
 
-/* DPLL */
-#define DPLL_PER		0
-#define DPLL_DISP		1
-#define DPLL_DDR		2
-#define DPLL_MPU		3
-#define DPLL_CORE		4
-
 /* DPLL_PWR_SW_STATUS bit fields: */
 #define PGOODOUT_DDR_STATUS	(1 << 25)
 #define PONOUT_DDR_STATUS	(1 << 24)

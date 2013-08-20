@@ -80,12 +80,6 @@ void configure_deepsleep_count(int ds_count);
 void configure_wake_sources(int wake_sources);
 void clear_wake_sources(void);
 
-void dpll_power_down(unsigned int dpll);
-void dpll_power_up(unsigned int dpll);
-
-void am33xx_power_down_plls(void);
-void am33xx_power_up_plls(void);
-
 void core_ldo_power_down(void);
 void core_ldo_power_up(void);
 
@@ -102,9 +96,6 @@ void clear_ddr_reset(void);
 
 void vtt_low(void);
 void vtt_high(void);
-
-void pll_bypass(unsigned int dpll);
-void pll_lock(unsigned int dpll);
 
 void ds_save(void);
 void ds_restore(void);
