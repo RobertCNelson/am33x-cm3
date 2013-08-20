@@ -36,7 +36,7 @@ struct dpll_regs {
 	unsigned int idlest_reg;
 };
 
-static const struct dpll_regs dpll_regs[DPLL_COUNT]  = {
+static const struct dpll_regs am335x_dpll_regs[DPLL_COUNT] = {
 	[DPLL_PER] = {
 		.dpll_pwr_sw_ctrl_reg	= DPLL_PWR_SW_CTRL,
 		.sw_ctrl_dpll_bit	= SW_CTRL_PER_DPLL,
@@ -91,6 +91,11 @@ static const struct dpll_regs dpll_regs[DPLL_COUNT]  = {
 		.idlest_reg		= AM335X_CM_IDLEST_DPLL_CORE,
 	},
 };
+
+/* TODO */
+static const struct dpll_regs am43xx_dpll_regs[DPLL_COUNT];
+
+static const struct dpll_regs *dpll_regs;
 
 static unsigned int pll_mode[DPLL_COUNT];
 
@@ -179,28 +184,31 @@ static void dpll_power_up(enum dpll_id dpll)
 	__raw_writel(var, dpll_regs[dpll].dpll_pwr_sw_ctrl_reg);
 }
 
+static const enum dpll_id am335x_pg2_power_down_plls[] = {
+	DPLL_DDR,
+	DPLL_DISP,
+	DPLL_PER,
+	DPLL_END,
+};
+
+static const enum dpll_id *power_down_plls;
+
 /* DPLL retention update for PG 2.0 */
 void am33xx_power_down_plls(void)
 {
-	if (soc_id == AM335X_SOC_ID && soc_rev > AM335X_REV_ES1_0) {
-		dpll_power_down(DPLL_DDR);
-		dpll_power_down(DPLL_DISP);
-		dpll_power_down(DPLL_PER);
-	} else if (soc_id == AM43XX_SOC_ID) {
-		/* TODO */
-	}
+	int i;
+
+	for (i = 0; power_down_plls && power_down_plls[i] != DPLL_END; i++)
+		dpll_power_down(power_down_plls[i]);
 }
 
 /* DPLL retention update for PG 2.x */
 void am33xx_power_up_plls(void)
 {
-	if (soc_id == AM335X_SOC_ID && soc_rev > AM335X_REV_ES1_0) {
-		dpll_power_up(DPLL_DDR);
-		dpll_power_up(DPLL_DISP);
-		dpll_power_up(DPLL_PER);
-	} else if (soc_id == AM43XX_SOC_ID) {
-		/* TODO */
-	}
+	int i;
+
+	for (i = 0; power_down_plls && power_down_plls[i] != DPLL_END; i++)
+		dpll_power_up(power_down_plls[i]);
 }
 
 void pll_bypass(enum dpll_id dpll)
@@ -228,4 +236,15 @@ void dpll_reset(void)
 
 	for (i = 0; i < DPLL_COUNT; i++)
 		pll_mode[i] = 0;
+}
+
+void dpll_init(void)
+{
+	if (soc_id == AM335X_SOC_ID) {
+		dpll_regs = am335x_dpll_regs;
+		if (soc_rev > AM335X_REV_ES1_0)
+
+			power_down_plls = am335x_pg2_power_down_plls;
+	} else if (soc_id == AM43XX_SOC_ID)
+		dpll_regs = am43xx_dpll_regs;
 }
