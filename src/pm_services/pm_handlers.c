@@ -19,6 +19,7 @@
 #include <system_am335.h>
 #include <clockdomain.h>
 #include <hwmod.h>
+#include <powerdomain.h>
 
 /* Enter RTC mode */
 void a8_lp_rtc_handler(struct cmd_data *data)

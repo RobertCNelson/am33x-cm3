@@ -161,9 +161,6 @@ int a8_i2c_wake_handler(unsigned short);
 #define BB_MPU_WAKE		*((volatile int *)(BITBAND_SRAM(&cmd_wake_sources, 11)))
 #define BB_USBWOUT1		*((volatile int *)(BITBAND_SRAM(&cmd_wake_sources, 12)))
 
-#define PD_MPU	0x1
-#define PD_PER	0x2
-
 #define RESUME_REG	0x0
 #define STAT_ID_REG	0x1
 #define PARAM1_REG	0x2

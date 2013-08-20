@@ -22,6 +22,7 @@
 #include <system_am335.h>
 #include <clockdomain.h>
 #include <hwmod.h>
+#include <powerdomain.h>
 
 union state_data rtc_mode_data = {
 	.rtc = {
@@ -137,126 +138,13 @@ union state_data idle_data = {
 	},
 };
 
-/* PRM_MPU bits */
-static const struct pd_mpu_bits am335x_mpu_bits = {
-	.ram_retst_mask		= AM335X_MPU_RAM_RETSTATE_MASK,
-	.ram_retst_shift	= AM335X_MPU_RAM_RETSTATE_SHIFT,
-	.l2_retst_mask		= AM335X_MPU_L2_RETSTATE_MASK,
-	.l2_retst_shift		= AM335X_MPU_L2_RETSTATE_SHIFT,
-	.l1_retst_mask		= AM335X_MPU_L1_RETSTATE_MASK,
-	.l1_retst_shift		= AM335X_MPU_L1_RETSTATE_SHIFT,
-	.lpstchg_mask		= AM335X_MPU_LOWPOWERSTATECHANGE_MASK,
-	.lpstchg_shift		= AM335X_MPU_LOWPOWERSTATECHANGE_SHIFT,
-	.logicretst_mask	= AM335X_MPU_LOGICRETSTATE_MASK,
-	.logicretst_shift	= AM335X_MPU_LOGICRETSTATE_SHIFT,
-	.pwrst_mask		= AM335X_MPU_POWERSTATE_MASK,
-	.pwrst_shift		= AM335X_MPU_POWERSTATE_SHIFT,
-};
-
-/* PRM_MPU bits */
-static const struct pd_mpu_bits am43xx_mpu_bits = {
-	.ram_retst_mask		= AM43XX_MPU_RAM_RETSTATE_MASK,
-	.ram_retst_shift	= AM43XX_MPU_RAM_RETSTATE_SHIFT,
-	.l2_retst_mask		= AM43XX_MPU_L2_RETSTATE_MASK,
-	.l2_retst_shift		= AM43XX_MPU_L2_RETSTATE_SHIFT,
-	.l1_retst_mask		= AM43XX_MPU_L1_RETSTATE_MASK,
-	.l1_retst_shift		= AM43XX_MPU_L1_RETSTATE_SHIFT,
-	.lpstchg_mask		= AM43XX_MPU_LOWPOWERSTATECHANGE_MASK,
-	.lpstchg_shift		= AM43XX_MPU_LOWPOWERSTATECHANGE_SHIFT,
-	.logicretst_mask	= AM43XX_MPU_LOGICRETSTATE_MASK,
-	.logicretst_shift	= AM43XX_MPU_LOGICRETSTATE_SHIFT,
-	.pwrst_mask		= AM43XX_MPU_POWERSTATE_MASK,
-	.pwrst_shift		= AM43XX_MPU_POWERSTATE_SHIFT,
-};
-
-/* PRM_PER bits */
-static const struct pd_per_bits am335x_per_bits = {
-	.per_retst_mask		= AM335X_PER_MEM_RETSTATE_MASK,
-	.per_retst_shift	= AM335X_PER_MEM_RETSTATE_SHIFT,
-	.ram1_retst_mask	= AM335X_PER_RAM_MEM_RETSTATE_MASK,
-	.ram1_retst_shift	= AM335X_PER_RAM_MEM_RETSTATE_SHIFT,
-	.icss_retst_mask	= AM335X_PER_ICSS_MEM_RETSTATE_MASK,
-	.icss_retst_shift	= AM335X_PER_ICSS_MEM_RETSTATE_SHIFT,
-	.lpstchg_mask		= AM335X_PER_LOWPOWERSTATECHANGE_MASK,
-	.lpstchg_shift		= AM335X_PER_LOWPOWERSTATECHANGE_SHIFT,
-	.logicretst_mask	= AM335X_PER_LOGICRETSTATE_MASK,
-	.logicretst_shift	= AM335X_PER_LOGICRETSTATE_SHIFT,
-	.pwrst_mask		= AM335X_PER_POWERSTATE_MASK,
-	.pwrst_shift		= AM335X_PER_POWERSTATE_SHIFT,
-};
-
-/* PRM_PER bits */
-static const struct pd_per_bits am43xx_per_bits = {
-	.per_retst_mask		= AM43XX_PER_MEM_RETSTATE_MASK,
-	.per_retst_shift	= AM43XX_PER_MEM_RETSTATE_SHIFT,
-	.ram1_retst_mask	= AM43XX_PER_RAM1_MEM_RETSTATE_MASK,
-	.ram1_retst_shift	= AM43XX_PER_RAM1_MEM_RETSTATE_SHIFT,
-	.ram2_retst_mask	= AM43XX_PER_RAM2_MEM_RETSTATE_MASK,
-	.ram2_retst_shift	= AM43XX_PER_RAM2_MEM_RETSTATE_SHIFT,
-	.icss_retst_mask	= AM43XX_PER_ICSS_MEM_RETSTATE_MASK,
-	.icss_retst_shift	= AM43XX_PER_ICSS_MEM_RETSTATE_SHIFT,
-	.lpstchg_mask		= AM43XX_PER_LOWPOWERSTATECHANGE_MASK,
-	.lpstchg_shift		= AM43XX_PER_LOWPOWERSTATECHANGE_SHIFT,
-	.logicretst_mask	= AM43XX_PER_LOGICRETSTATE_MASK,
-	.logicretst_shift	= AM43XX_PER_LOGICRETSTATE_SHIFT,
-	.pwrst_mask		= AM43XX_PER_POWERSTATE_MASK,
-	.pwrst_shift		= AM43XX_PER_POWERSTATE_SHIFT,
-};
-
-struct powerdomain_regs {
-	unsigned int stctrl;
-	unsigned int pwrstst;
-};
-
-struct powerdomain_state {
-	unsigned int stctrl_next_val;
-	unsigned int stctrl_prev_val;
-	unsigned int pwrstst_prev_val;
-};
-
-static const struct powerdomain_regs am335x_pd_regs[] = {
-	[PD_MPU] = {
-		.stctrl		= AM335X_PM_MPU_PWRSTCTRL,
-		.pwrstst	= AM335X_PM_MPU_PWRSTST,
-	},
-	[PD_PER] = {
-		.stctrl		= AM335X_PM_PER_PWRSTCTRL,
-		.pwrstst	= AM335X_PM_PER_PWRSTST,
-	},
-};
-
-static const struct powerdomain_regs am43xx_pd_regs[] = {
-	[PD_MPU] = {
-		.stctrl		= AM43XX_PM_MPU_PWRSTCTRL,
-		.pwrstst	= AM43XX_PM_MPU_PWRSTST,
-	},
-	[PD_PER] = {
-		.stctrl		= AM43XX_PM_PER_PWRSTCTRL,
-		.pwrstst	= AM43XX_PM_PER_PWRSTST,
-	},
-};
-
-static const struct pd_mpu_bits *mpu_bits;
-static const struct pd_per_bits *per_bits;
-static const struct powerdomain_regs *pd_regs;
-
-static struct powerdomain_state pd_states[] = {
-	[PD_MPU] = {},
-	[PD_PER] = {},
-};
-
 /* Clear out the global variables here */
 void pm_init(void)
 {
 	cmd_global_data.cmd_id 	= CMD_ID_INVALID;
 	cmd_global_data.data 	= NULL;
 
-	pd_states[PD_MPU].stctrl_next_val = 0;
-	pd_states[PD_MPU].stctrl_prev_val = 0;
-	pd_states[PD_MPU].pwrstst_prev_val = 0;
-	pd_states[PD_PER].stctrl_next_val = 0;
-	pd_states[PD_PER].stctrl_prev_val = 0;
-	pd_states[PD_PER].pwrstst_prev_val = 0;
+	powerdomain_reset();
 }
 
 void setup_soc(void)
@@ -269,122 +157,9 @@ void setup_soc(void)
 	var = __raw_readl(CONTROL_STATUS);
 	soc_type = (var & CONTROL_STATUS_DEVTYPE_MASK) >> CONTROL_STATUS_DEVTYPE_SHIFT;
 
-	/* yes this is ugly */
-	if (soc_id == AM335X_SOC_ID) {
-		mpu_bits = &am335x_mpu_bits;
-		per_bits = &am335x_per_bits;
-		pd_regs = am335x_pd_regs;
-	} else if (soc_id == AM43XX_SOC_ID) {
-		mpu_bits = &am43xx_mpu_bits;
-		per_bits = &am43xx_per_bits;
-		pd_regs = am43xx_pd_regs;
-	}
-
 	clockdomain_init();
 	hwmod_init();
-}
-
-/* PD related */
-int pd_state_change(int val, int pd)
-{
-	pd_states[pd].stctrl_next_val = val;
-	pd_states[pd].stctrl_prev_val = __raw_readl(pd_regs[pd].stctrl);
-	pd_states[pd].pwrstst_prev_val = __raw_readl(pd_regs[pd].pwrstst);
-	__raw_writel(val, pd_regs[pd].stctrl);
-
-	return 0;
-}
-
-int mpu_ram_ret_state_change(int val, int var)
-{
-	var = var_mod(var, mpu_bits->ram_retst_mask,
-				 (val << mpu_bits->ram_retst_shift));
-
-	return var;
-}
-
-int mpu_l1_ret_state_change(int val, int var)
-{
-	var = var_mod(var, mpu_bits->l1_retst_mask,
-				 (val << mpu_bits->l1_retst_shift));
-
-	return var;
-}
-
-int mpu_l2_ret_state_change(int val, int var)
-{
-	var = var_mod(var, mpu_bits->l2_retst_mask,
-				 (val << mpu_bits->l2_retst_shift));
-
-	return var;
-}
-
-int icss_mem_ret_state_change(int val, int var)
-{
-	var = var_mod(var, per_bits->icss_retst_mask,
-				 (val << per_bits->icss_retst_shift));
-
-	return var;
-}
-
-int per_mem_ret_state_change(int val, int var)
-{
-	var = var_mod(var, per_bits->per_retst_mask,
-				 (val << per_bits->per_retst_shift));
-
-	return var;
-}
-
-int ocmc_mem_ret_state_change(int val, int var)
-{
-	var = var_mod(var, per_bits->ram1_retst_mask,
-				 (val << per_bits->ram1_retst_shift));
-
-	if (per_bits->ram2_retst_mask)
-		var = var_mod(var, per_bits->ram2_retst_mask,
-				 (val << per_bits->ram2_retst_shift));
-
-	return var;
-}
-
-int per_powerst_change(int val, int var)
-{
-	var = var_mod(var, per_bits->pwrst_mask,
-				(val << per_bits->pwrst_shift));
-
-	return var;
-}
-
-int mpu_powerst_change(int val, int var)
-{
-	var = var_mod(var, mpu_bits->pwrst_mask,
-				(val << mpu_bits->pwrst_shift));
-
-	return var;
-}
-
-int get_pd_per_stctrl_val(struct deep_sleep_data *data)
-{
-	int v = 0;
-
-	v = per_powerst_change(data->pd_per_state, v);
-	v = icss_mem_ret_state_change(data->pd_per_icss_mem_ret_state, v);
-	v = per_mem_ret_state_change(data->pd_per_mem_ret_state, v);
-	v = ocmc_mem_ret_state_change(data->pd_per_ocmc_ret_state, v);
-
-	return v;
-}
-
-int get_pd_mpu_stctrl_val(struct deep_sleep_data *data)
-{
-	int v = 0;
-
-	v = mpu_powerst_change(data->pd_mpu_state, v);
-	v = mpu_ram_ret_state_change(data->pd_mpu_ram_ret_state, v);
-	v = mpu_l1_ret_state_change(data->pd_mpu_l1_ret_state, v);
-	v = mpu_l2_ret_state_change(data->pd_mpu_l2_ret_state, v);
-
-	return v;
+	powerdomain_init();
 }
 
 /* DeepSleep related */
@@ -505,37 +280,6 @@ void clear_wake_sources(void)
 	nvic_disable_irq(AM335X_IRQ_USB1WOUT);
 
 	/* TODO: Clear all the pending interrupts */
-}
-
-void pd_state_restore(int pd)
-{
-	__raw_writel(pd_states[pd].stctrl_prev_val, pd_regs[pd].stctrl);
-}
-
-/* Checking only the stst bits for now */
-static int verify_pd_transition(int pd)
-{
-	unsigned int ctrl;
-	unsigned int stst;
-
-	ctrl = __raw_readl(pd_regs[pd].stctrl);
-	stst = __raw_readl(pd_regs[pd].pwrstst);
-
-	if ((ctrl & 0x3) == (stst & 0x3))
-		return CMD_STAT_PASS;
-	else
-		return CMD_STAT_FAIL;
-}
-
-int verify_pd_transitions(void)
-{
-	int result;
-
-	result = verify_pd_transition(PD_MPU);
-	if (result == CMD_STAT_FAIL)
-		return result;
-
-	return verify_pd_transition(PD_PER);
 }
 
 struct dpll_pd_data {
