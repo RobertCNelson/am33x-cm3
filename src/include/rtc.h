@@ -10,12 +10,11 @@
  *  software download.
 */
 
-#ifndef __SYSTEM_AM335_H__
-#define __SYSTEM_AM335_H__
+#ifndef __RTC_H__
+#define __RTC_H__
 
-void system_init(void);
-void system_core_clock_update(void);
-
-int i2c_write(const unsigned char *);
+int rtc_enable_check(void);
+unsigned int rtc_reg_read(int);
+void rtc_reg_write(unsigned int, int);
 
 #endif
