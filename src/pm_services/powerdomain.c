@@ -151,7 +151,7 @@ void powerdomain_init(void)
 	}
 }
 
-unsigned int pd_state_change(unsigned int val, int pd)
+unsigned int pd_state_change(unsigned int val, enum powerdomain_id pd)
 {
 	pd_states[pd].stctrl_next_val = val;
 	pd_states[pd].stctrl_prev_val = __raw_readl(pd_regs[pd].stctrl);
@@ -239,13 +239,13 @@ unsigned int get_pd_mpu_stctrl_val(struct deep_sleep_data *data)
 	return v;
 }
 
-void pd_state_restore(int pd)
+void pd_state_restore(enum powerdomain_id pd)
 {
 	__raw_writel(pd_states[pd].stctrl_prev_val, pd_regs[pd].stctrl);
 }
 
 /* Checking only the stst bits for now */
-static int verify_pd_transition(int pd)
+static int verify_pd_transition(enum powerdomain_id pd)
 {
 	unsigned int ctrl;
 	unsigned int stst;

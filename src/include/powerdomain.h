@@ -13,8 +13,10 @@
 #ifndef __POWERDOMAIN_H__
 #define __POWERDOMAIN_H__
 
-#define PD_MPU  0x1
-#define PD_PER  0x2
+enum powerdomain_id {
+	PD_MPU,
+	PD_PER,
+};
 
 #define PD_ON                   0x3
 #define PD_RET                  0x1
@@ -64,8 +66,8 @@ struct pd_per_bits {
 void powerdomain_reset(void);
 void powerdomain_init(void);
 
-unsigned int pd_state_change(unsigned int, int);
-void pd_state_restore(int);
+unsigned int pd_state_change(unsigned int, enum powerdomain_id id);
+void pd_state_restore(enum powerdomain_id id);
 
 unsigned int get_pd_per_stctrl_val(struct deep_sleep_data *data);
 unsigned int get_pd_mpu_stctrl_val(struct deep_sleep_data *data);
