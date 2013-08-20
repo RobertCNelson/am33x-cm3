@@ -144,6 +144,17 @@ void pll_lock(enum dpll_id dpll)
 		while (!(__raw_readl(dpll_regs[dpll].idlest_reg)));
 }
 
+unsigned int dpll_get_div(enum dpll_id dpll)
+{
+	unsigned int val;
+
+	val = __raw_readl(dpll_regs[dpll].clksel_reg);
+	val &= DPLL_DIV_PER_MASK;
+	val >>= DPLL_DIV_PER_SHIFT;
+
+	return val;
+}
+
 void dpll_reset(void)
 {
 	int i = 0;

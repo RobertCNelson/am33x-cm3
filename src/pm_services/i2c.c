@@ -11,6 +11,7 @@
 */
 
 #include <device_common.h>
+#include <dpll.h>
 #include <io.h>
 #include <prcm.h>
 #include <i2c.h>
@@ -113,9 +114,8 @@ static void i2c_program_freq(int speed_khz)
 	index >>= CONTROL_STATUS_SYSBOOT1_SHIFT;
 	xtal_freq = xtal_freqs[index];
 
-	n2_div = __raw_readl(AM335X_CM_CLKSEL_DPLL_PERIPH);
-	n2_div &= DPLL_DIV_PER_MASK;
-	n2_div >>= DPLL_DIV_PER_SHIFT;
+	/* FIXME: May need to change for am43xx */
+	n2_div = dpll_get_div(DPLL_PER);
 	per_clkoutm2 = xtal_freq / (n2_div + 1);
 	i2c_fclk = per_clkoutm2 / 4;
 

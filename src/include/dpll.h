@@ -40,6 +40,7 @@ struct dpll_regs {
 
 	unsigned int clkmode_reg;
 	unsigned int idlest_reg;
+	unsigned int clksel_reg;
 };
 
 void plls_power_down(void);
@@ -47,6 +48,8 @@ void plls_power_up(void);
 
 void pll_bypass(enum dpll_id dpll);
 void pll_lock(enum dpll_id dpll);
+
+unsigned int dpll_get_div(enum dpll_id dpll);
 
 void dpll_reset(void);
 void dpll_init(void);

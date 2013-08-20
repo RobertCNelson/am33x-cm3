@@ -30,6 +30,7 @@ const struct dpll_regs am335x_dpll_regs[DPLL_COUNT] = {
 		.ponout_status_bit	= PONOUT_PER_STATUS,
 		.clkmode_reg		= AM335X_CM_CLKMODE_DPLL_PER,
 		.idlest_reg		= AM335X_CM_IDLEST_DPLL_PER,
+		.clksel_reg		= AM335X_CM_CLKSEL_DPLL_PERIPH,
 	},
 	[DPLL_DISP] = {
 		.dpll_pwr_sw_ctrl_reg	= DPLL_PWR_SW_CTRL,
@@ -45,6 +46,7 @@ const struct dpll_regs am335x_dpll_regs[DPLL_COUNT] = {
 		.ponout_status_bit	= PONOUT_DISP_STATUS,
 		.clkmode_reg		= AM335X_CM_CLKMODE_DPLL_DISP,
 		.idlest_reg		= AM335X_CM_IDLEST_DPLL_DISP,
+		.clksel_reg		= AM335X_CM_CLKSEL_DPLL_DISP,
 	},
 	[DPLL_DDR] = {
 		.dpll_pwr_sw_ctrl_reg	= DPLL_PWR_SW_CTRL,
@@ -60,14 +62,17 @@ const struct dpll_regs am335x_dpll_regs[DPLL_COUNT] = {
 		.ponout_status_bit	= PONOUT_DDR_STATUS,
 		.clkmode_reg		= AM335X_CM_CLKMODE_DPLL_DDR,
 		.idlest_reg		= AM335X_CM_IDLEST_DPLL_DDR,
+		.clksel_reg		= AM335X_CM_CLKSEL_DPLL_DDR,
 	},
 	[DPLL_MPU] = {
 		.clkmode_reg		= AM335X_CM_CLKMODE_DPLL_MPU,
 		.idlest_reg		= AM335X_CM_IDLEST_DPLL_MPU,
+		.clksel_reg		= AM335X_CM_CLKSEL_DPLL_MPU,
 	},
 	[DPLL_CORE] = {
 		.clkmode_reg		= AM335X_CM_CLKMODE_DPLL_CORE,
 		.idlest_reg		= AM335X_CM_IDLEST_DPLL_CORE,
+		.clksel_reg		= AM335X_CM_CLKSEL_DPLL_CORE,
 	},
 };
 
