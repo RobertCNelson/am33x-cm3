@@ -194,6 +194,14 @@ void msg_cmd_dispatcher(void)
 	cmd_handlers[id].cmd_handler(&cmd_global_data);
 }
 
+void m3_param_reset(void)
+{
+	msg_write(DS_IPC_DEFAULT, PARAM1_REG);
+	msg_write(DS_IPC_DEFAULT, PARAM2_REG);
+	msg_write(DS_IPC_DEFAULT, PARAM3_REG);
+	msg_write(DS_IPC_DEFAULT, PARAM4_REG);
+}
+
 void m3_firmware_version(void)
 {
 	unsigned int value;

@@ -135,6 +135,7 @@ extern bool vtt_toggle; 	/* VTT Toggle  true = required */
 extern int vtt_gpio_pin; 	/* VTT GPIO Pin */
 
 void m3_firmware_version(void);
+void m3_param_reset(void);
 
 unsigned int msg_read(char);
 void msg_write(unsigned int, char);

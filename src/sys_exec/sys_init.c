@@ -35,6 +35,9 @@ int am335_init(void)
 	for (i=0; i < CM3_NUM_EXT_INTERRUPTS; i++)
 		nvic_disable_irq(i);
 
+	/* Clean the IPC registers */
+	m3_param_reset();
+
 	trace_init();
 
 	pm_reset();
