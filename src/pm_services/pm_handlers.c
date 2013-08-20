@@ -18,7 +18,6 @@
 #include <io.h>
 #include <prcm_core.h>
 #include <msg.h>
-#include <prm335x.h>
 #include <clockdomain.h>
 #include <hwmod.h>
 #include <powerdomain.h>
@@ -129,8 +128,7 @@ void a8_lp_ds0_handler(struct cmd_data *data)
 		disable_master_oscillator();
 		/* Core LDO retention for PG 2.0 if PD_PER is in RET */
 		if (soc_id == AM335X_SOC_ID && soc_rev > AM335X_REV_ES1_0) {
-			if ((__raw_readl(AM335X_PM_PER_PWRSTST) &
-				PWR_STATE_STS_MASK) == POWER_STATE_STS_RET) {
+			if (pd_read_state(PD_PER) == PD_RET) {
 				/* set Auto_RAMP_EN in SMA2 Spare Register (SMA2). */
 				temp = __raw_readl(SMA2_SPARE_REG);
 				temp |= VSLDO_CORE_AUTO_RAMP_EN;

@@ -73,6 +73,7 @@ void powerdomain_init(void);
 
 unsigned int pd_state_change(unsigned int, enum powerdomain_id id);
 void pd_state_restore(enum powerdomain_id id);
+unsigned int pd_read_state(enum powerdomain_id pd);
 
 unsigned int get_pd_per_stctrl_val(struct deep_sleep_data *data);
 unsigned int get_pd_mpu_stctrl_val(struct deep_sleep_data *data);

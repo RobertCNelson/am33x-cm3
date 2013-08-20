@@ -18,6 +18,8 @@
 #include <powerdomain_335x.h>
 #include <powerdomain_43xx.h>
 
+#define PD_STATE_MASK	0x3
+
 struct powerdomain_state {
 	unsigned int stctrl_next_val;
 	unsigned int stctrl_prev_val;
@@ -151,6 +153,11 @@ void pd_state_restore(enum powerdomain_id pd)
 	__raw_writel(pd_states[pd].stctrl_prev_val, pd_regs[pd].stctrl);
 }
 
+unsigned int pd_read_state(enum powerdomain_id pd)
+{
+	return __raw_readl(pd_regs[pd].pwrstst) & PD_STATE_MASK;
+}
+
 /* Checking only the stst bits for now */
 static int verify_pd_transition(enum powerdomain_id pd)
 {
@@ -160,7 +167,7 @@ static int verify_pd_transition(enum powerdomain_id pd)
 	ctrl = __raw_readl(pd_regs[pd].stctrl);
 	stst = __raw_readl(pd_regs[pd].pwrstst);
 
-	if ((ctrl & 0x3) == (stst & 0x3))
+	if ((ctrl & PD_STATE_MASK) == (stst & PD_STATE_MASK))
 		return CMD_STAT_PASS;
 	else
 		return CMD_STAT_FAIL;
