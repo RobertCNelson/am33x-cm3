@@ -137,33 +137,6 @@
 #define RTC_INTERRUPTS_IT_ALARM    (1<<3)
 #define RTC_INTERRUPTS_IT_TIMER    (1<<2)
 
-/* I2C */
-#define OMAP_I2C_SYSC_AUTOIDLE	(1 << 0)
-
-#define OMAP_I2C_STAT_BB	(1 << 12)
-#define OMAP_I2C_STAT_ARDY	(1 << 2)
-#define OMAP_I2C_STAT_NACK	(1 << 1)
-#define OMAP_I2C_STAT_AL	(1 << 0)
-
-#define OMAP_I2C_CON_EN		(1 << 15)
-#define OMAP_I2C_CON_MST	(1 << 10)
-#define OMAP_I2C_CON_TRX	(1 << 9)
-#define OMAP_I2C_CON_STP	(1 << 1)
-#define OMAP_I2C_CON_STT	(1 << 0)
-
-#define OMAP_I2C_SYSC_REG	0x10
-#define OMAP_I2C_STAT_RAW_REG	0x24
-#define OMAP_I2C_STAT_REG	0x28
-#define OMAP_I2C_IRQENABLE_SET	0x2c
-#define OMAP_I2C_IRQENABLE_CLR	0x30
-#define OMAP_I2C_CNT_REG	0x98
-#define OMAP_I2C_DATA_REG	0x9c
-#define OMAP_I2C_CON_REG	0xa4
-#define OMAP_I2C_SA_REG		0xac
-#define OMAP_I2C_PSC_REG	0xb0
-#define OMAP_I2C_SCLL_REG	0xb4
-#define OMAP_I2C_SCLH_REG	0xb8
-
 #define CONTROL_STATUS	(CONTROL_BASE + 0x0040)
 
 /* CONTROL_STATUS bit-fields */
