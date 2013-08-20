@@ -15,6 +15,7 @@
 #include <system_am335.h>
 #include <hwmod.h>
 #include <ddr.h>
+#include <msg.h>
 
 void ddr_io_suspend(void)
 {

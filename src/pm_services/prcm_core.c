@@ -23,6 +23,7 @@
 #include <dpll.h>
 #include <ddr.h>
 #include <ldo.h>
+#include <msg.h>
 
 /* Clear out the global variables here */
 void pm_reset(void)

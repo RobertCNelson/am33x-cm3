@@ -15,6 +15,7 @@
 #include <cm3.h>
 #include <device_am335x.h>
 #include <prcm_core.h>
+#include <msg.h>
 #include <prmam335x.h>
 #include <system_am335.h>
 #include <clockdomain.h>

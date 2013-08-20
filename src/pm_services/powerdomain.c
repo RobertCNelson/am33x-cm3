@@ -12,6 +12,7 @@
 
 #include <device_am335x.h>
 #include <system_am335.h>
+#include <msg.h>
 #include <pm_state_data.h>
 #include <powerdomain.h>
 #include <powerdomain_335x.h>

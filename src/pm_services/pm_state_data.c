@@ -12,6 +12,7 @@
 
 #include <powerdomain.h>
 #include <prcm_core.h>
+#include <msg.h>
 #include <pm_state_data.h>
 
 union state_data rtc_mode_data = {

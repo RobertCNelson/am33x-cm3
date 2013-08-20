@@ -243,22 +243,6 @@
 #define GPIO_CLEARDATAOUT	0x0190
 #define GPIO_SETDATAOUT		0x0194
 
-/*
- * 9-4 = VTT GPIO PIN (6 Bits)
- *   3 = VTT Status (1 Bit)
- * 2-0 = Memory Type (2 Bits)
-*/
-#define MEM_TYPE_SHIFT		(0x0)
-#define MEM_TYPE_MASK		(0x7 << 0)
-#define VTT_STAT_SHIFT		(0x3)
-#define VTT_STAT_MASK		(0x1 << 3)
-#define VTT_GPIO_PIN_SHIFT	(0x4)
-#define VTT_GPIO_PIN_MASK	(0x2f << 4)
-
-/* Memory type passed in IPC register */
-#define MEM_TYPE_DDR2		2
-#define MEM_TYPE_DDR3		3
-
 /* VTP0_CTRL_REG bits */
 #define VTP_CTRL_START_EN	(1 << 0)
 #define VTP_CTRL_LOCK_EN	(1 << 4)

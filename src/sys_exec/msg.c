@@ -14,9 +14,11 @@
 
 #include <stddef.h>
 #include <device_am335x.h>
-#include <prcm_core.h>
+#include <msg.h>
 #include <system_am335.h>
 #include <pm_state_data.h>
+
+struct cmd_data cmd_global_data;
 
 static union state_data custom_state_data;
 
