@@ -13,50 +13,24 @@
 #include <low_power.h>
 #include <device_am335x.h>
 #include <system_am335.h>
-#include <prcm.h>
 #include <hwmod.h>
-
-static const unsigned int am335x_hwmods[HWMOD_COUNT] = {
-	[HWMOD_CLKDIV32K]	= AM335X_CM_PER_CLKDIV32K_CLKCTRL,
-	[HWMOD_EMIF]		= AM335X_CM_PER_EMIF_CLKCTRL,
-	[HWMOD_EMIF_FW]		= AM335X_CM_PER_EMIF_FW_CLKCTRL,
-	[HWMOD_GPIO0]		= AM335X_CM_WKUP_GPIO0_CLKCTRL,
-	[HWMOD_I2C0]		= AM335X_CM_WKUP_I2C0_CLKCTRL,
-	[HWMOD_IEEE5000]	= AM335X_CM_PER_IEEE5000_CLKCTRL,
-	[HWMOD_L3]		= AM335X_CM_PER_L3_CLKCTRL,
-	[HWMOD_L3_INSTR]	= AM335X_CM_PER_L3_INSTR_CLKCTRL,
-	[HWMOD_L4FW]		= AM335X_CM_PER_L4FW_CLKCTRL,
-	[HWMOD_L4HS]		= AM335X_CM_PER_L4HS_CLKCTRL,
-	[HWMOD_L4LS]		= AM335X_CM_PER_L4LS_CLKCTRL,
-	[HWMOD_MPU]		= AM335X_CM_MPU_MPU_CLKCTRL,
-	[HWMOD_OCMCRAM]		= AM335X_CM_PER_OCMCRAM_CLKCTRL,
-};
-
-static const unsigned int am43xx_hwmods[HWMOD_COUNT] = {
-	[HWMOD_CLKDIV32K]	= AM43XX_CM_WKUP_CLKDIV32K_CLKCTRL,
-	[HWMOD_EMIF]		= AM43XX_CM_PER_EMIF_CLKCTRL,
-	[HWMOD_EMIF_FW]		= AM43XX_CM_PER_EMIF_FW_CLKCTRL,
-	[HWMOD_GPIO0]		= AM43XX_CM_WKUP_GPIO0_CLKCTRL,
-	[HWMOD_I2C0]		= AM43XX_CM_WKUP_I2C0_CLKCTRL,
-	[HWMOD_IEEE5000]	= AM43XX_CM_PER_IEEE5000_CLKCTRL,
-	[HWMOD_L3]		= AM43XX_CM_PER_L3_CLKCTRL,
-	[HWMOD_L3_INSTR]	= AM43XX_CM_PER_L3_INSTR_CLKCTRL,
-	[HWMOD_L4FW]		= AM43XX_CM_PER_L4FW_CLKCTRL,
-	[HWMOD_L4HS]		= AM43XX_CM_PER_L4HS_CLKCTRL,
-	[HWMOD_L4LS]		= AM43XX_CM_PER_L4LS_CLKCTRL,
-	[HWMOD_MPU]		= AM43XX_CM_MPU_MPU_CLKCTRL,
-	[HWMOD_OCMCRAM]		= AM43XX_CM_PER_OCMCRAM_CLKCTRL,
-	[HWMOD_OTFA_EMIF]	= AM43XX_CM_PER_OTFA_EMIF_CLKCTRL,
-};
+#include <hwmod_335x.h>
+#include <hwmod_43xx.h>
 
 static const unsigned int *hwmods;
+static const enum hwmod_id *essential_modules;
+static const enum hwmod_id *interconnect_modules;
 
 void hwmod_init(void)
 {
 	if (soc_id == AM335X_SOC_ID) {
 		hwmods = am335x_hwmods;
+		essential_modules = am335x_essential_modules;
+		interconnect_modules = am335x_interconnect_modules;
 	} else if (soc_id == AM43XX_SOC_ID) {
 		hwmods = am43xx_hwmods;
+		essential_modules = am43xx_essential_modules;
+		interconnect_modules = am43xx_interconnect_modules;
 	}
 }
 
@@ -107,21 +81,6 @@ static int modules_state_change(int state, const enum hwmod_id *ids)
 	return 0;
 }
 
-static const enum hwmod_id am335x_essential_modules[] = {
-	HWMOD_CLKDIV32K,
-	HWMOD_IEEE5000,
-	HWMOD_EMIF_FW,
-	HWMOD_OCMCRAM,
-	HWMOD_END,
-};
-
-static const enum hwmod_id am43xx_essential_modules[] = {
-	HWMOD_EMIF_FW,
-	HWMOD_OTFA_EMIF,
-	HWMOD_OCMCRAM,
-	HWMOD_END,
-};
-
 /*
  * Looks like we'll have to ensure that we disable some modules when going down
  * ideally this list should have 0 entries but we need to check
@@ -130,10 +89,7 @@ static const enum hwmod_id am43xx_essential_modules[] = {
 int essential_modules_disable(void)
 {
 	/* Disable only the bare essential modules */
-	if (soc_id == AM335X_SOC_ID)
-		modules_state_change(MODULE_DISABLE, am335x_essential_modules);
-	else if (soc_id == AM43XX_SOC_ID)
-		modules_state_change(MODULE_DISABLE, am43xx_essential_modules);
+	modules_state_change(MODULE_DISABLE, essential_modules);
 
 	return 0;
 }
@@ -141,48 +97,21 @@ int essential_modules_disable(void)
 int essential_modules_enable(void)
 {
 	/* Enable only the bare essential modules */
-	if (soc_id == AM335X_SOC_ID)
-		modules_state_change(MODULE_ENABLE, am335x_essential_modules);
-	else if (soc_id == AM43XX_SOC_ID)
-		modules_state_change(MODULE_ENABLE, am43xx_essential_modules);
+	modules_state_change(MODULE_ENABLE, essential_modules);
 
 	return 0;
 }
 
-static const enum hwmod_id am335x_interconnect_modules[] = {
-	HWMOD_L4LS,
-	HWMOD_L4HS,
-	HWMOD_L4FW,
-	HWMOD_L3_INSTR,
-	HWMOD_L3,
-	HWMOD_END,
-};
-
-static const enum hwmod_id am43xx_interconnect_modules[] = {
-	HWMOD_L4LS,
-	HWMOD_L4HS,
-	HWMOD_L4FW,
-	HWMOD_L3_INSTR,
-	HWMOD_L3,
-	HWMOD_END,
-};
-
 int interconnect_modules_disable(void)
 {
-	if (soc_id == AM335X_SOC_ID)
-		modules_state_change(MODULE_DISABLE, am335x_interconnect_modules);
-	else if (soc_id == AM43XX_SOC_ID)
-		modules_state_change(MODULE_DISABLE, am43xx_interconnect_modules);
+	modules_state_change(MODULE_DISABLE, interconnect_modules);
 
 	return 0;
 }
 
 int interconnect_modules_enable(void)
 {
-	if (soc_id == AM335X_SOC_ID)
-		modules_state_change(MODULE_ENABLE, am335x_interconnect_modules);
-	else if (soc_id == AM43XX_SOC_ID)
-		modules_state_change(MODULE_ENABLE, am43xx_interconnect_modules);
+	modules_state_change(MODULE_ENABLE, interconnect_modules);
 
 	return 0;
 }
