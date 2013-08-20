@@ -10,16 +10,13 @@
  *  software download.
 */
 
-#include <stdint.h>
-
 #include <device_am335x.h>
-#include <prcm.h>
-#include <prmam335x.h>
 #include <system_am335.h>
+#include <clockdomain.h>
 
 int rtc_enable_check(void)
 {
-	if (__raw_readl(AM335X_CM_RTC_CLKSTCTRL) == 0x2)
+	if (clkdm_active(CLKDM_RTC))
 		return 0;
 	else
 		while(1)
