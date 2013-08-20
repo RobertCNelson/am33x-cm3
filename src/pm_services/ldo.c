@@ -11,23 +11,11 @@
 */
 
 #include <device_am335x.h>
-#include <prcm.h>
 #include <prmam335x.h>
-#include <prm43xx.h>
 #include <system_am335.h>
 #include <ldo.h>
-
-static const unsigned int am335x_ldo_regs[LDO_COUNT] = {
-	[LDO_CORE] 	= AM335X_PRM_LDO_SRAM_CORE_CTRL,
-	[LDO_MPU]	= AM335X_PRM_LDO_SRAM_MPU_CTRL,
-};
-
-/* TODO */
-/* Note: Need to additionally check for Voltage Monitoring here */
-static const unsigned int am43xx_ldo_regs[LDO_COUNT] = {
-	[LDO_CORE]	= AM43XX_PRM_LDO_SRAM_CORE_CTRL,
-	[LDO_MPU]	= AM43XX_PRM_LDO_SRAM_MPU_CTRL,
-};
+#include <ldo_335x.h>
+#include <ldo_43xx.h>
 
 static const unsigned int *ldo_regs;
 
