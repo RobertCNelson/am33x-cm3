@@ -13,6 +13,27 @@
 #ifndef __CLOCKDOMAIN_H__
 #define __CLOCKDOMAIN_H__
 
+enum clkdm_id {
+	CLKDM_L3S_TSC,
+	CLKDM_MPU,
+	CLKDM_CLK_24MHZ,
+	CLKDM_CPSW,
+	CLKDM_DSS,
+	CLKDM_EMIF,
+	CLKDM_ICSS,
+	CLKDM_L3,
+	CLKDM_L3S,
+	CLKDM_L4FW,
+	CLKDM_L4HS,
+	CLKDM_L4LS,
+	CLKDM_LCDC,
+	CLKDM_OCPWP_L3,
+	CLKDM_WKUP,
+
+	CLKDM_COUNT,
+	CLKDM_END = -1,
+};
+
 void clockdomain_init(void);
 void clkdm_sleep(void);
 void clkdm_wake(void);
