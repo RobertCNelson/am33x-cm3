@@ -27,18 +27,6 @@ unsigned int soc_id;
 unsigned int soc_rev;
 unsigned int soc_type;
 
-/* Placeholder for storing PLL mode */
-unsigned int clk_mode_per_val;
-unsigned int clk_mode_disp_val;
-unsigned int clk_mode_ddr_val;
-unsigned int clk_mode_mpu_val;
-unsigned int clk_mode_core_val;
-
-/* PD_PER registers */
-unsigned int am33xx_per[85];
-
-unsigned int watermark;
-
 void pm_reset(void);
 
 void system_init(void);
@@ -104,9 +92,6 @@ int a8_i2c_wake_handler(unsigned short);
 #define BB_USBWOUT0		*((volatile int *)(BITBAND_SRAM(&cmd_wake_sources, 10)))
 #define BB_MPU_WAKE		*((volatile int *)(BITBAND_SRAM(&cmd_wake_sources, 11)))
 #define BB_USBWOUT1		*((volatile int *)(BITBAND_SRAM(&cmd_wake_sources, 12)))
-
-#define SET_BIT(x)		(1<<x)
-#define CLR_BIT(x)		(0<<x)
 
 #define AM335X_SOC_ID		0xB944
 #define AM335X_REV_ES1_0	0
