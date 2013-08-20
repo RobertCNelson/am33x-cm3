@@ -18,6 +18,7 @@
 #include <msg.h>
 #include <system_am335.h>
 #include <pm_state_data.h>
+#include <pm_handlers.h>
 
 struct cmd_data cmd_global_data;
 

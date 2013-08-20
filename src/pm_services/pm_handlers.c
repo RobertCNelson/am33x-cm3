@@ -24,6 +24,10 @@
 #include <dpll.h>
 #include <ldo.h>
 #include <pm_state_data.h>
+#include <pm_handlers.h>
+
+/* Debug info */
+static bool halt_on_resume;
 
 /* Enter RTC mode */
 void a8_lp_rtc_handler(struct cmd_data *data)
