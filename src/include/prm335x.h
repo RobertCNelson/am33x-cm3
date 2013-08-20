@@ -10,8 +10,8 @@
  *  software download.
 */
 
-#ifndef __PRMAM335X_H
-#define __PRMAM335X_H
+#ifndef __PRM335X_H
+#define __PRM335X_H
 
 #define AM335X_PRM_BASE               0x44E00000
 

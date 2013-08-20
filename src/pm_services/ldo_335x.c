@@ -10,7 +10,7 @@
  *  software download.
 */
 
-#include <prmam335x.h>
+#include <prm335x.h>
 #include <ldo.h>
 #include <ldo_335x.h>
 

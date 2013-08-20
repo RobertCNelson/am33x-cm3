@@ -11,7 +11,7 @@
 */
 
 #include <io.h>
-#include <prmam335x.h>
+#include <prm335x.h>
 #include <prcm_core.h>
 #include <ldo.h>
 #include <ldo_335x.h>

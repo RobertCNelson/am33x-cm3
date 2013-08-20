@@ -11,8 +11,7 @@
 */
 
 #include <cm335x.h>
-#include <prmam335x.h>
-#include <prm43xx.h>
+#include <prm335x.h>
 #include <powerdomain.h>
 #include <powerdomain_335x.h>
 
