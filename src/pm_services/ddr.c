@@ -113,7 +113,7 @@ void vtt_high(void)
 
 	hwmod_enable(HWMOD_GPIO0);
 
-	__raw_writel((1 << vtt_gpio_pin), GPIO_BASE + GPIO_SETDATAOUT);
+	__raw_writel((1 << vtt_gpio_pin), GPIO0_BASE + GPIO_SETDATAOUT);
 
 	hwmod_disable(HWMOD_GPIO0);
 }
@@ -125,7 +125,7 @@ void vtt_low(void)
 
 	hwmod_enable(HWMOD_GPIO0);
 
-	__raw_writel((1 << vtt_gpio_pin), GPIO_BASE + GPIO_CLEARDATAOUT);
+	__raw_writel((1 << vtt_gpio_pin), GPIO0_BASE + GPIO_CLEARDATAOUT);
 
 	hwmod_disable(HWMOD_GPIO0);
 }
