@@ -10,10 +10,6 @@
  *  software download.
 */
 
-#include <stdint.h>
-
-#include <device_common.h>
-
 /* Will be extended in the future as and when required */
 void nmi_handler(void)
 {

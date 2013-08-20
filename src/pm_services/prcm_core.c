@@ -10,8 +10,6 @@
  *  software download.
 */
 
-#include <stdint.h>
-
 #include <stddef.h>
 #include <cm3.h>
 #include <device_cm3.h>

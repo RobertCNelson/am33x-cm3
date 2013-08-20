@@ -10,8 +10,6 @@
  *  software download.
 */
 
-#include <stdint.h>
-
 #include <cm3.h>
 #include <io.h>
 

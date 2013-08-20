@@ -10,8 +10,6 @@
  *  software download.
 */
 
-#include <stdint.h>
-
 #include <stddef.h>
 #include <device_common.h>
 #include <io.h>

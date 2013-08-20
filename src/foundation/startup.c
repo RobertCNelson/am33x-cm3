@@ -10,7 +10,6 @@
  *  software download.
 */
 
-#include <stdint.h>
 #include <stddef.h>
 
 extern unsigned int _end_stack;

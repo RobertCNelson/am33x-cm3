@@ -13,8 +13,6 @@
 #ifndef __PRCM_CORE_H__
 #define __PRCM_CORE_H__
 
-#include <stdint.h>
-
 #define MOSC_OFF		0x0
 #define MOSC_ON			0x1
 

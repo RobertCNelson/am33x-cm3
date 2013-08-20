@@ -13,8 +13,6 @@
 #ifndef __PM_HANDLERS_H__
 #define __PM_HANDLERS_H__
 
-#include <stddef.h>
-
 struct cmd_data;
 
 void a8_lp_rtc_handler(struct cmd_data *);
