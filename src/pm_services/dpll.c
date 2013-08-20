@@ -32,8 +32,8 @@ struct dpll_pd_data {
 	int ponout_status_bit;
 };
 
-static const struct dpll_pd_data dpll_data[]  = {
-	{
+static const struct dpll_pd_data dpll_data[DPLL_COUNT]  = {
+	[DPLL_PER] = {
 		.dpll_reg		= DPLL_PWR_SW_CTRL,
 		.sw_ctrl_dpll_bit	= SW_CTRL_PER_DPLL,
 		.isoscan_bit		= ISOSCAN_PER,
@@ -46,7 +46,7 @@ static const struct dpll_pd_data dpll_data[]  = {
 		.pgoodout_status_bit	= PGOODOUT_PER_STATUS,
 		.ponout_status_bit	= PONOUT_PER_STATUS,
 	},
-	{
+	[DPLL_DISP] = {
 		.dpll_reg		= DPLL_PWR_SW_CTRL,
 		.sw_ctrl_dpll_bit	= SW_CTRL_DISP_DPLL,
 		.isoscan_bit		= ISOSCAN_DISP,
@@ -59,7 +59,7 @@ static const struct dpll_pd_data dpll_data[]  = {
 		.pgoodout_status_bit	= PGOODOUT_DISP_STATUS,
 		.ponout_status_bit	= PONOUT_DISP_STATUS,
 	},
-	{
+	[DPLL_DDR] = {
 		.dpll_reg		= DPLL_PWR_SW_CTRL,
 		.sw_ctrl_dpll_bit	= SW_CTRL_DDR_DPLL,
 		.isoscan_bit		= ISOSCAN_DDR,
@@ -75,7 +75,7 @@ static const struct dpll_pd_data dpll_data[]  = {
 };
 
 /* DPLL power-down Sequence PG 2.x */
-static void dpll_power_down(unsigned int dpll)
+static void dpll_power_down(enum dpll_id dpll)
 {
 	unsigned int var;
 
@@ -116,7 +116,7 @@ static void dpll_power_down(unsigned int dpll)
 }
 
 /* DPLL Power-up Sequence */
-static void dpll_power_up(unsigned int dpll)
+static void dpll_power_up(enum dpll_id dpll)
 {
 	unsigned int var;
 
@@ -189,35 +189,35 @@ struct dpll_context {
 	int pll_mode;
 };
 
-struct dpll_context am33xx_dplls[] = {
-	{
+struct dpll_context am33xx_dplls[DPLL_COUNT] = {
+	[DPLL_PER] = {
 		.clk_mode_addr	= AM335X_CM_CLKMODE_DPLL_PER,
 		.idlest_addr	= AM335X_CM_IDLEST_DPLL_PER,
 		.pll_mode	= 0,
 	},
-	{
+	[DPLL_DISP] = {
 		.clk_mode_addr	= AM335X_CM_CLKMODE_DPLL_DISP,
 		.idlest_addr	= AM335X_CM_IDLEST_DPLL_DISP,
 		.pll_mode	= 0,
 	},
-	{
+	[DPLL_DDR] = {
 		.clk_mode_addr	= AM335X_CM_CLKMODE_DPLL_DDR,
 		.idlest_addr	= AM335X_CM_IDLEST_DPLL_DDR,
 		.pll_mode	= 0,
 	},
-	{
+	[DPLL_MPU] = {
 		.clk_mode_addr	= AM335X_CM_CLKMODE_DPLL_MPU,
 		.idlest_addr	= AM335X_CM_IDLEST_DPLL_MPU,
 		.pll_mode	= 0,
 	},
-	{
+	[DPLL_CORE] = {
 		.clk_mode_addr	= AM335X_CM_CLKMODE_DPLL_CORE,
 		.idlest_addr	= AM335X_CM_IDLEST_DPLL_CORE,
 		.pll_mode	= 0,
 	},
 };
 
-void pll_bypass(unsigned int dpll)
+void pll_bypass(enum dpll_id dpll)
 {
 	am33xx_dplls[dpll].pll_mode = __raw_readl(am33xx_dplls[dpll].clk_mode_addr);
 	__raw_writel(((am33xx_dplls[dpll].pll_mode & ~DPLL_EN_MASK) |
@@ -227,7 +227,7 @@ void pll_bypass(unsigned int dpll)
 	while (__raw_readl(am33xx_dplls[dpll].idlest_addr));
 }
 
-void pll_lock(unsigned int dpll)
+void pll_lock(enum dpll_id dpll)
 {
 	__raw_writel(am33xx_dplls[dpll].pll_mode, am33xx_dplls[dpll].clk_mode_addr);
 

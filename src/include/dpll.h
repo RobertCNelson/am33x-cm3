@@ -13,18 +13,21 @@
 #ifndef __DPLL_H__
 #define __DPLL_H__
 
-/* DPLL */
-#define DPLL_PER                0
-#define DPLL_DISP               1
-#define DPLL_DDR                2
-#define DPLL_MPU                3
-#define DPLL_CORE               4
+enum dpll_id {
+	DPLL_PER,
+	DPLL_DISP,
+	DPLL_DDR,
+	DPLL_MPU,
+	DPLL_CORE,
+
+	DPLL_COUNT,
+};
 
 void am33xx_power_down_plls(void);
 void am33xx_power_up_plls(void);
 
-void pll_bypass(unsigned int dpll);
-void pll_lock(unsigned int dpll);
+void pll_bypass(enum dpll_id dpll);
+void pll_lock(enum dpll_id dpll);
 
 #endif
 
