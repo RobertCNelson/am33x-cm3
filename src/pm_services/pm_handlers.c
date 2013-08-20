@@ -299,7 +299,7 @@ void generic_wake_handler(int wakeup_reason)
 	 * path. Keep compatibily with these kernels.
 	 */
 	if (!cmd_handlers[cmd_global_data.cmd_id].do_ddr)
-		hwmod_state_change(HWMOD_ENABLE, HWMOD_EMIF);
+		hwmod_enable(HWMOD_EMIF);
 
 	/* If everything is done, we init things again */
 	/* Flush out NVIC interrupts */
@@ -319,7 +319,7 @@ void generic_wake_handler(int wakeup_reason)
 	nvic_enable_irq(53);
 
 	/* Enable MPU only after we are sure that we are done with the wakeup */
-	mpu_enable();
+	hwmod_enable(HWMOD_MPU);
 }
 
 /* Exit RTC mode */

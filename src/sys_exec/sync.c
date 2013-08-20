@@ -68,7 +68,7 @@ void init_m3_state_machine(void)
 	 * enable it again, no harm in writing to the reg
 	 * even if this was not needed
 	 */
-	mpu_enable();
+	hwmod_enable(HWMOD_MPU);
 	a8_notify(CMD_STAT_PASS);
 }
 

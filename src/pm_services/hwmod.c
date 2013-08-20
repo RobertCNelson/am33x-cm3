@@ -17,6 +17,9 @@
 #include <hwmod_335x.h>
 #include <hwmod_43xx.h>
 
+#define HWMOD_DISABLE	0x0
+#define HWMOD_ENABLE	0x2
+
 static const unsigned int *hwmods;
 static const enum hwmod_id *essential_hwmods;
 static const enum hwmod_id *interconnect_hwmods;
@@ -56,16 +59,6 @@ static void _hwmod_disable(int reg)
 		DEFAULT_IDLEST_IDLE_VAL);
 }
 
-int hwmod_state_change(int state, enum hwmod_id id)
-{
-	if (state == HWMOD_DISABLE)
-		_hwmod_disable(hwmods[id]);
-	else
-		_hwmod_enable(hwmods[id]);
-
-	return 0;
-}
-
 static int hwmods_state_change(int state, const enum hwmod_id *ids)
 {
 	int i;
@@ -79,6 +72,16 @@ static int hwmods_state_change(int state, const enum hwmod_id *ids)
 			_hwmod_enable(hwmods[ids[i]]);
 
 	return 0;
+}
+
+void hwmod_enable(enum hwmod_id id)
+{
+	_hwmod_enable(hwmods[id]);
+}
+
+void hwmod_disable(enum hwmod_id id)
+{
+	_hwmod_disable(hwmods[id]);
 }
 
 /*
@@ -116,12 +119,3 @@ int interconnect_hwmods_enable(void)
 	return 0;
 }
 
-void mpu_disable(void)
-{
-	hwmod_state_change(HWMOD_DISABLE, HWMOD_MPU);
-}
-
-void mpu_enable(void)
-{
-	hwmod_state_change(HWMOD_ENABLE, HWMOD_MPU);
-}

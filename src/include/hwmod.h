@@ -13,9 +13,6 @@
 #ifndef __HWMOD_H__
 #define __HWMOD_H__
 
-#define HWMOD_DISABLE  0x0
-#define HWMOD_ENABLE   0x2
-
 enum hwmod_id {
 	HWMOD_CLKDIV32K,
 	HWMOD_EMIF,
@@ -37,13 +34,12 @@ enum hwmod_id {
 };
 
 void hwmod_init(void);
-int hwmod_state_change(int state, enum hwmod_id id);
+void hwmod_enable(enum hwmod_id id);
+void hwmod_disable(enum hwmod_id id);
 int interconnect_hwmods_enable(void);
 int interconnect_hwmods_disable(void);
 int essential_hwmods_disable(void);
 int essential_hwmods_enable(void);
-void mpu_disable(void);
-void mpu_enable(void);
 
 #endif
 

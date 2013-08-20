@@ -110,11 +110,11 @@ void vtt_high(void)
 	if (vtt_toggle == false)
 		return;
 
-	hwmod_state_change(HWMOD_ENABLE, HWMOD_GPIO0);
+	hwmod_enable(HWMOD_GPIO0);
 
 	__raw_writel((1 << vtt_gpio_pin), GPIO_BASE + GPIO_SETDATAOUT);
 
-	hwmod_state_change(HWMOD_DISABLE, HWMOD_GPIO0);
+	hwmod_disable(HWMOD_GPIO0);
 }
 
 void vtt_low(void)
@@ -122,11 +122,11 @@ void vtt_low(void)
 	if (vtt_toggle == false)
 		return;
 
-	hwmod_state_change(HWMOD_ENABLE, HWMOD_GPIO0);
+	hwmod_enable(HWMOD_GPIO0);
 
 	__raw_writel((1 << vtt_gpio_pin), GPIO_BASE + GPIO_CLEARDATAOUT);
 
-	hwmod_state_change(HWMOD_DISABLE, HWMOD_GPIO0);
+	hwmod_disable(HWMOD_GPIO0);
 }
 
 /* RESET line is applicable only to DDR3 */
