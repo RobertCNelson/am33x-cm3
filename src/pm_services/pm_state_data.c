@@ -11,7 +11,7 @@
 */
 
 #include <powerdomain.h>
-#include <low_power.h>
+#include <prcm_core.h>
 #include <pm_state_data.h>
 
 union state_data rtc_mode_data = {

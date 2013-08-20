@@ -15,7 +15,6 @@
 
 #include <stdint.h>
 #include <stddef.h>
-#include <low_power.h>
 
 enum cmd_ids {
 	CMD_ID_INVALID		= 0x0,

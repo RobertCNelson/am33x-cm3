@@ -11,7 +11,6 @@
 */
 
 #include <device_am335x.h>
-#include <low_power.h>
 #include <system_am335.h>
 #include <pm_state_data.h>
 #include <powerdomain.h>

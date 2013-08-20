@@ -10,7 +10,6 @@
  *  software download.
 */
 
-#include <low_power.h>
 #include <device_am335x.h>
 #include <system_am335.h>
 #include <hwmod.h>

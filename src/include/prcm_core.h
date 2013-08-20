@@ -10,8 +10,8 @@
  *  software download.
 */
 
-#ifndef __LOW_POWER_H__
-#define __LOW_POWER_H__
+#ifndef __PRCM_CORE_H__
+#define __PRCM_CORE_H__
 
 #include <stdint.h>
 

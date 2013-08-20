@@ -15,7 +15,6 @@
 #include <cm3.h>
 #include <device_am335x.h>
 #include <system_am335.h>
-#include <low_power.h>
 #include <hwmod.h>
 
 void a8_notify(int cmd_stat_value)
