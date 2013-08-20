@@ -10,6 +10,7 @@
  *  software download.
 */
 
+#include <device_am335x.h>
 #include <io.h>
 #include <clockdomain.h>
 #include <rtc.h>
@@ -25,10 +26,10 @@ int rtc_enable_check(void)
 
 void rtc_reg_write(unsigned int val, int reg)
 {
-	__raw_writel(val, reg);
+	__raw_writel(val, reg + RTCSS_BASE);
 }
 
 unsigned int rtc_reg_read(int reg)
 {
-	return __raw_readl(reg);
+	return __raw_readl(reg + RTCSS_BASE);
 }
