@@ -10,10 +10,7 @@
  *  software download.
 */
 
-#include <stdint.h>
-
-#include <device_am335x.h>
-#include <system_am335.h>
+#include <trace.h>
 
 /* TODO: ROM code ate up the trace location. Can we manage without this? */
 void trace_init(void)

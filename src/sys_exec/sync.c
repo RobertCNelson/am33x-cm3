@@ -18,6 +18,7 @@
 #include <prcm_core.h>
 #include <msg.h>
 #include <hwmod.h>
+#include <trace.h>
 
 void a8_notify(int cmd_stat_value)
 {
