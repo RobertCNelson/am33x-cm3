@@ -15,51 +15,58 @@
 #include <prmam335x.h>
 #include <prm43xx.h>
 #include <system_am335.h>
+#include <ldo.h>
 
-void core_ldo_power_down(void)
+static const unsigned int am335x_ldo_regs[LDO_COUNT] = {
+	[LDO_CORE] 	= AM335X_PRM_LDO_SRAM_CORE_CTRL,
+	[LDO_MPU]	= AM335X_PRM_LDO_SRAM_MPU_CTRL,
+};
+
+/* TODO */
+/* Note: Need to additionally check for Voltage Monitoring here */
+static const unsigned int am43xx_ldo_regs[LDO_COUNT] = {
+	[LDO_CORE]	= AM43XX_PRM_LDO_SRAM_CORE_CTRL,
+	[LDO_MPU]	= AM43XX_PRM_LDO_SRAM_MPU_CTRL,
+};
+
+static const unsigned int *ldo_regs;
+
+void ldo_wait_for_on(enum ldo_id id)
 {
-	unsigned int core_ldo;
-
-	/* Configure RETMODE_ENABLE for CORE LDO */
-	if (soc_id == AM335X_SOC_ID && soc_rev > AM335X_REV_ES1_0) {
-		core_ldo = __raw_readl(AM335X_PRM_LDO_SRAM_CORE_CTRL);
-		core_ldo |= RETMODE_ENABLE;
-		__raw_writel(core_ldo, AM335X_PRM_LDO_SRAM_CORE_CTRL);
-
-		/* Poll for LDO Status to be in retention (SRAMLDO_STATUS) */
-		while (!(__raw_readl(AM335X_PRM_LDO_SRAM_CORE_CTRL) & SRAMLDO_STATUS));
-	} else if (soc_id == AM43XX_SOC_ID) {
-		/* TODO */
-		/* Note: Need to additionally check for Voltage Monitoring here */
-	}
+	/* Poll for LDO status to be out of retention (SRAMLDO_STATUS) */
+	while (__raw_readl(ldo_regs[LDO_CORE]) & SRAMLDO_STATUS);
 }
 
-void core_ldo_power_up(void)
+void ldo_wait_for_ret(enum ldo_id id)
 {
-	unsigned int core_ldo;
-
-	/* Disable RETMODE for CORE LDO */
-	if (soc_id == AM335X_SOC_ID && soc_rev > AM335X_REV_ES1_0) {
-		core_ldo = __raw_readl(AM335X_PRM_LDO_SRAM_CORE_CTRL);
-		core_ldo &= ~RETMODE_ENABLE;
-		__raw_writel(core_ldo, AM335X_PRM_LDO_SRAM_CORE_CTRL);
-
-		/* Poll for LDO status to be out of retention (SRAMLDO_STATUS) */
-		while (__raw_readl(AM335X_PRM_LDO_SRAM_CORE_CTRL) & SRAMLDO_STATUS);
-	} else if (soc_id == AM43XX_SOC_ID) {
-		/* TODO */
-		/* Note: Need to additionally check for Voltage Monitoring here */
-	}
+	/* Poll for LDO Status to be in retention (SRAMLDO_STATUS) */
+	while (!(__raw_readl(ldo_regs[LDO_CORE]) & SRAMLDO_STATUS));
 }
 
-void sram_ldo_ret_mode(int state)
+void ldo_power_up(enum ldo_id id)
 {
-	int var = __raw_readl(AM335X_PRM_LDO_SRAM_MPU_CTRL);
+	unsigned int val;
 
-	if (state == RETMODE_ENABLE)
-		var |= RETMODE_ENABLE;
-	else
-		var &= ~RETMODE_ENABLE;
+	/* Disable RETMODE for LDO */
+	val = __raw_readl(ldo_regs[id]);
+	val &= ~RETMODE_ENABLE;
+	__raw_writel(val, ldo_regs[id]);
+}
 
-	__raw_writel(var, AM335X_PRM_LDO_SRAM_MPU_CTRL);
+void ldo_power_down(enum ldo_id id)
+{
+	unsigned int val;
+
+	/* Configure RETMODE_ENABLE for LDO */
+	val = __raw_readl(ldo_regs[id]);
+	val |= RETMODE_ENABLE;
+	__raw_writel(val, ldo_regs[id]);
+}
+
+void ldo_init(void)
+{
+	if (soc_id == AM335X_SOC_ID)
+		ldo_regs = am335x_ldo_regs;
+	else if (soc_id == AM43XX_SOC_ID)
+		ldo_regs = am43xx_ldo_regs;
 }

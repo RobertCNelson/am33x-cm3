@@ -126,7 +126,9 @@ void a8_lp_ds0_handler(struct cmd_data *data)
 				temp = __raw_readl(SMA2_SPARE_REG);
 				temp |= VSLDO_CORE_AUTO_RAMP_EN;
 				__raw_writel(temp, SMA2_SPARE_REG);
-				core_ldo_power_down();
+
+				ldo_power_down(LDO_CORE);
+				ldo_wait_for_ret(LDO_CORE);
 			}
 		}
 	}
@@ -339,8 +341,10 @@ void a8_wake_ds0_handler(void)
 {
 	int result;
 
-	if (soc_id == AM335X_SOC_ID && soc_rev > AM335X_REV_ES1_0)
-		core_ldo_power_up();
+	if (soc_id == AM335X_SOC_ID && soc_rev > AM335X_REV_ES1_0) {
+		ldo_power_up(LDO_CORE);
+		ldo_wait_for_on(LDO_CORE);
+	}
 
 	result = verify_pd_transitions();
 

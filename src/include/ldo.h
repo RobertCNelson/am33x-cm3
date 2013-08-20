@@ -13,10 +13,17 @@
 #ifndef __LDO_H__
 #define __LDO_H__
 
-void core_ldo_power_down(void);
-void core_ldo_power_up(void);
+enum ldo_id {
+	LDO_CORE,
+	LDO_MPU,
 
-void sram_ldo_ret_mode(int state);
+	LDO_COUNT,
+};
+
+void ldo_wait_for_on(enum ldo_id id);
+void ldo_wait_for_ret(enum ldo_id id);
+void ldo_power_up(enum ldo_id id);
+void ldo_power_down(enum ldo_id id);
+void ldo_init(void);
 
 #endif
-

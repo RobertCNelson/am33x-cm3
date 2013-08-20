@@ -165,6 +165,7 @@ void setup_soc(void)
 	hwmod_init();
 	powerdomain_init();
 	dpll_init();
+	ldo_init();
 }
 
 /* DeepSleep related */
@@ -298,7 +299,7 @@ void ds_save(void)
 
 		vtp_disable();
 
-		sram_ldo_ret_mode(RETMODE_ENABLE);
+		ldo_power_down(LDO_MPU);
 
 		pll_bypass(DPLL_CORE);
 		pll_bypass(DPLL_DDR);
@@ -317,7 +318,7 @@ void ds_restore(void)
 		pll_lock(DPLL_DDR);
 		pll_lock(DPLL_CORE);
 
-		sram_ldo_ret_mode(RETMODE_DISABLE);
+		ldo_power_up(LDO_MPU);
 
 		vtp_enable();
 
