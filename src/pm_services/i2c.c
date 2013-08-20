@@ -13,7 +13,6 @@
 #include <device_common.h>
 #include <dpll.h>
 #include <io.h>
-#include <prcm.h>
 #include <i2c.h>
 
 #define OMAP_I2C_SYSC_AUTOIDLE	(1 << 0)

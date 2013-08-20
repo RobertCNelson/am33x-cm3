@@ -10,7 +10,7 @@
  *  software download.
 */
 
-#include <prcm.h>
+#include <cm335x.h>
 #include <hwmod.h>
 #include <hwmod_335x.h>
 

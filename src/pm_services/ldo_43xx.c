@@ -10,6 +10,7 @@
  *  software download.
 */
 
+#include <cm43xx.h>
 #include <prm43xx.h>
 #include <ldo.h>
 #include <ldo_43xx.h>

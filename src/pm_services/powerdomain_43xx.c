@@ -10,7 +10,7 @@
  *  software download.
 */
 
-#include <prcm.h>
+#include <cm43xx.h>
 #include <prm43xx.h>
 #include <powerdomain.h>
 #include <powerdomain_43xx.h>

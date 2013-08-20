@@ -10,7 +10,7 @@
  *  software download.
 */
 
-#include <prcm.h>
+#include <cm43xx.h>
 #include <hwmod.h>
 #include <hwmod_43xx.h>
 

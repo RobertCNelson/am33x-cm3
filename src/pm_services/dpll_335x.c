@@ -11,7 +11,7 @@
 */
 
 #include <device_common.h>
-#include <prcm.h>
+#include <cm335x.h>
 #include <dpll.h>
 #include <dpll_335x.h>
 

@@ -10,7 +10,7 @@
  *  software download.
 */
 
-#include <prcm.h>
+#include <cm335x.h>
 #include <clockdomain.h>
 #include <clockdomain_335x.h>
 

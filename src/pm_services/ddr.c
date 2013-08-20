@@ -12,11 +12,20 @@
 
 #include <device_common.h>
 #include <io.h>
-#include <prcm.h>
 #include <prcm_core.h>
 #include <hwmod.h>
 #include <ddr.h>
 #include <msg.h>
+
+/*
+ * Values recommended by the HW team. These change the pulls
+ * on certain IOs of DATA and CMD macros
+ */
+#define SUSP_IO_PULL_DATA	0x3FF00003
+#define SUSP_IO_PULL_CMD1	0xFFE0018B
+#define SUSP_IO_PULL_CMD2	0xFFA0098B
+#define RESUME_IO_PULL_DATA	0x18B
+#define RESUME_IO_PULL_CMD	0x18B
 
 void ddr_io_suspend(void)
 {

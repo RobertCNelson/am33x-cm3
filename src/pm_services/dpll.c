@@ -11,11 +11,17 @@
 */
 
 #include <io.h>
-#include <prcm.h>
 #include <prcm_core.h>
 #include <dpll.h>
 #include <dpll_335x.h>
 #include <dpll_43xx.h>
+
+/* DPLL CLOCKMODE register */
+#define DPLL_EN_MASK					(0x7 << 0)
+#define DPLL_LP_BYP_MODE				(0x5 << 0)
+#define DPLL_LOCK_MODE					(0x7 << 0)
+#define DPLL_DIV_PER_SHIFT				(0)
+#define DPLL_DIV_PER_MASK				(0xff)
 
 static const struct dpll_regs *dpll_regs;
 static const enum dpll_id *power_down_plls;
