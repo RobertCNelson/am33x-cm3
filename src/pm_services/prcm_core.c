@@ -25,6 +25,7 @@
 #include <powerdomain.h>
 #include <dpll.h>
 #include <ddr.h>
+#include <ldo.h>
 
 union state_data rtc_mode_data = {
 	.rtc = {
@@ -284,54 +285,6 @@ void clear_wake_sources(void)
 	nvic_disable_irq(AM335X_IRQ_USB1WOUT);
 
 	/* TODO: Clear all the pending interrupts */
-}
-
-void core_ldo_power_down(void)
-{
-	unsigned int core_ldo;
-
-	/* Configure RETMODE_ENABLE for CORE LDO */
-	if (soc_id == AM335X_SOC_ID && soc_rev > AM335X_REV_ES1_0) {
-		core_ldo = __raw_readl(AM335X_PRM_LDO_SRAM_CORE_CTRL);
-		core_ldo |= RETMODE_ENABLE;
-		__raw_writel(core_ldo, AM335X_PRM_LDO_SRAM_CORE_CTRL);
-
-		/* Poll for LDO Status to be in retention (SRAMLDO_STATUS) */
-		while (!(__raw_readl(AM335X_PRM_LDO_SRAM_CORE_CTRL) & SRAMLDO_STATUS));
-	} else if (soc_id == AM43XX_SOC_ID) {
-		/* TODO */
-		/* Note: Need to additionally check for Voltage Monitoring here */
-	}
-}
-
-void core_ldo_power_up(void)
-{
-	unsigned int core_ldo;
-
-	/* Disable RETMODE for CORE LDO */
-	if (soc_id == AM335X_SOC_ID && soc_rev > AM335X_REV_ES1_0) {
-		core_ldo = __raw_readl(AM335X_PRM_LDO_SRAM_CORE_CTRL);
-		core_ldo &= ~RETMODE_ENABLE;
-		__raw_writel(core_ldo, AM335X_PRM_LDO_SRAM_CORE_CTRL);
-
-		/* Poll for LDO status to be out of retention (SRAMLDO_STATUS) */
-		while (__raw_readl(AM335X_PRM_LDO_SRAM_CORE_CTRL) & SRAMLDO_STATUS);
-	} else if (soc_id == AM43XX_SOC_ID) {
-		/* TODO */
-		/* Note: Need to additionally check for Voltage Monitoring here */
-	}
-}
-
-void sram_ldo_ret_mode(int state)
-{
-	int var = __raw_readl(AM335X_PRM_LDO_SRAM_MPU_CTRL);
-
-	if (state == RETMODE_ENABLE)
-		var |= RETMODE_ENABLE;
-	else
-		var &= ~RETMODE_ENABLE;
-
-	__raw_writel(var, AM335X_PRM_LDO_SRAM_MPU_CTRL);
 }
 
 void ds_save(void)

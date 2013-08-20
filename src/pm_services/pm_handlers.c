@@ -21,6 +21,7 @@
 #include <hwmod.h>
 #include <powerdomain.h>
 #include <dpll.h>
+#include <ldo.h>
 
 /* Enter RTC mode */
 void a8_lp_rtc_handler(struct cmd_data *data)

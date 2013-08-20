@@ -80,11 +80,6 @@ void configure_deepsleep_count(int ds_count);
 void configure_wake_sources(int wake_sources);
 void clear_wake_sources(void);
 
-void core_ldo_power_down(void);
-void core_ldo_power_up(void);
-
-void sram_ldo_ret_mode(int state);
-
 void ds_save(void);
 void ds_restore(void);
 
