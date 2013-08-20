@@ -20,7 +20,7 @@
 #include <prcm.h>
 
 /* Enter RTC mode */
-void a8_lp_cmd1_handler(struct cmd_data *data)
+void a8_lp_rtc_handler(struct cmd_data *data)
 {
 	struct rtc_data *local_cmd = (struct rtc_data *)data->data;
 	int timeout = 0;
@@ -58,7 +58,7 @@ void a8_lp_cmd1_handler(struct cmd_data *data)
 }
 
 /* Enter RTC_fast mode */
-void a8_lp_cmd2_handler(struct cmd_data *data)
+void a8_lp_rtc_fast_handler(struct cmd_data *data)
 {
 	struct rtc_data *rtc_data = (struct rtc_data *)data->data;
 	int timeout = 0;
@@ -90,7 +90,7 @@ void a8_lp_cmd2_handler(struct cmd_data *data)
  * PD_PER = RET
  * PD_MPU = RET
  */
-void a8_lp_cmd3_handler(struct cmd_data *data)
+void a8_lp_ds0_handler(struct cmd_data *data)
 {
 	struct deep_sleep_data *local_cmd = (struct deep_sleep_data *)data->data;
 
@@ -160,7 +160,7 @@ void a8_lp_cmd3_handler(struct cmd_data *data)
  * PD_PER = ON
  * PD_MPU = RET
  */
-void a8_lp_cmd5_handler(struct cmd_data *data)
+void a8_lp_ds1_handler(struct cmd_data *data)
 {
 	struct deep_sleep_data *local_cmd = (struct deep_sleep_data *)data->data;
 
@@ -209,7 +209,7 @@ void a8_lp_cmd5_handler(struct cmd_data *data)
  * PD_PER = ON
  * PD_MPU = ON
  */
-void a8_lp_cmd7_handler(struct cmd_data *data)
+void a8_lp_ds2_handler(struct cmd_data *data)
 {
 	struct deep_sleep_data *local_cmd = (struct deep_sleep_data *)data->data;
 
@@ -303,29 +303,28 @@ void generic_wake_handler(int wakeup_reason)
 	/*
 	 * Assuming that cmd_id is a valid reflection of what we did
 	 */
-	switch(cmd_global_data.cmd_id) {
-	case 0x1:
-		a8_wake_cmd1_handler();	/* RTC */
+	switch (cmd_global_data.cmd_id) {
+	case CMD_ID_RTC:
+		a8_wake_rtc_handler();
 		break;
-	case 0x2:
-		a8_wake_cmd2_handler();	/* RTC_fast */
+	case CMD_ID_RTC_FAST:
+		a8_wake_rtc_fast_handler();
 		break;
-	case 0x3:
-		a8_wake_cmd3_handler();	/* DS0 */
+	case CMD_ID_DS0:
+		a8_wake_ds0_handler();
 		break;
-	case 0x5:
-		a8_wake_cmd5_handler();	/* DS1 */
+	case CMD_ID_DS1:
+		a8_wake_ds1_handler();
 		break;
-	case 0x7:
-		a8_wake_cmd7_handler();	/* DS2 */
+	case CMD_ID_DS2:
+		a8_wake_ds2_handler();
 		break;
-	case 0xb:
-		a8_wake_cmdb_handler();	/* Standby */
+	case CMD_ID_STANDBY:
+		a8_wake_standby_handler();
 		break;
-	case 0x10:
-		a8_wake_cmd10_handler();	/* cpuidle wake up */
+	case CMD_ID_CPUIDLE:
+		a8_wake_cpuidle_handler();
 		break;
-	case 0xff:
 	default:
 		while(1)
 		;
@@ -370,13 +369,13 @@ void generic_wake_handler(int wakeup_reason)
 }
 
 /* Exit RTC mode */
-void a8_wake_cmd1_handler(void)
+void a8_wake_rtc_handler(void)
 {
 	/* RTC wake is a cold boot... so this doesn't make sense */
 }
 
 /* Exit RTC_fast mode */
-void a8_wake_cmd2_handler(void)
+void a8_wake_rtc_fast_handler(void)
 {
 	/* RTC fast wake is also similar to cold boot... */
 }
@@ -387,7 +386,7 @@ void a8_wake_cmd2_handler(void)
  * PD_PER = RET
  * PD_MPU = RET
  */
-void a8_wake_cmd3_handler(void)
+void a8_wake_ds0_handler(void)
 {
 	int result = 0;
 
@@ -422,7 +421,7 @@ void a8_wake_cmd3_handler(void)
  * PD_PER = ON
  * PD_MPU = RET
  */
-void a8_wake_cmd5_handler(void)
+void a8_wake_ds1_handler(void)
 {
 	int result = 0;
 
@@ -450,7 +449,7 @@ void a8_wake_cmd5_handler(void)
  * PD_PER = ON
  * PD_MPU = ON
  */
-void a8_wake_cmd7_handler(void)
+void a8_wake_ds2_handler(void)
 {
 	int result = 0;
 
@@ -476,7 +475,7 @@ void a8_wake_cmd7_handler(void)
  * PD_PER = ON
  * PD_MPU = OFF
  */
-void a8_wake_cmdb_handler(void)
+void a8_wake_standby_handler(void)
 {
 	int result = 0;
 
@@ -496,7 +495,7 @@ void a8_wake_cmdb_handler(void)
 /* Exit cpuidle
  * MPU_MPU_CLKCTRL = OFF
  */
-void a8_wake_cmd10_handler(void)
+void a8_wake_cpuidle_handler(void)
 {
 	clear_wake_sources();
 

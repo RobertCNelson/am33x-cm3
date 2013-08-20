@@ -15,6 +15,4 @@
 
 #define NULL ((void *) 0)
 
-#define ARRAY_SIZE(x) ((unsigned)(sizeof(x) / sizeof((x)[0])))
-
 #endif
