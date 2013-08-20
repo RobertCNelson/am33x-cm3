@@ -221,3 +221,11 @@ void pll_lock(enum dpll_id dpll)
 		/* Make sure DPLL Clock is out of Bypass */
 		while (!(__raw_readl(dpll_regs[dpll].idlest_reg)));
 }
+
+void dpll_reset(void)
+{
+	int i = 0;
+
+	for (i = 0; i < DPLL_COUNT; i++)
+		pll_mode[i] = 0;
+}

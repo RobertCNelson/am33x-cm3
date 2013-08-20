@@ -29,5 +29,7 @@ void am33xx_power_up_plls(void);
 void pll_bypass(enum dpll_id dpll);
 void pll_lock(enum dpll_id dpll);
 
+void dpll_reset(void);
+
 #endif
 
