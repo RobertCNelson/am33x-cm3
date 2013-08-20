@@ -16,15 +16,7 @@
 #include <device_am335x.h>
 #include <low_power.h>
 #include <system_am335.h>
-
-extern union state_data rtc_mode_data;
-extern union state_data standby_data;
-extern union state_data ds0_data;
-extern union state_data ds0_data_hs;
-extern union state_data ds1_data;
-extern union state_data ds1_data_hs;
-extern union state_data ds2_data;
-extern union state_data idle_data;
+#include <pm_state_data.h>
 
 static union state_data custom_state_data;
 
