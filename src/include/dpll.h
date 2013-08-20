@@ -24,6 +24,24 @@ enum dpll_id {
 	DPLL_END = -1,
 };
 
+struct dpll_regs {
+	unsigned int dpll_pwr_sw_ctrl_reg;
+	unsigned int sw_ctrl_dpll_bit;
+	unsigned int isoscan_bit;
+	unsigned int ret_bit;
+	unsigned int reset_bit;
+	unsigned int iso_bit;
+	unsigned int pgoodin_bit;
+	unsigned int ponin_bit;
+
+	unsigned int dpll_pwr_sw_status_reg;
+	unsigned int pgoodout_status_bit;
+	unsigned int ponout_status_bit;
+
+	unsigned int clkmode_reg;
+	unsigned int idlest_reg;
+};
+
 void plls_power_down(void);
 void plls_power_up(void);
 

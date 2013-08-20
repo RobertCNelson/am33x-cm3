@@ -10,92 +10,15 @@
  *  software download.
 */
 
-#include <stdint.h>
-#include <stddef.h>
-
 #include <device_am335x.h>
 #include <prcm.h>
 #include <system_am335.h>
 #include <dpll.h>
-
-struct dpll_regs {
-	unsigned int dpll_pwr_sw_ctrl_reg;
-	unsigned int sw_ctrl_dpll_bit;
-	unsigned int isoscan_bit;
-	unsigned int ret_bit;
-	unsigned int reset_bit;
-	unsigned int iso_bit;
-	unsigned int pgoodin_bit;
-	unsigned int ponin_bit;
-
-	unsigned int dpll_pwr_sw_status_reg;
-	unsigned int pgoodout_status_bit;
-	unsigned int ponout_status_bit;
-
-	unsigned int clkmode_reg;
-	unsigned int idlest_reg;
-};
-
-static const struct dpll_regs am335x_dpll_regs[DPLL_COUNT] = {
-	[DPLL_PER] = {
-		.dpll_pwr_sw_ctrl_reg	= DPLL_PWR_SW_CTRL,
-		.sw_ctrl_dpll_bit	= SW_CTRL_PER_DPLL,
-		.isoscan_bit		= ISOSCAN_PER,
-		.ret_bit		= RET_PER,
-		.reset_bit		= RESET_PER,
-		.iso_bit		= ISO_PER,
-		.pgoodin_bit		= PGOODIN_PER,
-		.ponin_bit		= PONIN_PER,
-		.dpll_pwr_sw_status_reg	= DPLL_PWR_SW_STATUS,
-		.pgoodout_status_bit	= PGOODOUT_PER_STATUS,
-		.ponout_status_bit	= PONOUT_PER_STATUS,
-		.clkmode_reg		= AM335X_CM_CLKMODE_DPLL_PER,
-		.idlest_reg		= AM335X_CM_IDLEST_DPLL_PER,
-	},
-	[DPLL_DISP] = {
-		.dpll_pwr_sw_ctrl_reg	= DPLL_PWR_SW_CTRL,
-		.sw_ctrl_dpll_bit	= SW_CTRL_DISP_DPLL,
-		.isoscan_bit		= ISOSCAN_DISP,
-		.ret_bit		= RET_DISP,
-		.reset_bit		= RESET_DISP,
-		.iso_bit		= ISO_DISP,
-		.pgoodin_bit		= PGOODIN_DISP,
-		.ponin_bit		= PONIN_DISP,
-		.dpll_pwr_sw_status_reg	= DPLL_PWR_SW_STATUS,
-		.pgoodout_status_bit	= PGOODOUT_DISP_STATUS,
-		.ponout_status_bit	= PONOUT_DISP_STATUS,
-		.clkmode_reg		= AM335X_CM_CLKMODE_DPLL_DISP,
-		.idlest_reg		= AM335X_CM_IDLEST_DPLL_DISP,
-	},
-	[DPLL_DDR] = {
-		.dpll_pwr_sw_ctrl_reg	= DPLL_PWR_SW_CTRL,
-		.sw_ctrl_dpll_bit	= SW_CTRL_DDR_DPLL,
-		.isoscan_bit		= ISOSCAN_DDR,
-		.ret_bit		= RET_DDR,
-		.reset_bit		= RESET_DDR,
-		.iso_bit		= ISO_DDR,
-		.pgoodin_bit		= PGOODIN_DDR,
-		.ponin_bit		= PONIN_DDR,
-		.dpll_pwr_sw_status_reg	= DPLL_PWR_SW_STATUS,
-		.pgoodout_status_bit	= PGOODOUT_DDR_STATUS,
-		.ponout_status_bit	= PONOUT_DDR_STATUS,
-		.clkmode_reg		= AM335X_CM_CLKMODE_DPLL_DDR,
-		.idlest_reg		= AM335X_CM_IDLEST_DPLL_DDR,
-	},
-	[DPLL_MPU] = {
-		.clkmode_reg		= AM335X_CM_CLKMODE_DPLL_MPU,
-		.idlest_reg		= AM335X_CM_IDLEST_DPLL_MPU,
-	},
-	[DPLL_CORE] = {
-		.clkmode_reg		= AM335X_CM_CLKMODE_DPLL_CORE,
-		.idlest_reg		= AM335X_CM_IDLEST_DPLL_CORE,
-	},
-};
-
-/* TODO */
-static const struct dpll_regs am43xx_dpll_regs[DPLL_COUNT];
+#include <dpll_335x.h>
+#include <dpll_43xx.h>
 
 static const struct dpll_regs *dpll_regs;
+static const enum dpll_id *power_down_plls;
 
 static unsigned int pll_mode[DPLL_COUNT];
 
@@ -184,15 +107,6 @@ static void dpll_power_up(enum dpll_id dpll)
 	__raw_writel(var, dpll_regs[dpll].dpll_pwr_sw_ctrl_reg);
 }
 
-static const enum dpll_id am335x_pg2_power_down_plls[] = {
-	DPLL_DDR,
-	DPLL_DISP,
-	DPLL_PER,
-	DPLL_END,
-};
-
-static const enum dpll_id *power_down_plls;
-
 /* DPLL retention update for PG 2.0 */
 void plls_power_down(void)
 {
@@ -243,8 +157,8 @@ void dpll_init(void)
 	if (soc_id == AM335X_SOC_ID) {
 		dpll_regs = am335x_dpll_regs;
 		if (soc_rev > AM335X_REV_ES1_0)
-
 			power_down_plls = am335x_pg2_power_down_plls;
+
 	} else if (soc_id == AM43XX_SOC_ID)
 		dpll_regs = am43xx_dpll_regs;
 }
