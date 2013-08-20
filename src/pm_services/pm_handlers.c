@@ -17,7 +17,6 @@
 #include <prcm_core.h>
 #include <msg.h>
 #include <prmam335x.h>
-#include <system_am335.h>
 #include <clockdomain.h>
 #include <hwmod.h>
 #include <powerdomain.h>

@@ -13,7 +13,6 @@
 #include <stdint.h>
 
 #include <device_am335x.h>
-#include <system_am335.h>
 
 /* Will be extended in the future as and when required */
 void nmi_handler(void)

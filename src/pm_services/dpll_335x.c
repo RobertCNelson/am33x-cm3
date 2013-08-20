@@ -12,7 +12,6 @@
 
 #include <device_am335x.h>
 #include <prcm.h>
-#include <system_am335.h>
 #include <dpll.h>
 #include <dpll_335x.h>
 
