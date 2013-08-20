@@ -10,25 +10,18 @@
  *  software download.
 */
 
-#include <io.h>
-#include <clockdomain.h>
-#include <rtc.h>
+#ifndef __IO_H__
+#define __IO_H__
 
-int rtc_enable_check(void)
+#define __raw_readl(a)		(*(volatile unsigned int *)(a))
+#define __raw_writel(v, a)	(*(volatile unsigned int *)(a) = v)
+#define __raw_readw(a)		(*(volatile unsigned short *)(a))
+#define __raw_writew(v, a)	(*(volatile unsigned short *)(a) = v)
+
+static inline unsigned int var_mod(unsigned int var, unsigned int mask,
+							unsigned int bit_val)
 {
-	if (clkdm_active(CLKDM_RTC))
-		return 0;
-	else
-		while(1)
-		;
+	return (var & ~mask) | bit_val;
 }
 
-void rtc_reg_write(unsigned int val, int reg)
-{
-	__raw_writel(val, reg);
-}
-
-unsigned int rtc_reg_read(int reg)
-{
-	return __raw_readl(reg);
-}
+#endif

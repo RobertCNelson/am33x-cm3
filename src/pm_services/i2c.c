@@ -11,6 +11,7 @@
 */
 
 #include <device_am335x.h>
+#include <io.h>
 #include <prcm.h>
 #include <i2c.h>
 

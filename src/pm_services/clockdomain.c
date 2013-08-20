@@ -10,11 +10,11 @@
  *  software download.
 */
 
-#include <device_am335x.h>
 #include <prcm_core.h>
 #include <clockdomain.h>
 #include <clockdomain_335x.h>
 #include <clockdomain_43xx.h>
+#include <io.h>
 
 #define CLKDM_SLEEP	0x1
 #define CLKDM_WAKE	0x2

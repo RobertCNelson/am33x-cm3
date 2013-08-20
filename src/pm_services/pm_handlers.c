@@ -14,6 +14,7 @@
 
 #include <cm3.h>
 #include <device_am335x.h>
+#include <io.h>
 #include <prcm_core.h>
 #include <msg.h>
 #include <prmam335x.h>

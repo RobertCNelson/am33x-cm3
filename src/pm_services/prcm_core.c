@@ -15,6 +15,7 @@
 #include <stddef.h>
 #include <cm3.h>
 #include <device_am335x.h>
+#include <io.h>
 #include <prcm_core.h>
 #include <hwmod.h>
 #include <powerdomain.h>

@@ -13,7 +13,7 @@
 #include <stdint.h>
 
 #include <cm3.h>
-#include <device_am335x.h>
+#include <io.h>
 
 void nvic_enable_irq(int irq_no)
 {

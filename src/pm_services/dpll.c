@@ -10,7 +10,7 @@
  *  software download.
 */
 
-#include <device_am335x.h>
+#include <io.h>
 #include <prcm.h>
 #include <prcm_core.h>
 #include <dpll.h>
