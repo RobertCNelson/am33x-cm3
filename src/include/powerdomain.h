@@ -30,55 +30,45 @@
 struct deep_sleep_data;
 
 struct pd_mpu_bits {
-	int	ram_retst_mask;
-	int	ram_retst_shift;
-	int	l2_retst_mask;
-	int	l2_retst_shift;
-	int	l1_retst_mask;
-	int	l1_retst_shift;
-	int	lpstchg_mask;
-	int	lpstchg_shift;
-	int	logicretst_mask;
-	int	logicretst_shift;
-	int	pwrst_mask;
-	int	pwrst_shift;
+	unsigned int	ram_retst_mask;
+	unsigned int	ram_retst_shift;
+	unsigned int	l2_retst_mask;
+	unsigned int	l2_retst_shift;
+	unsigned int	l1_retst_mask;
+	unsigned int	l1_retst_shift;
+	unsigned int	lpstchg_mask;
+	unsigned int	lpstchg_shift;
+	unsigned int	logicretst_mask;
+	unsigned int	logicretst_shift;
+	unsigned int	pwrst_mask;
+	unsigned int	pwrst_shift;
 };
 
 struct pd_per_bits {
-	int	per_retst_mask;
-	int	per_retst_shift;
-	int	ram1_retst_mask;
-	int	ram1_retst_shift;
-	int	ram2_retst_mask;
-	int	ram2_retst_shift;
-	int	icss_retst_mask;
-	int	icss_retst_shift;
-	int	lpstchg_mask;
-	int	lpstchg_shift;
-	int	logicretst_mask;
-	int	logicretst_shift;
-	int	pwrst_mask;
-	int	pwrst_shift;
+	unsigned int	per_retst_mask;
+	unsigned int	per_retst_shift;
+	unsigned int	ram1_retst_mask;
+	unsigned int	ram1_retst_shift;
+	unsigned int	ram2_retst_mask;
+	unsigned int	ram2_retst_shift;
+	unsigned int	icss_retst_mask;
+	unsigned int	icss_retst_shift;
+	unsigned int	lpstchg_mask;
+	unsigned int	lpstchg_shift;
+	unsigned int	logicretst_mask;
+	unsigned int	logicretst_shift;
+	unsigned int	pwrst_mask;
+	unsigned int	pwrst_shift;
 };
 
 void powerdomain_reset(void);
 void powerdomain_init(void);
 
-int pd_state_change(int, int);
+unsigned int pd_state_change(unsigned int, int);
 void pd_state_restore(int);
 
-int mpu_ram_ret_state_change(int, int);
-int mpu_l1_ret_state_change(int, int);
-int mpu_l2_ret_state_change(int, int);
-int icss_mem_ret_state_change(int, int);
-int per_mem_ret_state_change(int, int);
-int ocmc_mem_ret_state_change(int, int);
-
-int per_powerst_change(int, int);
-int mpu_powerst_change(int, int);
-
-int get_pd_per_stctrl_val(struct deep_sleep_data *data);
-int get_pd_mpu_stctrl_val(struct deep_sleep_data *data);
+unsigned int get_pd_per_stctrl_val(struct deep_sleep_data *data);
+unsigned int get_pd_mpu_stctrl_val(struct deep_sleep_data *data);
 
 int verify_pd_transitions(void);
 

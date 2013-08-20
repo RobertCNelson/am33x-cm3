@@ -151,8 +151,7 @@ void powerdomain_init(void)
 	}
 }
 
-/* PD related */
-int pd_state_change(int val, int pd)
+unsigned int pd_state_change(unsigned int val, int pd)
 {
 	pd_states[pd].stctrl_next_val = val;
 	pd_states[pd].stctrl_prev_val = __raw_readl(pd_regs[pd].stctrl);
@@ -162,77 +161,63 @@ int pd_state_change(int val, int pd)
 	return 0;
 }
 
-int mpu_ram_ret_state_change(int val, int var)
+static unsigned int mpu_ram_ret_state_change(unsigned int val, unsigned int v)
 {
-	var = var_mod(var, mpu_bits->ram_retst_mask,
-				 (val << mpu_bits->ram_retst_shift));
-
-	return var;
+	return var_mod(v, mpu_bits->ram_retst_mask,
+					val << mpu_bits->ram_retst_shift);
 }
 
-int mpu_l1_ret_state_change(int val, int var)
+static unsigned int mpu_l1_ret_state_change(unsigned int val, unsigned int v)
 {
-	var = var_mod(var, mpu_bits->l1_retst_mask,
-				 (val << mpu_bits->l1_retst_shift));
-
-	return var;
+	return var_mod(v, mpu_bits->l1_retst_mask,
+					val << mpu_bits->l1_retst_shift);
 }
 
-int mpu_l2_ret_state_change(int val, int var)
+static unsigned int mpu_l2_ret_state_change(unsigned int val, unsigned int v)
 {
-	var = var_mod(var, mpu_bits->l2_retst_mask,
-				 (val << mpu_bits->l2_retst_shift));
-
-	return var;
+	return var_mod(v, mpu_bits->l2_retst_mask,
+					val << mpu_bits->l2_retst_shift);
 }
 
-int icss_mem_ret_state_change(int val, int var)
+static unsigned int icss_mem_ret_state_change(unsigned int val, unsigned int v)
 {
-	var = var_mod(var, per_bits->icss_retst_mask,
-				 (val << per_bits->icss_retst_shift));
-
-	return var;
+	return var_mod(v, per_bits->icss_retst_mask,
+					val << per_bits->icss_retst_shift);
 }
 
-int per_mem_ret_state_change(int val, int var)
+static unsigned int per_mem_ret_state_change(unsigned int val, unsigned int v)
 {
-	var = var_mod(var, per_bits->per_retst_mask,
-				 (val << per_bits->per_retst_shift));
-
-	return var;
+	return var_mod(v, per_bits->per_retst_mask,
+					val << per_bits->per_retst_shift);
 }
 
-int ocmc_mem_ret_state_change(int val, int var)
+static unsigned int ocmc_mem_ret_state_change(unsigned int val, unsigned int v)
 {
-	var = var_mod(var, per_bits->ram1_retst_mask,
-				 (val << per_bits->ram1_retst_shift));
+	v = var_mod(v, per_bits->ram1_retst_mask,
+					val << per_bits->ram1_retst_shift);
 
 	if (per_bits->ram2_retst_mask)
-		var = var_mod(var, per_bits->ram2_retst_mask,
-				 (val << per_bits->ram2_retst_shift));
+		v = var_mod(v, per_bits->ram2_retst_mask,
+					val << per_bits->ram2_retst_shift);
 
-	return var;
+	return v;
 }
 
-int per_powerst_change(int val, int var)
+static unsigned int per_powerst_change(unsigned int val, unsigned int v)
 {
-	var = var_mod(var, per_bits->pwrst_mask,
-				(val << per_bits->pwrst_shift));
-
-	return var;
+	return var_mod(v, per_bits->pwrst_mask,
+					val << per_bits->pwrst_shift);
 }
 
-int mpu_powerst_change(int val, int var)
+static unsigned int mpu_powerst_change(unsigned int val, unsigned int v)
 {
-	var = var_mod(var, mpu_bits->pwrst_mask,
-				(val << mpu_bits->pwrst_shift));
-
-	return var;
+	return var_mod(v, mpu_bits->pwrst_mask,
+					val << mpu_bits->pwrst_shift);
 }
 
-int get_pd_per_stctrl_val(struct deep_sleep_data *data)
+unsigned int get_pd_per_stctrl_val(struct deep_sleep_data *data)
 {
-	int v = 0;
+	unsigned int v = 0;
 
 	v = per_powerst_change(data->pd_per_state, v);
 	v = icss_mem_ret_state_change(data->pd_per_icss_mem_ret_state, v);
@@ -242,9 +227,9 @@ int get_pd_per_stctrl_val(struct deep_sleep_data *data)
 	return v;
 }
 
-int get_pd_mpu_stctrl_val(struct deep_sleep_data *data)
+unsigned int get_pd_mpu_stctrl_val(struct deep_sleep_data *data)
 {
-	int v = 0;
+	unsigned int v = 0;
 
 	v = mpu_powerst_change(data->pd_mpu_state, v);
 	v = mpu_ram_ret_state_change(data->pd_mpu_ram_ret_state, v);

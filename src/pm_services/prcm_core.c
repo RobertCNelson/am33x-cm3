@@ -149,7 +149,7 @@ void pm_init(void)
 
 void setup_soc(void)
 {
-	int var = __raw_readl(DEVICE_ID);
+	unsigned int var = __raw_readl(DEVICE_ID);
 
 	soc_id = (var & DEVICE_ID_PARTNUM_MASK ) >> DEVICE_ID_PARTNUM_SHIFT;
 	soc_rev = (var & DEVICE_ID_DEVREV_MASK) >> DEVICE_ID_DEVREV_SHIFT;
@@ -165,7 +165,7 @@ void setup_soc(void)
 /* DeepSleep related */
 int disable_master_oscillator(void)
 {
-	int v = __raw_readl(DEEPSLEEP_CTRL);
+	unsigned int v = __raw_readl(DEEPSLEEP_CTRL);
 
 	v = var_mod(v, DS_ENABLE_MASK, (1 << DS_ENABLE_SHIFT));
 
@@ -176,7 +176,7 @@ int disable_master_oscillator(void)
 
 int enable_master_oscillator(void)
 {
-	int v = __raw_readl(DEEPSLEEP_CTRL);
+	unsigned int v = __raw_readl(DEEPSLEEP_CTRL);
 
 	v = var_mod(v, DS_ENABLE_MASK, (0 << DS_ENABLE_SHIFT));
 
@@ -187,7 +187,7 @@ int enable_master_oscillator(void)
 
 void configure_deepsleep_count(int ds_count)
 {
-	int v = __raw_readl(DEEPSLEEP_CTRL);
+	unsigned int v = __raw_readl(DEEPSLEEP_CTRL);
 
 	v = var_mod(v, DS_COUNT_MASK, (ds_count << DS_COUNT_SHIFT));
 
@@ -341,7 +341,7 @@ static const struct dpll_pd_data dpll_data[]  = {
 /* DPLL power-down Sequence PG 2.x */
 void dpll_power_down(unsigned int dpll)
 {
-	int var;
+	unsigned int var;
 
 	/* Configure bit to select Control module selection for DPLL */
 	var = __raw_readl(dpll_data[dpll].dpll_reg);
@@ -382,7 +382,7 @@ void dpll_power_down(unsigned int dpll)
 /* DPLL Power-up Sequence */
 void dpll_power_up(unsigned int dpll)
 {
-	int var;
+	unsigned int var;
 
 	/* PONIN is asserted high */
 	var = __raw_readl(dpll_data[dpll].dpll_reg);
@@ -485,7 +485,7 @@ void core_ldo_power_up(void)
 
 void ddr_io_suspend(void)
 {
-	int var;
+	unsigned int var;
 
 	/* mddr mode selection required only for PG1.0 */
 	if (soc_id == AM335X_SOC_ID && soc_rev == AM335X_REV_ES1_0) {
@@ -601,7 +601,7 @@ void pll_lock(unsigned int dpll)
 
 void ddr_io_resume(void)
 {
-	int var;
+	unsigned int var;
 
 	/* mddr mode selection required only for PG1.0 */
 	if (soc_id == AM335X_SOC_ID && soc_rev == AM335X_REV_ES1_0) {
@@ -627,7 +627,7 @@ void ddr_io_resume(void)
 /* same offsets for SA and Aegis */
 void vtp_enable(void)
 {
-	int var;
+	unsigned int var;
 
 	/* clear the register */
 	__raw_writel(0x0, VTP0_CTRL_REG);
@@ -664,7 +664,7 @@ void vtt_high(void)
 /* RESET line is applicable only to DDR3 */
 void set_ddr_reset(void)
 {
-	int var;
+	unsigned int var;
 
 	/*
 	 * TODO: Make this a one-time change in MPU code itself
@@ -679,7 +679,7 @@ void set_ddr_reset(void)
 
 void clear_ddr_reset(void)
 {
-	int var;
+	unsigned int var;
 
 	/*
 	 * TODO: Make this a one-time change in MPU code itself

@@ -33,35 +33,35 @@
 #define RTC_TIMEOUT_MAX		0xf
 
 struct rtc_data {
-	int rtc_timeout_val :4;	/* Delay for RTC alarm timeout. Default = 2secs */
+	unsigned int rtc_timeout_val :4;	/* Delay for RTC alarm timeout. Default = 2secs */
 };
 
 struct deep_sleep_data {
-	int mosc_state :1;			/* MOSC to be kept on (1) or off (0) */
-	int deepsleep_count :16;		/* Count of how many OSC clocks needs to be seen \
+	unsigned int mosc_state :1;		/* MOSC to be kept on (1) or off (0) */
+	unsigned int deepsleep_count :16;	/* Count of how many OSC clocks needs to be seen \
 						before exiting deep sleep mode */
 
-	int vdd_mpu_val :15;			/* If vdd_mpu is to be lowered, vdd_mpu in mV */
+	unsigned int vdd_mpu_val :15;		/* If vdd_mpu is to be lowered, vdd_mpu in mV */
 
-	int pd_mpu_state :2;			/* Powerstate of PD_MPU */
-	int pd_mpu_ram_ret_state :1;		/* Sabertooth RAM in retention state */
-	int pd_mpu_l1_ret_state :1;		/* L1 memory in retention state */
-	int pd_mpu_l2_ret_state :1;		/* L2 memory in retention state */
-	int res1 :2;
+	unsigned int pd_mpu_state :2;		/* Powerstate of PD_MPU */
+	unsigned int pd_mpu_ram_ret_state :1;	/* Sabertooth RAM in retention state */
+	unsigned int pd_mpu_l1_ret_state :1;	/* L1 memory in retention state */
+	unsigned int pd_mpu_l2_ret_state :1;	/* L2 memory in retention state */
+	unsigned int res1 :2;
 
-	int pd_per_state :2;	 		/* Powerstate of PD_PER */
-	int pd_per_icss_mem_ret_state :1;	/* ICSS memory in retention state */
-	int pd_per_mem_ret_state :1; 		/* Other memories in retention state */
-	int pd_per_ocmc_ret_state :1; 		/* OCMC memory in retention state */
-	int pd_per_ocmc2_ret_state :1;		/* OCMC bank 2 in retention state */
-	int res2 :5;
+	unsigned int pd_per_state :2;	 	/* Powerstate of PD_PER */
+	unsigned int pd_per_icss_mem_ret_state :1; /* ICSS memory in retention state */
+	unsigned int pd_per_mem_ret_state :1; 	/* Other memories in retention state */
+	unsigned int pd_per_ocmc_ret_state :1; 	/* OCMC memory in retention state */
+	unsigned int pd_per_ocmc2_ret_state :1;	/* OCMC bank 2 in retention state */
+	unsigned int res2 :5;
 
-	int wake_sources :13;			/* Wake sources */
+	unsigned int wake_sources :13;		/* Wake sources */
 						/* USB, I2C0, RTC_ALARM, TIMER1 \
 						   UART0, GPIO0_WAKE0, GPIO0_WAKE1, \
 						   WDT1, ADTSC, RTC_TIMER, USBWOUT0, \
 						   MPU, USBWOUT1 */
-	int reserved :1;			/* Internal use */
+	unsigned int reserved :1;		/* Internal use */
 };
 
 union state_data {

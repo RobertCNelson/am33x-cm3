@@ -40,7 +40,7 @@ void clockdomain_init(void)
 
 static void _clkdm_sleep(int reg)
 {
-	int var;
+	unsigned int var;
 
 	var = __raw_readl(reg);
 	var = var_mod(var, DEFAULT_CLKTRCTRL_MASK, DEFAULT_CLKTRCTRL_SLEEP);
@@ -49,7 +49,7 @@ static void _clkdm_sleep(int reg)
 
 static void _clkdm_wakeup(int reg)
 {
-	int var;
+	unsigned int var;
 
 	var = __raw_readl(reg);
 	var = var_mod(var, DEFAULT_CLKTRCTRL_MASK, DEFAULT_CLKTRCTRL_WAKE);

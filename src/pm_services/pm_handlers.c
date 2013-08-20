@@ -25,7 +25,7 @@
 void a8_lp_rtc_handler(struct cmd_data *data)
 {
 	struct rtc_data *local_cmd = &data->data->rtc;
-	int timeout;
+	unsigned int timeout;
 
 	a8_i2c_sleep_handler(data->i2c_sleep_offset);
 
@@ -39,11 +39,11 @@ void a8_lp_rtc_handler(struct cmd_data *data)
 		timeout = RTC_TIMEOUT_DEFAULT;
 
 	/* Program the RTC_PMIC register for deasseting pmic_pwr_enable */
-	rtc_reg_write(RTC_PMIC_REG, 0x00010000);
+	rtc_reg_write(0x00010000, RTC_PMIC_REG);
 
 	timeout += rtc_reg_read(RTC_ALARM2_SECONDS_REG);
 
-	rtc_reg_write(RTC_ALARM2_SECONDS_REG, timeout);
+	rtc_reg_write(timeout, RTC_ALARM2_SECONDS_REG);
 
 	if (cmd_global_data.cmd_id == CMD_ID_RTC) {
 		/* Turn off interconnect */
@@ -73,8 +73,8 @@ void a8_lp_rtc_handler(struct cmd_data *data)
 void a8_lp_ds0_handler(struct cmd_data *data)
 {
 	struct deep_sleep_data *local_cmd = &data->data->deep_sleep;
-	int per_st;
-	int mpu_st;
+	unsigned int per_st;
+	unsigned int mpu_st;
 	int temp;
 
 	if (cmd_handlers[cmd_global_data.cmd_id].do_ddr)
@@ -142,8 +142,8 @@ void a8_lp_ds0_handler(struct cmd_data *data)
 void a8_lp_ds1_handler(struct cmd_data *data)
 {
 	struct deep_sleep_data *local_cmd = &data->data->deep_sleep;
-	int per_st;
-	int mpu_st;
+	unsigned int per_st;
+	unsigned int mpu_st;
 
 	if (cmd_handlers[cmd_global_data.cmd_id].do_ddr)
 		ds_save();
@@ -190,8 +190,8 @@ void a8_lp_ds1_handler(struct cmd_data *data)
 void a8_lp_ds2_handler(struct cmd_data *data)
 {
 	struct deep_sleep_data *local_cmd = &data->data->deep_sleep;
-	int per_st;
-	int mpu_st;
+	unsigned int per_st;
+	unsigned int mpu_st;
 
 	if (cmd_handlers[cmd_global_data.cmd_id].do_ddr)
 		ds_save();
@@ -230,7 +230,7 @@ void a8_lp_ds2_handler(struct cmd_data *data)
 void a8_standby_handler(struct cmd_data *data)
 {
 	struct deep_sleep_data *local_cmd = &data->data->deep_sleep;
-	int mpu_st;
+	unsigned int mpu_st;
 
 	if (cmd_handlers[cmd_global_data.cmd_id].do_ddr)
 		ds_save();

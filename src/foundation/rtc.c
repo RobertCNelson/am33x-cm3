@@ -26,12 +26,12 @@ int rtc_enable_check(void)
 		;
 }
 
-void rtc_reg_write(int reg, int val)
+void rtc_reg_write(unsigned int val, int reg)
 {
 	__raw_writel(val, reg);
 }
 
-int rtc_reg_read(int reg)
+unsigned int rtc_reg_read(int reg)
 {
 	return __raw_readl(reg);
 }

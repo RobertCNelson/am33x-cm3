@@ -279,12 +279,12 @@
 #define DDR3_RST_DEF_VAL	(0x1 << 31)
 #define DDR_IO_MDDR_SEL		(0x1 << 28)
 
-#define __raw_readl(a)		(*(volatile int *)(a))
-#define __raw_writel(v, a)	(*(volatile int *)(a) = v)
-#define __raw_readw(a)		(*(volatile short *)(a))
-#define __raw_writew(v, a)	(*(volatile short *)(a) = v)
+#define __raw_readl(a)		(*(volatile unsigned int *)(a))
+#define __raw_writel(v, a)	(*(volatile unsigned int *)(a) = v)
+#define __raw_readw(a)		(*(volatile unsigned short *)(a))
+#define __raw_writew(v, a)	(*(volatile unsigned short *)(a) = v)
 
-static inline int var_mod(unsigned int var, unsigned int mask,
+static inline unsigned int var_mod(unsigned int var, unsigned int mask,
 							unsigned int bit_val)
 {
 	return (var & ~mask) | bit_val;

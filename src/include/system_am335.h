@@ -128,8 +128,8 @@ void trace_get_current_pos(void);
 void trace_set_current_pos(void);
 
 int rtc_enable_check(void);
-int rtc_reg_read(int);
-void rtc_reg_write(int, int);
+unsigned int rtc_reg_read(int);
+void rtc_reg_write(unsigned int, int);
 
 int i2c_write(const unsigned char *);
 
