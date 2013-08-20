@@ -24,8 +24,8 @@ enum dpll_id {
 	DPLL_END = -1,
 };
 
-void am33xx_power_down_plls(void);
-void am33xx_power_up_plls(void);
+void plls_power_down(void);
+void plls_power_up(void);
 
 void pll_bypass(enum dpll_id dpll);
 void pll_lock(enum dpll_id dpll);

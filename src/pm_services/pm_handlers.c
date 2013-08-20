@@ -108,7 +108,7 @@ void a8_lp_ds0_handler(struct cmd_data *data)
 	interconnect_hwmods_disable();
 
 	/* DPLL retention update for PG 2.0 */
-	am33xx_power_down_plls();
+	plls_power_down();
 
 	mpu_clkdm_sleep();
 
@@ -173,7 +173,7 @@ void a8_lp_ds1_handler(struct cmd_data *data)
 	pd_state_change(per_st, PD_PER);
 
 	/* DPLL retention update for PG 2.0 */
-	am33xx_power_down_plls();
+	plls_power_down();
 
 	mpu_clkdm_sleep();
 
@@ -221,7 +221,7 @@ void a8_lp_ds2_handler(struct cmd_data *data)
 	pd_state_change(per_st, PD_PER);
 
 	/* DPLL retention update for PG 2.0 */
-	am33xx_power_down_plls();
+	plls_power_down();
 
 	wkup_clkdm_sleep();
 
@@ -350,7 +350,7 @@ void a8_wake_ds0_handler(void)
 
 	clkdm_wake();
 
-	am33xx_power_up_plls();
+	plls_power_up();
 
 	interconnect_hwmods_enable();
 
@@ -380,7 +380,7 @@ void a8_wake_ds1_handler(void)
 
 	wkup_clkdm_wake();
 
-	am33xx_power_up_plls();
+	plls_power_up();
 
 	essential_hwmods_enable();
 
@@ -408,7 +408,7 @@ void a8_wake_ds2_handler(void)
 
 	wkup_clkdm_wake();
 
-	am33xx_power_up_plls();
+	plls_power_up();
 
 	msg_cmd_stat_update(result);
 

@@ -194,7 +194,7 @@ static const enum dpll_id am335x_pg2_power_down_plls[] = {
 static const enum dpll_id *power_down_plls;
 
 /* DPLL retention update for PG 2.0 */
-void am33xx_power_down_plls(void)
+void plls_power_down(void)
 {
 	int i;
 
@@ -203,7 +203,7 @@ void am33xx_power_down_plls(void)
 }
 
 /* DPLL retention update for PG 2.x */
-void am33xx_power_up_plls(void)
+void plls_power_up(void)
 {
 	int i;
 
