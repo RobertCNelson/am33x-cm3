@@ -270,6 +270,33 @@ void a8_cpuidle_handler(struct cmd_data *data)
 	clkdm_sleep(CLKDM_MPU);
 }
 
+void a8_cpuidle_v2_handler(struct cmd_data *data)
+{
+	struct deep_sleep_data *local_cmd = &data->data->deep_sleep;
+	unsigned int per_st;
+	unsigned int mpu_st;
+
+	pll_bypass(DPLL_MPU);
+
+	a8_i2c_sleep_handler(data->i2c_sleep_offset);
+
+	configure_wake_sources(local_cmd->wake_sources);
+
+	per_st = get_pd_per_stctrl_val(local_cmd);
+	mpu_st = get_pd_mpu_stctrl_val(local_cmd);
+
+	/* MPU power domain state change */
+	pd_state_change(mpu_st, PD_MPU);
+
+	/* PER power domain state change */
+	pd_state_change(per_st, PD_PER);
+
+	if (local_cmd->pd_mpu_state != PD_ON)
+		hwmod_disable(HWMOD_IEEE5000);
+
+	clkdm_sleep(CLKDM_MPU);
+}
+
 /* Standalone application handler */
 void a8_standalone_handler(struct cmd_data *data)
 {
@@ -458,4 +485,31 @@ void a8_wake_cpuidle_handler(void)
 	clear_wake_sources();
 
 	clkdm_wake(CLKDM_MPU);
+}
+
+/* Exit Idle mode
+ * MOSC = ON
+ * PD_PER = ON
+ * PD_MPU = OFF
+ */
+void a8_wake_cpuidle_v2_handler(void)
+{
+	int result;
+
+	result = verify_pd_transitions();
+
+	pd_state_restore(PD_PER);
+	pd_state_restore(PD_MPU);
+
+	clkdms_wake();
+
+	essential_hwmods_enable();
+
+	msg_cmd_stat_update(result);
+
+	clear_wake_sources();
+
+	clkdm_wake(CLKDM_MPU);
+
+	pll_lock(DPLL_MPU);
 }

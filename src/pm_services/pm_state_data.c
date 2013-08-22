@@ -128,3 +128,18 @@ union state_data idle_data = {
 		.wake_sources			= MPU_WAKE,
 	},
 };
+
+union state_data idle_v2_data = {
+	.deep_sleep = {
+		.mosc_state			= MOSC_ON,
+
+		.pd_mpu_state			= PD_OFF,
+		.pd_mpu_ram_ret_state		= MEM_BANK_RET_ST_OFF,
+		.pd_mpu_l1_ret_state		= MEM_BANK_RET_ST_OFF,
+		.pd_mpu_l2_ret_state		= MEM_BANK_RET_ST_OFF,
+
+		.pd_per_state 			= PD_ON,
+
+		.wake_sources			= MPU_WAKE,
+	},
+};

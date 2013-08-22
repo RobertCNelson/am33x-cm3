@@ -121,6 +121,12 @@ struct state_handler cmd_handlers[] = {
 		.wake_handler = a8_wake_cpuidle_handler,
 		.fast_trigger = true,
 	},
+	[CMD_ID_CPUIDLE_V2] = {
+		.gp_data = &idle_v2_data,
+		.cmd_handler = a8_cpuidle_v2_handler,
+		.wake_handler = a8_wake_cpuidle_v2_handler,
+		.fast_trigger = true,
+	},
 };
 
 /* Read one specific IPC register */

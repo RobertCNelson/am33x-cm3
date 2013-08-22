@@ -22,6 +22,7 @@ void a8_lp_ds2_handler(struct cmd_data *);
 void a8_standalone_handler(struct cmd_data *);
 void a8_standby_handler(struct cmd_data *);
 void a8_cpuidle_handler(struct cmd_data *);
+void a8_cpuidle_v2_handler(struct cmd_data *);
 
 void generic_wake_handler(int);
 void a8_wake_rtc_handler(void);
@@ -30,5 +31,6 @@ void a8_wake_ds1_handler(void);
 void a8_wake_ds2_handler(void);
 void a8_wake_standby_handler(void);
 void a8_wake_cpuidle_handler(void);
+void a8_wake_cpuidle_v2_handler(void);
 
 #endif
