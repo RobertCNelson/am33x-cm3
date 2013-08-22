@@ -16,6 +16,7 @@ SECTIONS
         KEEP(*(.vectors))
         *(.text*)
         *(.rodata*)
+        *(.note*)
         _end_text = .;
     } > UMEM
     .data : AT(ADDR(.text) + SIZEOF(.text))
