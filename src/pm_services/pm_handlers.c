@@ -40,8 +40,7 @@ void a8_lp_rtc_handler(struct cmd_data *data)
 	/* If RTC module if not already configured... cannot continue */
 	rtc_enable_check();
 
-	if (local_cmd->rtc_timeout_val != 0 &&
-			local_cmd->rtc_timeout_val <= RTC_TIMEOUT_MAX)
+	if (local_cmd->rtc_timeout_val != 0)
 		timeout = local_cmd->rtc_timeout_val;
 	else
 		timeout = RTC_TIMEOUT_DEFAULT;
