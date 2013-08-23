@@ -17,7 +17,6 @@
 #include <low_power.h>
 #include <prmam335x.h>
 #include <system_am335.h>
-#include <prcm.h>
 
 /* Enter RTC mode */
 void a8_lp_rtc_handler(struct cmd_data *data)
@@ -296,7 +295,7 @@ void generic_wake_handler(int wakeup_reason)
 	 * path. Keep compatibily with these kernels.
 	 */
 	if (!cmd_handlers[cmd_global_data.cmd_id].do_ddr)
-		module_state_change(MODULE_ENABLE, AM335X_CM_PER_EMIF_CLKCTRL);
+		module_state_change(MODULE_ENABLE, HWMOD_EMIF);
 
 	/* If everything is done, we init things again */
 	/* Flush out NVIC interrupts */

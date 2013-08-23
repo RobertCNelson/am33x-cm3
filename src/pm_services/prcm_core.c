@@ -243,26 +243,6 @@ static struct powerdomain_state pd_states[] = {
 	[PD_PER] = {},
 };
 
-
-enum hwmod_id {
-	HWMOD_CLKDIV32K,
-	HWMOD_EMIF,
-	HWMOD_EMIF_FW,
-	HWMOD_GPIO0,
-	HWMOD_I2C0,
-	HWMOD_IEEE5000,
-	HWMOD_L3,
-	HWMOD_L3_INSTR,
-	HWMOD_L4FW,
-	HWMOD_L4HS,
-	HWMOD_L4LS,
-	HWMOD_MPU,
-	HWMOD_OCMCRAM,
-	HWMOD_OTFA_EMIF,
-
-	HWMOD_COUNT,
-};
-
 static const unsigned int am335x_hwmods[HWMOD_COUNT] = {
 	[HWMOD_CLKDIV32K]	= AM335X_CM_PER_CLKDIV32K_CLKCTRL,
 	[HWMOD_EMIF]		= AM335X_CM_PER_EMIF_CLKCTRL,
@@ -369,27 +349,27 @@ static void _module_disable(int reg)
 		DEFAULT_IDLEST_IDLE_VAL);
 }
 
-int module_state_change(int state, int reg)
+int module_state_change(int state, enum hwmod_id id)
 {
 	if (state == MODULE_DISABLE)
-		_module_disable(reg);
+		_module_disable(hwmods[id]);
 	else
-		_module_enable(reg);
+		_module_enable(hwmods[id]);
 
 	return 0;
 }
 
-static int modules_state_change(int state, const unsigned int *reg)
+static int modules_state_change(int state, const enum hwmod_id *ids)
 {
 	int i;
 
-	for (i = 0; reg[i]; i++)
+	for (i = 0; ids[i] != HWMOD_END; i++)
 		if (state == MODULE_DISABLE)
-			_module_disable(reg[i]);
+			_module_disable(hwmods[ids[i]]);
 
 	for (i--; i >= 0; i--)
 		if (state == MODULE_ENABLE)
-			_module_enable(reg[i]);
+			_module_enable(hwmods[ids[i]]);
 
 	return 0;
 }
@@ -439,19 +419,19 @@ static int clkdms_state_change(int state, const unsigned int *reg)
 	return ret;
 }
 
-static const unsigned int am335x_essential_modules[] = {
-	AM335X_CM_PER_CLKDIV32K_CLKCTRL,
-	AM335X_CM_PER_IEEE5000_CLKCTRL,
-	AM335X_CM_PER_EMIF_FW_CLKCTRL,
-	AM335X_CM_PER_OCMCRAM_CLKCTRL,
-	0,
+static const enum hwmod_id am335x_essential_modules[] = {
+	HWMOD_CLKDIV32K,
+	HWMOD_IEEE5000,
+	HWMOD_EMIF_FW,
+	HWMOD_OCMCRAM,
+	HWMOD_END,
 };
 
-static const unsigned int am43xx_essential_modules[] = {
-	AM43XX_CM_PER_EMIF_FW_CLKCTRL,
-	AM43XX_CM_PER_OTFA_EMIF_CLKCTRL,
-	AM43XX_CM_PER_OCMCRAM_CLKCTRL,
-	0,
+static const enum hwmod_id am43xx_essential_modules[] = {
+	HWMOD_EMIF_FW,
+	HWMOD_OTFA_EMIF,
+	HWMOD_OCMCRAM,
+	HWMOD_END,
 };
 
 /*
@@ -481,22 +461,22 @@ int essential_modules_enable(void)
 	return 0;
 }
 
-static const unsigned int am335x_interconnect_modules[] = {
-	AM335X_CM_PER_L4LS_CLKCTRL,
-	AM335X_CM_PER_L4HS_CLKCTRL,
-	AM335X_CM_PER_L4FW_CLKCTRL,
-	AM335X_CM_PER_L3_INSTR_CLKCTRL,
-	AM335X_CM_PER_L3_CLKCTRL,
-	0,
+static const enum hwmod_id am335x_interconnect_modules[] = {
+	HWMOD_L4LS,
+	HWMOD_L4HS,
+	HWMOD_L4FW,
+	HWMOD_L3_INSTR,
+	HWMOD_L3,
+	HWMOD_END,
 };
 
-static const unsigned int am43xx_interconnect_modules[] = {
-	AM43XX_CM_PER_L4LS_CLKCTRL,
-	AM43XX_CM_PER_L4HS_CLKCTRL,
-	AM43XX_CM_PER_L4FW_CLKCTRL,
-	AM43XX_CM_PER_L3_INSTR_CLKCTRL,
-	AM43XX_CM_PER_L3_CLKCTRL,
-	0,
+static const enum hwmod_id am43xx_interconnect_modules[] = {
+	HWMOD_L4LS,
+	HWMOD_L4HS,
+	HWMOD_L4FW,
+	HWMOD_L3_INSTR,
+	HWMOD_L3,
+	HWMOD_END,
 };
 
 int interconnect_modules_disable(void)
@@ -521,12 +501,12 @@ int interconnect_modules_enable(void)
 
 void mpu_disable(void)
 {
-	module_state_change(MODULE_DISABLE, hwmods[HWMOD_MPU]);
+	module_state_change(MODULE_DISABLE, HWMOD_MPU);
 }
 
 void mpu_enable(void)
 {
-	module_state_change(MODULE_ENABLE, hwmods[HWMOD_MPU]);
+	module_state_change(MODULE_ENABLE, HWMOD_MPU);
 }
 
 static const unsigned int am335x_clkdms[] = {
@@ -1099,11 +1079,11 @@ void vtt_low(void)
 	if (vtt_toggle == false)
 		return;
 
-	module_state_change(MODULE_ENABLE, hwmods[HWMOD_GPIO0]);
+	module_state_change(MODULE_ENABLE, HWMOD_GPIO0);
 
 	__raw_writel((1 << vtt_gpio_pin), GPIO_BASE + GPIO_CLEARDATAOUT);
 
-	module_state_change(MODULE_DISABLE, hwmods[HWMOD_GPIO0]);
+	module_state_change(MODULE_DISABLE, HWMOD_GPIO0);
 }
 
 /* same offsets for SA and Aegis */
@@ -1235,11 +1215,11 @@ void vtt_high(void)
 	if (vtt_toggle == false)
 		return;
 
-	module_state_change(MODULE_ENABLE, hwmods[HWMOD_GPIO0]);
+	module_state_change(MODULE_ENABLE, HWMOD_GPIO0);
 
 	__raw_writel((1 << vtt_gpio_pin), GPIO_BASE + GPIO_SETDATAOUT);
 
-	module_state_change(MODULE_DISABLE, hwmods[HWMOD_GPIO0]);
+	module_state_change(MODULE_DISABLE, HWMOD_GPIO0);
 }
 
 /* RESET line is applicable only to DDR3 */
@@ -1308,7 +1288,7 @@ void ds_restore(void)
 		vtp_enable();
 
 		/* XXX: Why is this required here for DDR3? */
-		module_state_change(MODULE_ENABLE, hwmods[HWMOD_EMIF]);
+		module_state_change(MODULE_ENABLE, HWMOD_EMIF);
 
 		vtt_high();
 
@@ -1323,12 +1303,12 @@ int a8_i2c_sleep_handler(unsigned short i2c_sleep_offset)
 	unsigned char *dmem = (unsigned char *) DMEM_BASE;
 	int ret = 0;
 
-	module_state_change(MODULE_ENABLE, hwmods[HWMOD_I2C0]);
+	module_state_change(MODULE_ENABLE, HWMOD_I2C0);
 
 	if (i2c_sleep_offset != 0xffff)
 		ret = i2c_write(dmem + i2c_sleep_offset);
 
-	module_state_change(MODULE_DISABLE, hwmods[HWMOD_I2C0]);
+	module_state_change(MODULE_DISABLE, HWMOD_I2C0);
 
 	return ret;
 }
@@ -1338,12 +1318,12 @@ int a8_i2c_wake_handler(unsigned short i2c_wake_offset)
 	unsigned char *dmem = (unsigned char *) DMEM_BASE;
 	int ret = 0;
 
-	module_state_change(MODULE_ENABLE, hwmods[HWMOD_I2C0]);
+	module_state_change(MODULE_ENABLE, HWMOD_I2C0);
 
 	if (i2c_wake_offset != 0xffff)
 		ret = i2c_write(dmem + i2c_wake_offset);
 
-	module_state_change(MODULE_DISABLE, hwmods[HWMOD_I2C0]);
+	module_state_change(MODULE_DISABLE, HWMOD_I2C0);
 
 	return ret;
 }

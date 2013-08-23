@@ -117,7 +117,27 @@ struct pd_per_bits {
 	int	pwrst_shift;
 };
 
-int module_state_change(int, int);
+enum hwmod_id {
+	HWMOD_CLKDIV32K,
+	HWMOD_EMIF,
+	HWMOD_EMIF_FW,
+	HWMOD_GPIO0,
+	HWMOD_I2C0,
+	HWMOD_IEEE5000,
+	HWMOD_L3,
+	HWMOD_L3_INSTR,
+	HWMOD_L4FW,
+	HWMOD_L4HS,
+	HWMOD_L4LS,
+	HWMOD_MPU,
+	HWMOD_OCMCRAM,
+	HWMOD_OTFA_EMIF,
+
+	HWMOD_COUNT,
+	HWMOD_END = -1,
+};
+
+int module_state_change(int state, enum hwmod_id id);
 int clkdm_state_change(int state, int reg);
 int interconnect_modules_enable(void);
 int interconnect_modules_disable(void);
