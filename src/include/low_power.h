@@ -76,6 +76,15 @@ struct deep_sleep_data {
 	int reserved :1;			/* Internal use */
 };
 
+union state_data {
+	struct deep_sleep_data deep_sleep;
+	struct rtc_data rtc;
+	struct {
+		unsigned int param1;
+		unsigned int param2;
+	} raw;
+};
+
 struct pd_mpu_bits {
 	int	ram_retst_mask;
 	int	ram_retst_shift;

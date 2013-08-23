@@ -22,7 +22,7 @@
 /* Enter RTC mode */
 void a8_lp_rtc_handler(struct cmd_data *data)
 {
-	struct rtc_data *local_cmd = (struct rtc_data *)data->data;
+	struct rtc_data *local_cmd = &data->data->rtc;
 	int timeout = 0;
 
 	a8_i2c_sleep_handler(data->i2c_sleep_offset);
@@ -60,7 +60,7 @@ void a8_lp_rtc_handler(struct cmd_data *data)
 /* Enter RTC_fast mode */
 void a8_lp_rtc_fast_handler(struct cmd_data *data)
 {
-	struct rtc_data *rtc_data = (struct rtc_data *)data->data;
+	struct rtc_data *rtc_data = &data->data->rtc;
 	int timeout = 0;
 
 	a8_i2c_sleep_handler(data->i2c_sleep_offset);
@@ -92,7 +92,7 @@ void a8_lp_rtc_fast_handler(struct cmd_data *data)
  */
 void a8_lp_ds0_handler(struct cmd_data *data)
 {
-	struct deep_sleep_data *local_cmd = (struct deep_sleep_data *)data->data;
+	struct deep_sleep_data *local_cmd = &data->data->deep_sleep;
 
 	int per_st = 0;
 	int mpu_st = 0;
@@ -162,7 +162,7 @@ void a8_lp_ds0_handler(struct cmd_data *data)
  */
 void a8_lp_ds1_handler(struct cmd_data *data)
 {
-	struct deep_sleep_data *local_cmd = (struct deep_sleep_data *)data->data;
+	struct deep_sleep_data *local_cmd = &data->data->deep_sleep;
 
 	int per_st = 0;
 	int mpu_st = 0;
@@ -211,7 +211,7 @@ void a8_lp_ds1_handler(struct cmd_data *data)
  */
 void a8_lp_ds2_handler(struct cmd_data *data)
 {
-	struct deep_sleep_data *local_cmd = (struct deep_sleep_data *)data->data;
+	struct deep_sleep_data *local_cmd = &data->data->deep_sleep;
 
 	int per_st = 0;
 	int mpu_st = 0;
@@ -252,8 +252,7 @@ void a8_lp_ds2_handler(struct cmd_data *data)
 
 void a8_standby_handler(struct cmd_data *data)
 {
-	struct deep_sleep_data *local_cmd =
-		(struct deep_sleep_data *)data->data;
+	struct deep_sleep_data *local_cmd = &data->data->deep_sleep;
 	int mpu_st = 0;
 
 	if (cmd_handlers[cmd_global_data.cmd_id].do_ddr)
@@ -279,7 +278,7 @@ void a8_standby_handler(struct cmd_data *data)
 
 void a8_cpuidle_handler(struct cmd_data *data)
 {
-	struct deep_sleep_data *local_cmd = (struct deep_sleep_data *)data->data;
+	struct deep_sleep_data *local_cmd = &data->data->deep_sleep;
 
 	configure_wake_sources(local_cmd->wake_sources);
 

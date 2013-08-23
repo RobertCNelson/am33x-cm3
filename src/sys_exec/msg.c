@@ -17,14 +17,16 @@
 #include <low_power.h>
 #include <system_am335.h>
 
-extern struct rtc_data rtc_mode_data;
-extern struct deep_sleep_data standby_data;
-extern struct deep_sleep_data ds0_data;
-extern struct deep_sleep_data ds0_data_hs;
-extern struct deep_sleep_data ds1_data;
-extern struct deep_sleep_data ds1_data_hs;
-extern struct deep_sleep_data ds2_data;
-extern struct deep_sleep_data idle_data;
+extern union state_data rtc_mode_data;
+extern union state_data standby_data;
+extern union state_data ds0_data;
+extern union state_data ds0_data_hs;
+extern union state_data ds1_data;
+extern union state_data ds1_data_hs;
+extern union state_data ds2_data;
+extern union state_data idle_data;
+
+static union state_data custom_state_data;
 
 static void a8_version_handler(struct cmd_data *data)
 {
@@ -188,9 +190,6 @@ void msg_cmd_dispatcher(void)
 		(a8_m3_data_r.reg4 == 0xffffffff))
 		use_default_val = 1;
 
-	a8_m3_ds_data.reg1 = a8_m3_data_r.reg3;
-	a8_m3_ds_data.reg2 = a8_m3_data_r.reg4;
-
 	cmd_global_data.i2c_sleep_offset = a8_m3_data_r.reg6 & 0xffff;
 	cmd_global_data.i2c_wake_offset = a8_m3_data_r.reg6 >> 16;
 
@@ -206,8 +205,11 @@ void msg_cmd_dispatcher(void)
 			cmd_global_data.data = cmd_handlers[id].hs_data;
 		else if (cmd_handlers[id].gp_data)
 			cmd_global_data.data = cmd_handlers[id].gp_data;
-	} else
-		cmd_global_data.data = &a8_m3_ds_data;
+	} else {
+		custom_state_data.raw.param1 = a8_m3_data_r.reg3;
+		custom_state_data.raw.param2 = a8_m3_data_r.reg4;
+		cmd_global_data.data = &custom_state_data;
+	}
 
 	cmd_handlers[id].handler(&cmd_global_data);
 }

@@ -14,6 +14,7 @@
 #define __SYSTEM_AM335_H__
 
 #include <stdint.h>
+#include <low_power.h>
 
 struct ipc_data {
 	int reg1;
@@ -24,11 +25,6 @@ struct ipc_data {
 	int reg6;
 	int reg7;
 	int reg8;
-};
-
-struct ds_data {
-	int reg1;
-	int reg2;
 };
 
 enum cmd_ids {
@@ -52,18 +48,17 @@ enum cmd_ids {
 
 struct cmd_data {
 	enum cmd_ids cmd_id;
-	void *data;
+	union state_data *data;
 	unsigned short i2c_sleep_offset;
 	unsigned short i2c_wake_offset;
 };
 
 struct cmd_data cmd_global_data;
 struct ipc_data a8_m3_data_r;
-struct ds_data	a8_m3_ds_data;
 
 struct state_handler {
-	void *gp_data;
-	void *hs_data;
+	union state_data *gp_data;
+	union state_data *hs_data;
 	void (*handler)(struct cmd_data *data);
 	int needs_trigger;
 	int fast_trigger;
