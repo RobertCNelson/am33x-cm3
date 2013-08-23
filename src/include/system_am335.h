@@ -66,12 +66,6 @@ int vtt_gpio_pin; 		/* VTT GPIO Pin */
 bool halt_on_resume;
 
 int cmd_wake_sources;
-int pd_mpu_stctrl_next_val;
-int pd_mpu_stctrl_prev_val;
-int pd_per_stctrl_next_val;
-int pd_per_stctrl_prev_val;
-int pd_mpu_pwrstst_prev_val;
-int pd_per_pwrstst_prev_val;
 
 unsigned int soc_id;
 unsigned int soc_rev;

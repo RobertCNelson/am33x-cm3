@@ -201,8 +201,47 @@ static const struct pd_per_bits am43xx_per_bits = {
 	.pwrst_shift		= AM43XX_PER_POWERSTATE_SHIFT,
 };
 
+struct powerdomain_regs {
+	unsigned int stctrl;
+	unsigned int pwrstst;
+};
+
+struct powerdomain_state {
+	unsigned int stctrl_next_val;
+	unsigned int stctrl_prev_val;
+	unsigned int pwrstst_prev_val;
+};
+
+static const struct powerdomain_regs am335x_pd_regs[] = {
+	[PD_MPU] = {
+		.stctrl		= AM335X_PM_MPU_PWRSTCTRL,
+		.pwrstst	= AM335X_PM_MPU_PWRSTST,
+	},
+	[PD_PER] = {
+		.stctrl		= AM335X_PM_PER_PWRSTCTRL,
+		.pwrstst	= AM335X_PM_PER_PWRSTST,
+	},
+};
+
+static const struct powerdomain_regs am43xx_pd_regs[] = {
+	[PD_MPU] = {
+		.stctrl		= AM43XX_PM_MPU_PWRSTCTRL,
+		.pwrstst	= AM43XX_PM_MPU_PWRSTST,
+	},
+	[PD_PER] = {
+		.stctrl		= AM43XX_PM_PER_PWRSTCTRL,
+		.pwrstst	= AM43XX_PM_PER_PWRSTST,
+	},
+};
+
 static const struct pd_mpu_bits *mpu_bits;
 static const struct pd_per_bits *per_bits;
+static const struct powerdomain_regs *pd_regs;
+
+static struct powerdomain_state pd_states[] = {
+	[PD_MPU] = {},
+	[PD_PER] = {},
+};
 
 /* Clear out the global variables here */
 void pm_init(void)
@@ -210,12 +249,12 @@ void pm_init(void)
 	cmd_global_data.cmd_id 	= CMD_ID_INVALID;
 	cmd_global_data.data 	= NULL;
 
-	pd_mpu_stctrl_next_val 	= 0;
-	pd_per_stctrl_next_val 	= 0;
-	pd_mpu_stctrl_prev_val	= 0;
-	pd_per_stctrl_prev_val	= 0;
-	pd_mpu_pwrstst_prev_val	= 0;
-	pd_per_pwrstst_prev_val	= 0;
+	pd_states[PD_MPU].stctrl_next_val = 0;
+	pd_states[PD_MPU].stctrl_prev_val = 0;
+	pd_states[PD_MPU].pwrstst_prev_val = 0;
+	pd_states[PD_PER].stctrl_next_val = 0;
+	pd_states[PD_PER].stctrl_prev_val = 0;
+	pd_states[PD_PER].pwrstst_prev_val = 0;
 }
 
 void setup_soc(void)
@@ -232,9 +271,11 @@ void setup_soc(void)
 	if (soc_id == AM335X_SOC_ID) {
 		mpu_bits = &am335x_mpu_bits;
 		per_bits = &am335x_per_bits;
+		pd_regs = am335x_pd_regs;
 	} else if (soc_id == AM43XX_SOC_ID) {
 		mpu_bits = &am43xx_mpu_bits;
 		per_bits = &am43xx_per_bits;
+		pd_regs = am43xx_pd_regs;
 	}
 }
 
@@ -520,29 +561,10 @@ void wkup_clkdm_wake(void)
 /* PD related */
 int pd_state_change(int val, int pd)
 {
-	if (pd == PD_MPU) {
-		pd_mpu_stctrl_next_val	= val;
-		if (soc_id == AM335X_SOC_ID) {
-			pd_mpu_stctrl_prev_val = __raw_readl(AM335X_PM_MPU_PWRSTCTRL);
-			pd_mpu_pwrstst_prev_val = __raw_readl(AM335X_PM_MPU_PWRSTST);
-			__raw_writel(val, AM335X_PM_MPU_PWRSTCTRL);
-		} else if (soc_id == AM43XX_SOC_ID) {
-			pd_mpu_stctrl_prev_val = __raw_readl(AM43XX_PM_MPU_PWRSTCTRL);
-			pd_mpu_pwrstst_prev_val = __raw_readl(AM43XX_PM_MPU_PWRSTST);
-			__raw_writel(val, AM43XX_PM_MPU_PWRSTCTRL);
-		}
-	} else if (pd == PD_PER) {
-		pd_per_stctrl_next_val = val;
-		if (soc_id == AM335X_SOC_ID) {
-			pd_per_stctrl_prev_val = __raw_readl(AM335X_PM_PER_PWRSTCTRL);
-			pd_per_pwrstst_prev_val = __raw_readl(AM335X_PM_PER_PWRSTST);
-			__raw_writel(val, AM335X_PM_PER_PWRSTCTRL);
-		} else if (soc_id == AM43XX_SOC_ID) {
-			pd_per_stctrl_prev_val = __raw_readl(AM43XX_PM_PER_PWRSTCTRL);
-			pd_per_pwrstst_prev_val = __raw_readl(AM43XX_PM_PER_PWRSTST);
-			__raw_writel(val, AM43XX_PM_PER_PWRSTCTRL);
-		}
-	}
+	pd_states[pd].stctrl_next_val = val;
+	pd_states[pd].stctrl_prev_val = __raw_readl(pd_regs[pd].stctrl);
+	pd_states[pd].pwrstst_prev_val = __raw_readl(pd_regs[pd].pwrstst);
+	__raw_writel(val, pd_regs[pd].stctrl);
 
 	return 0;
 }
@@ -761,46 +783,33 @@ void clear_wake_sources(void)
 
 void pd_state_restore(int pd)
 {
-	if (pd == PD_MPU) {
-		if (soc_id == AM335X_SOC_ID)
-			__raw_writel(pd_mpu_stctrl_prev_val, AM335X_PM_MPU_PWRSTCTRL);
-		else if (soc_id == AM43XX_SOC_ID)
-			__raw_writel(pd_mpu_stctrl_prev_val, AM43XX_PM_MPU_PWRSTCTRL);
-	} else if (pd == PD_PER) {
-		if (soc_id == AM335X_SOC_ID)
-			__raw_writel(pd_per_stctrl_prev_val, AM335X_PM_PER_PWRSTCTRL);
-		else if (soc_id == AM43XX_SOC_ID)
-			__raw_writel(pd_per_stctrl_prev_val, AM43XX_PM_PER_PWRSTCTRL);
-	}
+	__raw_writel(pd_states[pd].stctrl_prev_val, pd_regs[pd].stctrl);
 }
 
 /* Checking only the stst bits for now */
-int verify_pd_transitions(void)
+static int verify_pd_transition(int pd)
 {
-	int mpu_ctrl = 0;
-	int mpu_stst = 0;
-	int per_ctrl = 0;
-	int per_stst = 0;
+	unsigned int ctrl;
+	unsigned int stst;
 
-	if (soc_id == AM335X_SOC_ID) {
-		mpu_ctrl = __raw_readl(AM335X_PM_MPU_PWRSTCTRL);
-		per_ctrl = __raw_readl(AM335X_PM_PER_PWRSTCTRL);
+	ctrl = __raw_readl(pd_regs[pd].stctrl);
+	stst = __raw_readl(pd_regs[pd].pwrstst);
 
-		mpu_stst = __raw_readl(AM335X_PM_MPU_PWRSTST);
-		per_stst = __raw_readl(AM335X_PM_PER_PWRSTST);
-	} else if (soc_id == AM43XX_SOC_ID) {
-		mpu_ctrl = __raw_readl(AM43XX_PM_MPU_PWRSTCTRL);
-		per_ctrl = __raw_readl(AM43XX_PM_PER_PWRSTCTRL);
-
-		mpu_stst = __raw_readl(AM43XX_PM_MPU_PWRSTST);
-		per_stst = __raw_readl(AM43XX_PM_PER_PWRSTST);
-	}
-
-	if (((mpu_ctrl & 0x3) == (mpu_stst & 0x3)) &&
-		((per_ctrl & 0x3) == (per_stst & 0x3)))
+	if ((ctrl & 0x3) == (stst & 0x3))
 		return CMD_STAT_PASS;
 	else
 		return CMD_STAT_FAIL;
+}
+
+int verify_pd_transitions(void)
+{
+	int result;
+
+	result = verify_pd_transition(PD_MPU);
+	if (result == CMD_STAT_FAIL)
+		return result;
+
+	return verify_pd_transition(PD_PER);
 }
 
 struct dpll_pd_data {
