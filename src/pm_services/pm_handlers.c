@@ -17,6 +17,7 @@
 #include <low_power.h>
 #include <prmam335x.h>
 #include <system_am335.h>
+#include <prcm.h>
 
 /* Enter RTC mode */
 void a8_lp_cmd1_handler(struct cmd_data *data, char use_default_val)
@@ -396,6 +397,13 @@ void generic_wake_handler(int wakeup_reason)
 	}
 
 	enable_master_oscillator();
+
+	/*
+	 * PSP kernels have a long standing bug in sleep33xx.S,
+	 * they don't re-enable the EMIF hwmod in their resume
+	 * path. Keep compatibily with these kernels.
+	 */
+	module_state_change(MODULE_ENABLE, AM335X_CM_PER_EMIF_CLKCTRL);
 
 	/* If everything is done, we init things again */
 	/* Flush out NVIC interrupts */

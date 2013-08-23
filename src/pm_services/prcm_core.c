@@ -232,13 +232,8 @@ int essential_modules_disable(void)
 	module_state_change(MODULE_DISABLE, AM335X_CM_PER_CLKDIV32K_CLKCTRL);
 	module_state_change(MODULE_DISABLE, AM335X_CM_PER_IEEE5000_CLKCTRL);
 	module_state_change(MODULE_DISABLE, AM335X_CM_PER_EMIF_FW_CLKCTRL);
-	module_state_change(MODULE_DISABLE, AM335X_CM_PER_GPMC_CLKCTRL);
 	module_state_change(MODULE_DISABLE, AM335X_CM_PER_OCMCRAM_CLKCTRL);
-	module_state_change(MODULE_DISABLE, AM335X_CM_PER_EMIF_CLKCTRL);
 
-	module_state_change(MODULE_DISABLE, AM335X_CM_PER_MAILBOX0_CLKCTRL);
-	module_state_change(MODULE_DISABLE, AM335X_CM_WKUP_UART0_CLKCTRL);
-	module_state_change(MODULE_DISABLE, AM335X_CM_PER_TIMER2_CLKCTRL);
 	return 0;
 }
 
@@ -248,21 +243,13 @@ int essential_modules_enable(void)
 	module_state_change(MODULE_ENABLE, AM335X_CM_PER_CLKDIV32K_CLKCTRL);
 	module_state_change(MODULE_ENABLE, AM335X_CM_PER_IEEE5000_CLKCTRL);
 	module_state_change(MODULE_ENABLE, AM335X_CM_PER_EMIF_FW_CLKCTRL);
-	module_state_change(MODULE_ENABLE, AM335X_CM_PER_GPMC_CLKCTRL);
 	module_state_change(MODULE_ENABLE, AM335X_CM_PER_OCMCRAM_CLKCTRL);
-	module_state_change(MODULE_ENABLE, AM335X_CM_PER_EMIF_CLKCTRL);
 
-	module_state_change(MODULE_ENABLE, AM335X_CM_PER_MAILBOX0_CLKCTRL);
-	module_state_change(MODULE_ENABLE, AM335X_CM_WKUP_UART0_CLKCTRL);
-	module_state_change(MODULE_ENABLE, AM335X_CM_PER_TIMER2_CLKCTRL);
 	return 0;
 }
 
 int interconnect_modules_disable(void)
 {
-	module_state_change(MODULE_DISABLE, AM335X_CM_PER_EMIF_CLKCTRL);
-	module_state_change(MODULE_DISABLE, AM335X_CM_PER_EMIF_FW_CLKCTRL);
-
 	module_state_change(MODULE_DISABLE, AM335X_CM_PER_L4LS_CLKCTRL);
 	module_state_change(MODULE_DISABLE, AM335X_CM_PER_L4HS_CLKCTRL);
 	module_state_change(MODULE_DISABLE, AM335X_CM_PER_L4FW_CLKCTRL);
@@ -279,9 +266,6 @@ int interconnect_modules_enable(void)
 	module_state_change(MODULE_ENABLE, AM335X_CM_PER_L4FW_CLKCTRL);
 	module_state_change(MODULE_ENABLE, AM335X_CM_PER_L4HS_CLKCTRL);
 	module_state_change(MODULE_ENABLE, AM335X_CM_PER_L4LS_CLKCTRL);
-
-	module_state_change(MODULE_ENABLE, AM335X_CM_PER_EMIF_FW_CLKCTRL);
-	module_state_change(MODULE_ENABLE, AM335X_CM_PER_EMIF_CLKCTRL);
 
 	return 0;
 }
