@@ -164,9 +164,6 @@ int a8_i2c_wake_handler(unsigned short);
 #define PD_MPU	0x1
 #define PD_PER	0x2
 
-#define MODULE_DISABLE	0x0
-#define MODULE_ENABLE	0x2
-
 #define RESUME_REG	0x0
 #define STAT_ID_REG	0x1
 #define PARAM1_REG	0x2
