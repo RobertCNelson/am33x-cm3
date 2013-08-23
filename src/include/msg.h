@@ -15,7 +15,7 @@
 
 #include <stddef.h>
 
-#define CM3_VERSION		0x181
+#define CM3_VERSION		0x182
 
 /*
  * 9-4 = VTT GPIO PIN (6 Bits)
