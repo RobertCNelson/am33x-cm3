@@ -30,7 +30,7 @@ const unsigned int am335x_hwmods[HWMOD_COUNT] = {
 	[HWMOD_OCMCRAM]		= AM335X_CM_PER_OCMCRAM_CLKCTRL,
 };
 
-const enum hwmod_id am335x_essential_modules[] = {
+const enum hwmod_id am335x_essential_hwmods[] = {
 	HWMOD_CLKDIV32K,
 	HWMOD_IEEE5000,
 	HWMOD_EMIF_FW,
@@ -38,7 +38,7 @@ const enum hwmod_id am335x_essential_modules[] = {
 	HWMOD_END,
 };
 
-const enum hwmod_id am335x_interconnect_modules[] = {
+const enum hwmod_id am335x_interconnect_hwmods[] = {
 	HWMOD_L4LS,
 	HWMOD_L4HS,
 	HWMOD_L4FW,

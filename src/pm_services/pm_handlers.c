@@ -46,7 +46,7 @@ void a8_lp_rtc_handler(struct cmd_data *data)
 
 	if (cmd_global_data.cmd_id == CMD_ID_RTC) {
 		/* Turn off interconnect */
-		interconnect_modules_disable();
+		interconnect_hwmods_disable();
 
 		/* Disable the clock domains except MPU */
 		clkdm_sleep();
@@ -101,9 +101,9 @@ void a8_lp_ds0_handler(struct cmd_data *data)
 	pd_state_change(per_st, PD_PER);
 
 	/* XXX: New addition to resolve any issues that A8 might have */
-	essential_modules_disable();
+	essential_hwmods_disable();
 
-	interconnect_modules_disable();
+	interconnect_hwmods_disable();
 
 	/* DPLL retention update for PG 2.0 */
 	am33xx_power_down_plls();
@@ -297,7 +297,7 @@ void generic_wake_handler(int wakeup_reason)
 	 * path. Keep compatibily with these kernels.
 	 */
 	if (!cmd_handlers[cmd_global_data.cmd_id].do_ddr)
-		module_state_change(MODULE_ENABLE, HWMOD_EMIF);
+		hwmod_state_change(HWMOD_ENABLE, HWMOD_EMIF);
 
 	/* If everything is done, we init things again */
 	/* Flush out NVIC interrupts */
@@ -350,9 +350,9 @@ void a8_wake_ds0_handler(void)
 
 	am33xx_power_up_plls();
 
-	interconnect_modules_enable();
+	interconnect_hwmods_enable();
 
-	essential_modules_enable();
+	essential_hwmods_enable();
 
 	msg_cmd_stat_update(result);
 
@@ -380,7 +380,7 @@ void a8_wake_ds1_handler(void)
 
 	am33xx_power_up_plls();
 
-	essential_modules_enable();
+	essential_hwmods_enable();
 
 	msg_cmd_stat_update(result);
 
@@ -429,7 +429,7 @@ void a8_wake_standby_handler(void)
 
 	pd_state_restore(PD_MPU);
 
-	essential_modules_enable();
+	essential_hwmods_enable();
 
 	msg_cmd_stat_update(result);
 

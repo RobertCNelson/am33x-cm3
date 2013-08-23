@@ -774,11 +774,11 @@ void vtt_low(void)
 	if (vtt_toggle == false)
 		return;
 
-	module_state_change(MODULE_ENABLE, HWMOD_GPIO0);
+	hwmod_state_change(HWMOD_ENABLE, HWMOD_GPIO0);
 
 	__raw_writel((1 << vtt_gpio_pin), GPIO_BASE + GPIO_CLEARDATAOUT);
 
-	module_state_change(MODULE_DISABLE, HWMOD_GPIO0);
+	hwmod_state_change(HWMOD_DISABLE, HWMOD_GPIO0);
 }
 
 /* same offsets for SA and Aegis */
@@ -910,11 +910,11 @@ void vtt_high(void)
 	if (vtt_toggle == false)
 		return;
 
-	module_state_change(MODULE_ENABLE, HWMOD_GPIO0);
+	hwmod_state_change(HWMOD_ENABLE, HWMOD_GPIO0);
 
 	__raw_writel((1 << vtt_gpio_pin), GPIO_BASE + GPIO_SETDATAOUT);
 
-	module_state_change(MODULE_DISABLE, HWMOD_GPIO0);
+	hwmod_state_change(HWMOD_DISABLE, HWMOD_GPIO0);
 }
 
 /* RESET line is applicable only to DDR3 */
@@ -983,7 +983,7 @@ void ds_restore(void)
 		vtp_enable();
 
 		/* XXX: Why is this required here for DDR3? */
-		module_state_change(MODULE_ENABLE, HWMOD_EMIF);
+		hwmod_state_change(HWMOD_ENABLE, HWMOD_EMIF);
 
 		vtt_high();
 
@@ -998,12 +998,12 @@ int a8_i2c_sleep_handler(unsigned short i2c_sleep_offset)
 	unsigned char *dmem = (unsigned char *) DMEM_BASE;
 	int ret = 0;
 
-	module_state_change(MODULE_ENABLE, HWMOD_I2C0);
+	hwmod_state_change(HWMOD_ENABLE, HWMOD_I2C0);
 
 	if (i2c_sleep_offset != 0xffff)
 		ret = i2c_write(dmem + i2c_sleep_offset);
 
-	module_state_change(MODULE_DISABLE, HWMOD_I2C0);
+	hwmod_state_change(HWMOD_DISABLE, HWMOD_I2C0);
 
 	return ret;
 }
@@ -1013,12 +1013,12 @@ int a8_i2c_wake_handler(unsigned short i2c_wake_offset)
 	unsigned char *dmem = (unsigned char *) DMEM_BASE;
 	int ret = 0;
 
-	module_state_change(MODULE_ENABLE, HWMOD_I2C0);
+	hwmod_state_change(HWMOD_ENABLE, HWMOD_I2C0);
 
 	if (i2c_wake_offset != 0xffff)
 		ret = i2c_write(dmem + i2c_wake_offset);
 
-	module_state_change(MODULE_DISABLE, HWMOD_I2C0);
+	hwmod_state_change(HWMOD_DISABLE, HWMOD_I2C0);
 
 	return ret;
 }

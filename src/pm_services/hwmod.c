@@ -18,19 +18,19 @@
 #include <hwmod_43xx.h>
 
 static const unsigned int *hwmods;
-static const enum hwmod_id *essential_modules;
-static const enum hwmod_id *interconnect_modules;
+static const enum hwmod_id *essential_hwmods;
+static const enum hwmod_id *interconnect_hwmods;
 
 void hwmod_init(void)
 {
 	if (soc_id == AM335X_SOC_ID) {
 		hwmods = am335x_hwmods;
-		essential_modules = am335x_essential_modules;
-		interconnect_modules = am335x_interconnect_modules;
+		essential_hwmods = am335x_essential_hwmods;
+		interconnect_hwmods = am335x_interconnect_hwmods;
 	} else if (soc_id == AM43XX_SOC_ID) {
 		hwmods = am43xx_hwmods;
-		essential_modules = am43xx_essential_modules;
-		interconnect_modules = am43xx_interconnect_modules;
+		essential_hwmods = am43xx_essential_hwmods;
+		interconnect_hwmods = am43xx_interconnect_hwmods;
 	}
 }
 
@@ -40,88 +40,88 @@ void hwmod_init(void)
 #define DEFAULT_IDLEST_ACTIVE_VAL 	0
 
 /* TODO: Add a timeout and bail out */
-static void _module_enable(int reg)
+static void _hwmod_enable(int reg)
 {
-	__raw_writel(MODULE_ENABLE, reg);
+	__raw_writel(HWMOD_ENABLE, reg);
 
 	while ((__raw_readl(reg) & DEFAULT_IDLEST_MASK)>>DEFAULT_IDLEST_SHIFT !=
 		DEFAULT_IDLEST_ACTIVE_VAL);
 }
 
-static void _module_disable(int reg)
+static void _hwmod_disable(int reg)
 {
-	__raw_writel(MODULE_DISABLE, reg);
+	__raw_writel(HWMOD_DISABLE, reg);
 
 	while ((__raw_readl(reg) & DEFAULT_IDLEST_MASK)>>DEFAULT_IDLEST_SHIFT !=
 		DEFAULT_IDLEST_IDLE_VAL);
 }
 
-int module_state_change(int state, enum hwmod_id id)
+int hwmod_state_change(int state, enum hwmod_id id)
 {
-	if (state == MODULE_DISABLE)
-		_module_disable(hwmods[id]);
+	if (state == HWMOD_DISABLE)
+		_hwmod_disable(hwmods[id]);
 	else
-		_module_enable(hwmods[id]);
+		_hwmod_enable(hwmods[id]);
 
 	return 0;
 }
 
-static int modules_state_change(int state, const enum hwmod_id *ids)
+static int hwmods_state_change(int state, const enum hwmod_id *ids)
 {
 	int i;
 
 	for (i = 0; ids[i] != HWMOD_END; i++)
-		if (state == MODULE_DISABLE)
-			_module_disable(hwmods[ids[i]]);
+		if (state == HWMOD_DISABLE)
+			_hwmod_disable(hwmods[ids[i]]);
 
 	for (i--; i >= 0; i--)
-		if (state == MODULE_ENABLE)
-			_module_enable(hwmods[ids[i]]);
+		if (state == HWMOD_ENABLE)
+			_hwmod_enable(hwmods[ids[i]]);
 
 	return 0;
 }
 
 /*
- * Looks like we'll have to ensure that we disable some modules when going down
+ * Looks like we'll have to ensure that we disable some hwmods when going down
  * ideally this list should have 0 entries but we need to check
  * what are the things that are really really necessary here
  */
-int essential_modules_disable(void)
+int essential_hwmods_disable(void)
 {
-	/* Disable only the bare essential modules */
-	modules_state_change(MODULE_DISABLE, essential_modules);
+	/* Disable only the bare essential hwmods */
+	hwmods_state_change(HWMOD_DISABLE, essential_hwmods);
 
 	return 0;
 }
 
-int essential_modules_enable(void)
+int essential_hwmods_enable(void)
 {
-	/* Enable only the bare essential modules */
-	modules_state_change(MODULE_ENABLE, essential_modules);
+	/* Enable only the bare essential hwmods */
+	hwmods_state_change(HWMOD_ENABLE, essential_hwmods);
 
 	return 0;
 }
 
-int interconnect_modules_disable(void)
+int interconnect_hwmods_disable(void)
 {
-	modules_state_change(MODULE_DISABLE, interconnect_modules);
+	hwmods_state_change(HWMOD_DISABLE, interconnect_hwmods);
 
 	return 0;
 }
 
-int interconnect_modules_enable(void)
+int interconnect_hwmods_enable(void)
 {
-	modules_state_change(MODULE_ENABLE, interconnect_modules);
+	hwmods_state_change(HWMOD_ENABLE, interconnect_hwmods);
 
 	return 0;
 }
 
 void mpu_disable(void)
 {
-	module_state_change(MODULE_DISABLE, HWMOD_MPU);
+	hwmod_state_change(HWMOD_DISABLE, HWMOD_MPU);
 }
 
 void mpu_enable(void)
 {
-	module_state_change(MODULE_ENABLE, HWMOD_MPU);
+	hwmod_state_change(HWMOD_ENABLE, HWMOD_MPU);
 }

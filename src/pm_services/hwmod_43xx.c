@@ -31,14 +31,14 @@ const unsigned int am43xx_hwmods[HWMOD_COUNT] = {
 	[HWMOD_OTFA_EMIF]	= AM43XX_CM_PER_OTFA_EMIF_CLKCTRL,
 };
 
-const enum hwmod_id am43xx_essential_modules[] = {
+const enum hwmod_id am43xx_essential_hwmods[] = {
 	HWMOD_EMIF_FW,
 	HWMOD_OTFA_EMIF,
 	HWMOD_OCMCRAM,
 	HWMOD_END,
 };
 
-const enum hwmod_id am43xx_interconnect_modules[] = {
+const enum hwmod_id am43xx_interconnect_hwmods[] = {
 	HWMOD_L4LS,
 	HWMOD_L4HS,
 	HWMOD_L4FW,

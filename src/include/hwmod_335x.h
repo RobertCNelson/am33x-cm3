@@ -16,8 +16,8 @@
 enum hwmod_id;
 
 extern const unsigned int am335x_hwmods[];
-extern const enum hwmod_id am335x_essential_modules[];
-extern const enum hwmod_id am335x_interconnect_modules[];
+extern const enum hwmod_id am335x_essential_hwmods[];
+extern const enum hwmod_id am335x_interconnect_hwmods[];
 
 #endif
 
