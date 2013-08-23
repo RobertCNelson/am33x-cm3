@@ -160,10 +160,21 @@
 #define DPLL_PWR_SW_CTRL	(CONTROL_BASE + 0x1318)
 #define SMA2_SPARE_REG		(CONTROL_BASE + 0x1320)
 
+#define DDR_IO_CTRL_REG		(CONTROL_BASE + 0x0E04)
+#define VTP0_CTRL_REG		(CONTROL_BASE + 0x0E0C)
+
+#define AM33XX_DDR_CMD0_IOCTRL		(CONTROL_BASE + 0x1404)
+#define AM33XX_DDR_CMD1_IOCTRL		(CONTROL_BASE + 0x1408)
+#define AM33XX_DDR_CMD2_IOCTRL		(CONTROL_BASE + 0x140C)
+#define AM33XX_DDR_DATA0_IOCTRL		(CONTROL_BASE + 0x1440)
+#define AM33XX_DDR_DATA1_IOCTRL		(CONTROL_BASE + 0x1444)
+
 /* DPLL */
 #define DPLL_PER		0
 #define DPLL_DISP		1
 #define DPLL_DDR		2
+#define DPLL_MPU		3
+#define DPLL_CORE		4
 
 /* DPLL_PWR_SW_STATUS bit fields: */
 #define PGOODOUT_DDR_STATUS	(1 << 25)
@@ -198,6 +209,39 @@
 
 /* SMA2_SPARE_REG bit fields: */
 #define VSLDO_CORE_AUTO_RAMP_EN	(1 << 1)
+
+/* GPIO Register - needed to control VTT */
+#define GPIO_CLEARDATAOUT	0x0190
+#define GPIO_SETDATAOUT		0x0194
+
+/*
+ * 9-4 = VTT GPIO PIN (6 Bits)
+ *   3 = VTT Status (1 Bit)
+ * 2-0 = Memory Type (2 Bits)
+*/
+#define MEM_TYPE_SHIFT		(0x0)
+#define MEM_TYPE_MASK		(0x7 << 0)
+#define VTT_STAT_SHIFT		(0x3)
+#define VTT_STAT_MASK		(0x1 << 3)
+#define VTT_GPIO_PIN_SHIFT	(0x4)
+#define VTT_GPIO_PIN_MASK	(0x2f << 4)
+
+/* Memory type passed in IPC register */
+#define MEM_TYPE_DDR2		2
+#define MEM_TYPE_DDR3		3
+
+/* VTP0_CTRL_REG bits */
+#define VTP_CTRL_START_EN	(1 << 0)
+#define VTP_CTRL_LOCK_EN	(1 << 4)
+#define VTP_CTRL_READY		(1 << 5)
+#define VTP_CTRL_ENABLE		(1 << 6)
+
+#define VTP_CTRL_VAL_DDR2	0x10117
+#define VTP_CTRL_VAL_DDR3	0x00
+
+/* DDR_IO_CTRL */
+#define DDR3_RST_DEF_VAL	(0x1 << 31)
+#define DDR_IO_MDDR_SEL		(0x1 << 28)
 
 #define __raw_readl(a)		(*(volatile int *)(a))
 #define __raw_writel(v, a)	(*(volatile int *)(a) = v)

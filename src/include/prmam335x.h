@@ -119,6 +119,7 @@
 #define SRAM_IN_TRANSITION	(1 << 9)
 #define SRAMLDO_STATUS		(1 << 8)
 #define RETMODE_ENABLE		(1 << 0)
+#define RETMODE_DISABLE		(0 << 0)
 
 /* AM335X_PM_PER_PWRSTST register bit-fields */
 #define PWR_STATE_STS_MASK	(3 << 0)

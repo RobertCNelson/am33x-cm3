@@ -94,6 +94,9 @@ void a8_lp_cmd3_handler(struct cmd_data *data, char use_default_val)
 	int mpu_st = 0;
 	int temp;
 
+	if (cmd_global_data.cmd_id == 0x4)
+		ds_save();
+
 	configure_wake_sources(local_cmd->wake_sources, use_default_val);
 
 	/* TODO: Check for valid range */
@@ -177,6 +180,9 @@ void a8_lp_cmd5_handler(struct cmd_data *data, char use_default_val)
 	int per_st = 0;
 	int mpu_st = 0;
 
+	if (cmd_global_data.cmd_id == 0x6)
+		ds_save();
+
 	/* Disable MOSC if possible */
 	if (use_default_val || !(local_cmd->mosc_state))
 		disable_master_oscillator();
@@ -240,6 +246,9 @@ void a8_lp_cmd7_handler(struct cmd_data *data, char use_default_val)
 	int per_st = 0;
 	int mpu_st = 0;
 
+	if (cmd_global_data.cmd_id == 0x8)
+		ds_save();
+
 	/* Disable MOSC if possible */
 	if (use_default_val || !(local_cmd->mosc_state))
 		disable_master_oscillator();
@@ -290,6 +299,9 @@ void a8_standby_handler(struct cmd_data *data, char use_default_val)
 		(struct deep_sleep_data *)data->data;
 	int mpu_st = 0;
 	int per_st = 0;
+
+	if (cmd_global_data.cmd_id == 0xc)
+		ds_save();
 
 	configure_wake_sources(local_cmd->wake_sources, use_default_val);
 
@@ -385,12 +397,20 @@ void generic_wake_handler(int wakeup_reason)
 
 	enable_master_oscillator();
 
-	/*
-	 * PSP kernels have a long standing bug in sleep33xx.S,
-	 * they don't re-enable the EMIF hwmod in their resume
-	 * path. Keep compatibily with these kernels.
-	 */
-	module_state_change(MODULE_ENABLE, AM335X_CM_PER_EMIF_CLKCTRL);
+	switch (cmd_global_data.cmd_id) {
+	case 0x4:
+	case 0x6:
+	case 0x8:
+	case 0xc:
+		ds_restore();
+	default:
+		/*
+		 * PSP kernels have a long standing bug in sleep33xx.S,
+		 * they don't re-enable the EMIF hwmod in their resume
+		 * path. Keep compatibily with these kernels.
+		 */
+		module_state_change(MODULE_ENABLE, AM335X_CM_PER_EMIF_CLKCTRL);
+	}
 
 	/* If everything is done, we init things again */
 	/* Flush out NVIC interrupts */

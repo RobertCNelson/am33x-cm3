@@ -47,6 +47,11 @@ int ipc_reg_w;
 short cmd_id;
 short cmd_stat;
 
+/* Board specifics populated in IPC_REG4 */
+int mem_type;			/* Memory Type 2 = DDR2, 3 = DDR3 */
+int vtt_toggle; 		/* VTT Toggle  1 = required */
+int vtt_gpio_pin; 		/* VTT GPIO Pin */
+
 int cmd_wake_sources;
 int pd_mpu_stctrl_next_val;
 int pd_mpu_stctrl_prev_val;
@@ -59,6 +64,13 @@ int pd_per_pwrstst_prev_val;
 
 unsigned int soc_id;
 unsigned int soc_rev;
+
+/* Placeholder for storing PLL mode */
+unsigned int clk_mode_per_val;
+unsigned int clk_mode_disp_val;
+unsigned int clk_mode_ddr_val;
+unsigned int clk_mode_mpu_val;
+unsigned int clk_mode_core_val;
 
 void pm_init(void);
 

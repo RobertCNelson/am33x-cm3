@@ -407,4 +407,19 @@
 #define PER_POWERSTATE_SHIFT				(0)
 
 
+/* DPLL CLOCKMODE register */
+#define DPLL_EN_MASK					(0x7 << 0)
+#define DPLL_LP_BYP_MODE				(0x5 << 0)
+#define DPLL_LOCK_MODE					(0x7 << 0)
+
+/*
+ * Values recommended by the HW team. These change the pulls
+ * on certain IOs of DATA and CMD macros
+ */
+#define SUSP_IO_PULL_DATA	0x3FF00003
+#define SUSP_IO_PULL_CMD1	0xFFE0018B
+#define SUSP_IO_PULL_CMD2	0xFFA0098B
+#define RESUME_IO_PULL_DATA	0x18B
+#define RESUME_IO_PULL_CMD	0x18B
+
 #endif

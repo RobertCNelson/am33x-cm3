@@ -26,10 +26,14 @@ short valid_cmd_id[] = {
 	0x1,	/* RTC */
 	0x2, 	/* RTC_FAST */
 	0x3,	/* DS0 */
+	0x4,	/* DS0_V2 */
 	0x5,	/* DS1 */
+	0x6,	/* DS1_V2 */
 	0x7,	/* DS2 */
+	0x8,	/* DS2_V2 */
 	0x9,	/* Standalone app */
 	0xb,	/* Standby */
+	0xc,	/* Standby_v2 */
 	0xe,	/* Reset State Machine */
 	0xf,	/* Version */
 	0x10,	/* CPUIdle MPU Clock gating*/
@@ -144,6 +148,12 @@ void msg_cmd_dispatcher()
 
 	cmd_global_data.cmd_id = cmd_id;
 
+	/* board specific data saved in global variables for now */
+	mem_type = (a8_m3_data_r.reg5 & MEM_TYPE_MASK) >> MEM_TYPE_SHIFT;
+	vtt_toggle = (a8_m3_data_r.reg5 & VTT_STAT_MASK) >> VTT_STAT_SHIFT;
+	vtt_gpio_pin = (a8_m3_data_r.reg5 & VTT_GPIO_PIN_MASK) >>
+				VTT_GPIO_PIN_SHIFT;
+
 	switch(cmd_id) {
 	case 0x1:
 		cmd_global_data.data = lp_data(use_default_val, &rtc_mode_data, &a8_m3_ds_data);
@@ -154,14 +164,17 @@ void msg_cmd_dispatcher()
 		a8_lp_cmd2_handler(&cmd_global_data, use_default_val);	/* RTC_fast */
 		break;
 	case 0x3:
+	case 0x4:
 		cmd_global_data.data = lp_data(use_default_val, &ds0_data, &a8_m3_ds_data);
 		a8_lp_cmd3_handler(&cmd_global_data, use_default_val);	/* DS0 */
 		break;
 	case 0x5:
+	case 0x6:
 		cmd_global_data.data = lp_data(use_default_val, &ds1_data, &a8_m3_ds_data);
 		a8_lp_cmd5_handler(&cmd_global_data, use_default_val);	/* DS1 */
 		break;
 	case 0x7:
+	case 0x8:
 		cmd_global_data.data = lp_data(use_default_val, &ds2_data, &a8_m3_ds_data);
 		a8_lp_cmd7_handler(&cmd_global_data, use_default_val);	/* DS2 */
 		break;
@@ -170,6 +183,7 @@ void msg_cmd_dispatcher()
 		a8_standalone_handler(&cmd_global_data);
 		break;
 	case 0xb:
+	case 0xc:
 		cmd_global_data.data = lp_data(use_default_val, &standby_data, &a8_m3_ds_data);
 		a8_standby_handler(&cmd_global_data, use_default_val);	/* Standby */
 		break;
