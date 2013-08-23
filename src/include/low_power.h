@@ -38,7 +38,8 @@
 #define MEM_BANK_ON_ST_RET	0x1
 #define MEM_BANK_ON_ST_OFF	0x0
 
-#define WAKE_ALL		0x1fff
+#define WAKE_ALL		0x17ff	/* all except MPU_WAKE in DS modes */
+#define MPU_WAKE		0x800
 
 #define RTC_TIMEOUT_DEFAULT	0x2
 #define RTC_TIMEOUT_MAX		0xf
@@ -121,7 +122,6 @@ int enable_master_oscillator(void);
 
 void configure_deepsleep_count(int ds_count);
 void configure_wake_sources(int wake_sources,int mod_check);
-void configure_standby_wake_sources(int wake_sources, int mod_check);
 void clear_wake_sources(void);
 void enable_wake_sources_for_ds2(void);
 

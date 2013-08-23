@@ -303,8 +303,7 @@ void a8_standby_handler(struct cmd_data *data, char use_default_val)
 	int mpu_st = 0;
 	int per_st = 0;
 
-	configure_standby_wake_sources(local_cmd->wake_sources,
-			use_default_val);
+	configure_wake_sources(local_cmd->wake_sources, use_default_val);
 
 	/* TODO: Check for valid range */
 	if (!(use_default_val) && (local_cmd->deepsleep_count))
@@ -349,7 +348,7 @@ void a8_cpuidle_handler(struct cmd_data *data, char use_default_val)
 {
 	struct deep_sleep_data *local_cmd = (struct deep_sleep_data *)data->data;
 
-	configure_standby_wake_sources(local_cmd->wake_sources, use_default_val);
+	configure_wake_sources(local_cmd->wake_sources, use_default_val);
 
 	mpu_clkdm_sleep();
 }

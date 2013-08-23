@@ -112,8 +112,7 @@ struct deep_sleep_data standby_data =  {
 	.pd_per_mem_on_state		= MEM_BANK_ON_ST_ON,
 	.pd_per_ocmc_on_state		= MEM_BANK_ON_ST_ON,
 
-	/* TODO: wake_sources for standby should be MPU_WAKE */
-	.wake_sources			= WAKE_ALL,
+	.wake_sources			= WAKE_ALL | MPU_WAKE,
 	.reserved			= 0
 };
 
@@ -555,14 +554,6 @@ void configure_deepsleep_count(int ds_count)
 }
 
 /*
- * In standby state we expect only the MPU_WAKE interrupt to come in
- */
-void configure_standby_wake_sources(int wake_sources, int mod_check)
-{
-	nvic_enable_irq(AM335X_IRQ_MPU_WAKE);
-}
-
-/*
  * A8 is expected to have left the module in a state where it will
  * cause a wakeup event. Ideally, this function should just enable
  * the NVIC interrupt
@@ -607,9 +598,6 @@ void configure_wake_sources(int wake_sources, int mod_check)
 	if(BB_RTC_TIMER_WAKE)
 		nvic_enable_irq(AM335X_IRQ_RTC_TIMER_WAKE);
 
-	if(BB_MPU_WAKE)
-		nvic_enable_irq(AM335X_IRQ_MPU_WAKE);
-
 	if(BB_TIMER0_WAKE)
 		nvic_enable_irq(AM335X_IRQ_TIMER0_WAKE);
 
@@ -622,6 +610,9 @@ void configure_wake_sources(int wake_sources, int mod_check)
 
 	if(BB_USBWOUT1)
 		nvic_enable_irq(AM335X_IRQ_USB1WOUT);
+
+	if(BB_MPU_WAKE)
+		nvic_enable_irq(AM335X_IRQ_MPU_WAKE);
 }
 
 void clear_wake_sources(void)
