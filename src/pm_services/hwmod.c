@@ -18,6 +18,7 @@
 
 #define HWMOD_DISABLE	0x0
 #define HWMOD_ENABLE	0x2
+#define HWMOD_MASK	0x3
 
 static const unsigned int *hwmods;
 static const enum hwmod_id *essential_hwmods;
@@ -58,6 +59,11 @@ static void _hwmod_disable(int reg)
 		DEFAULT_IDLEST_IDLE_VAL);
 }
 
+static bool _hwmod_is_enabled(int reg)
+{
+	return (__raw_readl(reg) & HWMOD_MASK) == HWMOD_ENABLE;
+}
+
 static int hwmods_state_change(int state, const enum hwmod_id *ids)
 {
 	int i;
@@ -81,6 +87,11 @@ void hwmod_enable(enum hwmod_id id)
 void hwmod_disable(enum hwmod_id id)
 {
 	_hwmod_disable(hwmods[id]);
+}
+
+bool hwmod_is_enabled(enum hwmod_id id)
+{
+	return _hwmod_is_enabled(hwmods[id]);
 }
 
 /*
