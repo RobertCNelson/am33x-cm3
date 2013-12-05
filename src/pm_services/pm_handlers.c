@@ -325,6 +325,8 @@ void generic_wake_handler(int wakeup_reason)
 	if (cmd_global_data.data->deep_sleep.mosc_state == MOSC_OFF)
 		enable_master_oscillator();
 
+	a8_i2c_wake_handler(cmd_global_data.i2c_wake_offset);
+
 	if (cmd_handlers[cmd_global_data.cmd_id].do_ddr)
 		ds_restore();
 
@@ -346,8 +348,6 @@ void generic_wake_handler(int wakeup_reason)
 	trace_init();
 
 	pm_reset();
-
-	a8_i2c_wake_handler(cmd_global_data.i2c_wake_offset);
 
 	/* Enable only the MBX IRQ */
 	nvic_enable_irq(CM3_IRQ_MBINT0);
