@@ -204,7 +204,7 @@ int i2c_write(const unsigned char *sequence)
 	/* Restore registers */
 	i2c_reg_write(orig_psc, OMAP_I2C_PSC_REG);
 	i2c_reg_write(orig_scll, OMAP_I2C_SCLL_REG);
-	i2c_reg_write(orig_sclh, OMAP_I2C_SCLL_REG);
+	i2c_reg_write(orig_sclh, OMAP_I2C_SCLH_REG);
 	i2c_reg_write(orig_con, OMAP_I2C_CON_REG);
 	i2c_reg_write(orig_irq_en, OMAP_I2C_IRQENABLE_SET);
 	__raw_writel(orig_sysc, I2C0_BASE + OMAP_I2C_SYSC_REG);
