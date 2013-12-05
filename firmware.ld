@@ -4,6 +4,7 @@ MEMORY
 {
     UMEM (rwx) : ORIGIN = 0x00000000, LENGTH = 0x00004000
     DMEM (rw) : ORIGIN = 0x00080000, LENGTH = 0x00002000
+    LOGBUF (rw) : ORIGIN = 0x00081000, LENGTH = 0x00001000
 }
 
 _end_stack = 0x00081000;
@@ -33,4 +34,10 @@ SECTIONS
         *(COMMON)
         _end_bss = .;
     } > DMEM
+    .logbuf :
+    {
+        _logbuf_start = .;
+       . += 0x1000;
+        _logbuf_end = .;
+    } >LOGBUF
 }

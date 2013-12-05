@@ -18,4 +18,7 @@
 typedef _Bool bool;
 enum { false, true };
 
+#define min(a, b) ((a) < (b) ? (a) : (b))
+#define max(a, b) ((a) > (b) ? (a) : (b))
+
 #endif
