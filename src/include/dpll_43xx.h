@@ -16,6 +16,7 @@
 struct dpll_regs;
 
 extern const struct dpll_regs am43xx_dpll_regs[];
+extern const enum dpll_id am43xx_power_down_plls[];
 
 #endif
 

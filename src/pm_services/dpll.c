@@ -176,6 +176,8 @@ void dpll_init(void)
 		if (soc_rev > AM335X_REV_ES1_0)
 			power_down_plls = am335x_pg2_power_down_plls;
 
-	} else if (soc_id == AM43XX_SOC_ID)
+	} else if (soc_id == AM43XX_SOC_ID) {
 		dpll_regs = am43xx_dpll_regs;
+		power_down_plls = am43xx_power_down_plls;
+	}
 }
