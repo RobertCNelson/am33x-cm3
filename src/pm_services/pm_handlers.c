@@ -124,7 +124,8 @@ void a8_lp_ds0_handler(struct cmd_data *data)
 	if (local_cmd->mosc_state == MOSC_OFF) {
 		disable_master_oscillator();
 		/* Core LDO retention for PG 2.0 if PD_PER is in RET */
-		if (soc_id == AM335X_SOC_ID && soc_rev > AM335X_REV_ES1_0) {
+		if ((soc_id == AM335X_SOC_ID && soc_rev > AM335X_REV_ES1_0) ||
+				(soc_id == AM43XX_SOC_ID)) {
 			if (pd_read_state(PD_PER) == PD_RET) {
 				/* set Auto_RAMP_EN in SMA2 Spare Register (SMA2). */
 				temp = __raw_readl(SMA2_SPARE_REG);
@@ -373,7 +374,8 @@ void a8_wake_ds0_handler(void)
 {
 	int result;
 
-	if (soc_id == AM335X_SOC_ID && soc_rev > AM335X_REV_ES1_0) {
+	if ((soc_id == AM335X_SOC_ID && soc_rev > AM335X_REV_ES1_0) ||
+			(soc_id == AM43XX_SOC_ID)) {
 		ldo_power_up(LDO_CORE);
 		ldo_wait_for_on(LDO_CORE);
 	}
