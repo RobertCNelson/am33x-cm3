@@ -35,6 +35,7 @@ union state_data ds0_data = {
 		.pd_per_icss_mem_ret_state 	= MEM_BANK_RET_ST_OFF,
 		.pd_per_mem_ret_state 		= MEM_BANK_RET_ST_OFF,
 		.pd_per_ocmc_ret_state 		= MEM_BANK_RET_ST_RET,
+		.pd_per_ocmc2_ret_state		= MEM_BANK_RET_ST_OFF,
 
 		.wake_sources 			= WAKE_ALL,
 	},
