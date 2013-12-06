@@ -203,47 +203,43 @@ void clear_wake_sources(void)
 
 void ds_save(void)
 {
-	if (soc_id == AM335X_SOC_ID) {
-		set_ddr_reset();
+	set_ddr_reset();
 
-		ddr_io_suspend();
+	ddr_io_suspend();
 
-		vtt_low();
+	vtt_low();
 
-		vtp_disable();
+	vtp_disable();
 
-		ldo_power_down(LDO_MPU);
+	ldo_power_down(LDO_MPU);
 
-		pll_bypass(DPLL_CORE);
-		pll_bypass(DPLL_DDR);
-		pll_bypass(DPLL_DISP);
-		pll_bypass(DPLL_PER);
-		pll_bypass(DPLL_MPU);
-	}
+	pll_bypass(DPLL_CORE);
+	pll_bypass(DPLL_DDR);
+	pll_bypass(DPLL_DISP);
+	pll_bypass(DPLL_PER);
+	pll_bypass(DPLL_MPU);
 }
 
 void ds_restore(void)
 {
-	if (soc_id == AM335X_SOC_ID) {
-		pll_lock(DPLL_MPU);
-		pll_lock(DPLL_PER);
-		pll_lock(DPLL_DISP);
-		pll_lock(DPLL_DDR);
-		pll_lock(DPLL_CORE);
+	pll_lock(DPLL_MPU);
+	pll_lock(DPLL_PER);
+	pll_lock(DPLL_DISP);
+	pll_lock(DPLL_DDR);
+	pll_lock(DPLL_CORE);
 
-		ldo_power_up(LDO_MPU);
+	ldo_power_up(LDO_MPU);
 
-		vtp_enable();
+	vtp_enable();
 
-		/* XXX: Why is this required here for DDR3? */
-		hwmod_enable(HWMOD_EMIF);
+	/* XXX: Why is this required here for DDR3? */
+	hwmod_enable(HWMOD_EMIF);
 
-		vtt_high();
+	vtt_high();
 
-		ddr_io_resume();
+	ddr_io_resume();
 
-		clear_ddr_reset();
-	}
+	clear_ddr_reset();
 }
 
 int a8_i2c_sleep_handler(unsigned short i2c_sleep_offset)
