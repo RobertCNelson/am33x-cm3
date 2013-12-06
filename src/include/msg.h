@@ -27,7 +27,7 @@
 #define VTT_STAT_SHIFT		(0x3)
 #define VTT_STAT_MASK		(0x1 << 3)
 #define VTT_GPIO_PIN_SHIFT	(0x4)
-#define VTT_GPIO_PIN_MASK	(0x2f << 4)
+#define VTT_GPIO_PIN_MASK	(0x3f << 4)
 
 /* Memory type passed in IPC register */
 #define MEM_TYPE_DDR2		2
