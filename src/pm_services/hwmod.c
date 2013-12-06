@@ -41,21 +41,26 @@ void hwmod_init(void)
 #define DEFAULT_IDLEST_MASK		(3 << DEFAULT_IDLEST_SHIFT)
 #define DEFAULT_IDLEST_IDLE_VAL		3
 #define DEFAULT_IDLEST_ACTIVE_VAL 	0
+#define HWMOD_IDLE_TIMEOUT		0xFFFF
 
 /* TODO: Add a timeout and bail out */
 static void _hwmod_enable(int reg)
 {
+	int i = 0;
 	__raw_writel(HWMOD_ENABLE, reg);
 
-	while ((__raw_readl(reg) & DEFAULT_IDLEST_MASK)>>DEFAULT_IDLEST_SHIFT !=
+	while ((i++ < HWMOD_IDLE_TIMEOUT) &&
+	       (__raw_readl(reg) & DEFAULT_IDLEST_MASK)>>DEFAULT_IDLEST_SHIFT !=
 		DEFAULT_IDLEST_ACTIVE_VAL);
 }
 
 static void _hwmod_disable(int reg)
 {
+	int i = 0;
 	__raw_writel(HWMOD_DISABLE, reg);
 
-	while ((__raw_readl(reg) & DEFAULT_IDLEST_MASK)>>DEFAULT_IDLEST_SHIFT !=
+	while ((i++ < HWMOD_IDLE_TIMEOUT) &&
+	       (__raw_readl(reg) & DEFAULT_IDLEST_MASK)>>DEFAULT_IDLEST_SHIFT !=
 		DEFAULT_IDLEST_IDLE_VAL);
 }
 
