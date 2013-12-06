@@ -102,16 +102,17 @@ static unsigned int per_mem_ret_state_change(unsigned int val, unsigned int v)
 
 static unsigned int ocmc_mem_ret_state_change(unsigned int val, unsigned int v)
 {
-	v = var_mod(v, per_bits->ram1_retst_mask,
+	return var_mod(v, per_bits->ram1_retst_mask,
 					val << per_bits->ram1_retst_shift);
-
-	if (per_bits->ram2_retst_mask)
-		v = var_mod(v, per_bits->ram2_retst_mask,
-					val << per_bits->ram2_retst_shift);
-
-	return v;
 }
 
+static unsigned int ocmc2_mem_ret_state_change(unsigned int val, unsigned int v)
+{
+	if (per_bits->ram2_retst_mask)
+		return var_mod(v, per_bits->ram2_retst_mask,
+					val << per_bits->ram2_retst_shift);
+	return v;
+}
 static unsigned int per_powerst_change(unsigned int val, unsigned int v)
 {
 	return var_mod(v, per_bits->pwrst_mask,
@@ -132,6 +133,7 @@ unsigned int get_pd_per_stctrl_val(struct deep_sleep_data *data)
 	v = icss_mem_ret_state_change(data->pd_per_icss_mem_ret_state, v);
 	v = per_mem_ret_state_change(data->pd_per_mem_ret_state, v);
 	v = ocmc_mem_ret_state_change(data->pd_per_ocmc_ret_state, v);
+	v = ocmc2_mem_ret_state_change(data->pd_per_ocmc2_ret_state, v);
 
 	return v;
 }
