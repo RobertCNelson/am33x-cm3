@@ -32,11 +32,12 @@
 /* Memory type passed in IPC register */
 #define MEM_TYPE_DDR2		2
 #define MEM_TYPE_DDR3		3
+#define MEM_TYPE_LPDDR2		4
 
 #define RESUME_REG		0x0
 #define STAT_ID_REG		0x1
 #define PARAM1_REG		0x2
-#define PARAM2_REG      	0x3
+#define PARAM2_REG		0x3
 #define PARAM3_REG		0x4
 #define PARAM4_REG		0x5
 #define TRACE_REG		0x6
@@ -131,9 +132,9 @@ extern struct cmd_data cmd_global_data;
 extern struct state_handler cmd_handlers[];
 
 /* Board specifics populated in IPC_REG4 */
-extern int mem_type;		/* Memory Type 2 = DDR2, 3 = DDR3 */
-extern bool vtt_toggle; 	/* VTT Toggle  true = required */
-extern int vtt_gpio_pin; 	/* VTT GPIO Pin */
+extern int mem_type;		/* Memory Type 2 = DDR2, 3 = DDR3, 4 = LPDDR2 */
+extern bool vtt_toggle;		/* VTT Toggle  true = required */
+extern int vtt_gpio_pin;	/* VTT GPIO Pin */
 
 void m3_firmware_version(void);
 void m3_param_reset(void);
