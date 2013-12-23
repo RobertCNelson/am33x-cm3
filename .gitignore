@@ -15,6 +15,7 @@
 *.o
 *.o.*
 *.i
+*.diff
 *.patch
 
 #
@@ -33,6 +34,9 @@ series
 # cscope files
 cscope.*
 ncscope.*
+
+# ctags files
+tags
 
 *.orig
 *~
