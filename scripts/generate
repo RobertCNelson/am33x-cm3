@@ -1,0 +1,50 @@
+#!/bin/sh
+
+##
+# AM33XX-CM3 firmware
+#
+# Cortex-M3 (CM3) firmware for power management on Texas Instruments' AM33XX
+# series of SoCs
+#
+# Copyright (C) 2011 Texas Instruments Incorporated - http://www.ti.com/
+#
+# This software is licensed under the  standard terms and conditions in the
+# Texas Instruments  Incorporated Technology and Software Publicly Available
+# Software License Agreement , a copy of which is included in the software
+# download.
+##
+
+filename="src/include/version.h"
+year=$(date +%Y)
+
+cat > $filename << EOF
+/**
+ * AM33XX-CM3 firmware
+ *
+ * Cortex-M3 (CM3) firmware for power management on Texas Instruments' AM33XX
+ * series of SoCs
+ *
+ * Copyright (C) 2011-$year Texas Instruments Incorporated - http://www.ti.com/
+ *
+ * This software is licensed under the  standard terms and conditions in the
+ * Texas Instruments  Incorporated Technology and Software Publicly Available
+ * Software License Agreement, a copy of which is included in the software
+ * download.
+ *
+ * NOTICE: This file is auto-generated based on version numbers passed in
+ * Makefile. Never edit this file by hand.
+ */
+
+#ifndef __INCLUDE_VERSION_H
+#define __INCLUDE_VERSION_H
+
+#define VERSION		$1
+#define PATCHLEVEL	$2
+#define SUBLEVEL	$3
+
+#define CM3_VERSION	((VERSION << 8) || (PATCHLEVEL << 4) || (SUBLEVEL << 0))
+
+#endif /* __INCLUDE_VERSION_H */
+
+EOF
+
