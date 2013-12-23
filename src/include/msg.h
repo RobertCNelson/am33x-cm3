@@ -13,9 +13,8 @@
 #ifndef __MSG_H__
 #define __MSG_H__
 
+#include <version.h>
 #include <stddef.h>
-
-#define CM3_VERSION		0x184
 
 /*
  * 9-4 = VTT GPIO PIN (6 Bits)

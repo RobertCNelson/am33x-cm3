@@ -1,6 +1,6 @@
 VERSION = 1
-PATCHLEVEL = 0
-SUBLEVEL = 0
+PATCHLEVEL = 8
+SUBLEVEL = 4
 NAME = "Bday Edition"
 
 CROSS_COMPILE = arm-arago-linux-gnueabi-
@@ -35,19 +35,23 @@ QUIET_CC      = $(Q:@=@echo    '     CC       '$@;)
 QUIET_GEN     = $(Q:@=@echo    '     GEN      '$@;)
 QUIET_LINK    = $(Q:@=@echo    '     LINK     '$@;)
 
+all: config $(EXECUTABLE)
+	$(QUIET_GEN) $(OBJCOPY) -O$(OBJFMT) $(BINDIR)/$(EXECUTABLE) \
+		$(BINDIR)/$(EXECUTABLE:.elf=.bin)
+
+config:
+	-$(shell scripts/generate $(VERSION) $(PATCHLEVEL) $(SUBLEVEL))
+
 .c.o:
 	$(QUIET_CC) $(CC) $(CFLAGS) $(LDFLAGS) -c $< -o $@
 
 $(EXECUTABLE): $(OBJECTS)
 	$(QUIET_LINK) $(CC) $(CFLAGS) $(LDFLAGS) $(OBJECTS) -o $(BINDIR)/$@
 
-all: $(EXECUTABLE)
-	$(QUIET_GEN) $(OBJCOPY) -O$(OBJFMT) $(BINDIR)/$(EXECUTABLE) \
-		$(BINDIR)/$(EXECUTABLE:.elf=.bin)
-
 clean:
 	@echo "Cleaning up..."
 	-$(shell find . -name *.o -exec rm {} \;)
+	-$(shell rm -f $(SRCDIR)/include/version.h)
 	-$(shell rm -f $(BINDIR)/$(EXECUTABLE))
 	-$(shell rm -f $(BINDIR)/$(EXECUTABLE:.elf=.bin))
 	@echo "Done!"

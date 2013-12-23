@@ -38,6 +38,9 @@ ncscope.*
 # ctags files
 tags
 
+# generated version.h header
+version.h
+
 *.orig
 *~
 \#*#
