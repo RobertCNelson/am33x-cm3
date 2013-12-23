@@ -20,6 +20,7 @@ CFLAGS =-mcpu=cortex-m3 -mthumb -nostdlib -Wall -Wundef \
 LDFLAGS =-nostartfiles -fno-exceptions -Tfirmware.ld
 
 EXECUTABLE=am335x-pm-firmware.elf
+BINFMT=$(EXECUTABLE:.elf=.bin)
 
 .PHONY: all clean
 
@@ -35,18 +36,19 @@ QUIET_CC      = $(Q:@=@echo    '     CC       '$@;)
 QUIET_GEN     = $(Q:@=@echo    '     GEN      '$@;)
 QUIET_LINK    = $(Q:@=@echo    '     LINK     '$@;)
 
-all: config $(EXECUTABLE)
-	$(QUIET_GEN) $(OBJCOPY) -O$(OBJFMT) $(BINDIR)/$(EXECUTABLE) \
-		$(BINDIR)/$(EXECUTABLE:.elf=.bin)
+all: config $(BINFMT)
 
 config:
 	-$(shell scripts/generate $(VERSION) $(PATCHLEVEL) $(SUBLEVEL))
 
-.c.o:
-	$(QUIET_CC) $(CC) $(CFLAGS) $(LDFLAGS) -c $< -o $@
+$(BINFMT): $(EXECUTABLE)
+	$(QUIET_GEN) $(OBJCOPY) -O$(OBJFMT) $(BINDIR)/$< $(BINDIR)/$@
 
 $(EXECUTABLE): $(OBJECTS)
 	$(QUIET_LINK) $(CC) $(CFLAGS) $(LDFLAGS) $(OBJECTS) -o $(BINDIR)/$@
+
+.c.o:
+	$(QUIET_CC) $(CC) $(CFLAGS) $(LDFLAGS) -c $< -o $@
 
 clean:
 	@echo "Cleaning up..."
