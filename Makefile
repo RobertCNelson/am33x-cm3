@@ -26,14 +26,24 @@ EXECUTABLE=am335x-pm-firmware.elf
 SOURCES = $(shell find $(SRCDIR) -name *.c)
 OBJECTS = $(SOURCES:.c=.o)
 
+#
+# Pretty print
+#
+V             = @
+Q             = $(V:1=)
+QUIET_CC      = $(Q:@=@echo    '     CC       '$@;)
+QUIET_GEN     = $(Q:@=@echo    '     GEN      '$@;)
+QUIET_LINK    = $(Q:@=@echo    '     LINK     '$@;)
+
+.c.o:
+	$(QUIET_CC) $(CC) $(CFLAGS) $(LDFLAGS) -c $< -o $@
+
 $(EXECUTABLE): $(OBJECTS)
-	@echo "Compiling..."
-	@echo $(OBJECTS)
-	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJECTS) -o $(BINDIR)/$@
+	$(QUIET_LINK) $(CC) $(CFLAGS) $(LDFLAGS) $(OBJECTS) -o $(BINDIR)/$@
 
 all: $(EXECUTABLE)
-	@echo "Linking..."
-	$(OBJCOPY) -O$(OBJFMT) $(BINDIR)/$(EXECUTABLE) $(BINDIR)/$(EXECUTABLE:.elf=.bin)
+	$(QUIET_GEN) $(OBJCOPY) -O$(OBJFMT) $(BINDIR)/$(EXECUTABLE) \
+		$(BINDIR)/$(EXECUTABLE:.elf=.bin)
 
 clean:
 	@echo "Cleaning up..."
