@@ -42,7 +42,7 @@ cat > $filename << EOF
 #define PATCHLEVEL	$2
 #define SUBLEVEL	$3
 
-#define CM3_VERSION	((VERSION << 8) || (PATCHLEVEL << 4) || (SUBLEVEL << 0))
+#define CM3_VERSION	((VERSION << 8) | (PATCHLEVEL << 4) | (SUBLEVEL << 0))
 
 #endif /* __INCLUDE_VERSION_H */
 
