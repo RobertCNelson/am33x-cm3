@@ -243,7 +243,8 @@ void ds_restore(void)
 
 	ddr_io_resume();
 
-	clear_ddr_reset();
+	if (soc_id == AM335X_SOC_ID)
+		clear_ddr_reset();
 }
 
 int a8_i2c_sleep_handler(unsigned short i2c_sleep_offset)
