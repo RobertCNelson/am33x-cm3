@@ -209,6 +209,8 @@ void ds_save(void)
 
 	vtt_low();
 
+	prcm_enable_isolation();
+
 	vtp_disable();
 
 	ldo_power_down(LDO_MPU);
@@ -236,6 +238,8 @@ void ds_restore(void)
 	hwmod_enable(HWMOD_EMIF);
 
 	vtt_high();
+
+	prcm_disable_isolation();
 
 	ddr_io_resume();
 
@@ -272,4 +276,32 @@ int a8_i2c_wake_handler(unsigned short i2c_wake_offset)
 	}
 
 	return ret;
+}
+
+void prcm_enable_isolation(void)
+{
+	int temp;
+
+	if (io_isolation == false)
+	        return;
+
+	temp = __raw_readl(AM43XX_PRM_IO_PMCTRL);
+	temp |= (PRM_IO_PMCTRL_IO_ISO_CTRL);
+	__raw_writel(temp, AM43XX_PRM_IO_PMCTRL);
+
+	while(__raw_readl(AM43XX_PRM_IO_PMCTRL) & (PRM_IO_PMCTRL_IO_ISO_STATUS));
+}
+
+void prcm_disable_isolation(void)
+{
+	int temp;
+
+	if (io_isolation == false)
+	        return;
+
+	temp = __raw_readl(AM43XX_PRM_IO_PMCTRL);
+	temp &= ~(PRM_IO_PMCTRL_IO_ISO_CTRL);
+	__raw_writel(temp, AM43XX_PRM_IO_PMCTRL);
+
+	while(!(__raw_readl(AM43XX_PRM_IO_PMCTRL) & (PRM_IO_PMCTRL_IO_ISO_STATUS)));
 }

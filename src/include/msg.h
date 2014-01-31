@@ -17,6 +17,7 @@
 #include <stddef.h>
 
 /*
+ * 10  = IO Isolation Control (1 Bit)
  * 9-4 = VTT GPIO PIN (6 Bits)
  *   3 = VTT Status (1 Bit)
  * 2-0 = Memory Type (2 Bits)
@@ -27,6 +28,8 @@
 #define VTT_STAT_MASK		(0x1 << 3)
 #define VTT_GPIO_PIN_SHIFT	(0x4)
 #define VTT_GPIO_PIN_MASK	(0x3f << 4)
+#define IO_ISOLATION_STAT_SHIFT	(10)
+#define IO_ISOLATION_STAT_MASK	(0x1 << 10)
 
 /* Memory type passed in IPC register */
 #define MEM_TYPE_DDR2		2
@@ -134,6 +137,7 @@ extern struct state_handler cmd_handlers[];
 extern int mem_type;		/* Memory Type 2 = DDR2, 3 = DDR3, 4 = LPDDR2 */
 extern bool vtt_toggle;		/* VTT Toggle  true = required */
 extern int vtt_gpio_pin;	/* VTT GPIO Pin */
+extern bool io_isolation;	/* Set IO Isolation  true = required */
 
 void m3_firmware_version(void);
 void m3_param_reset(void);

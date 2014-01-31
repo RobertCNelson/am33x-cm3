@@ -40,6 +40,11 @@
 #define SOC_TYPE_HS	2
 #define SOC_TYPE_GP	3
 
+/* PRM_IO_PMCTRL defs for IO Isolation control */
+#define AM43XX_PRM_IO_PMCTRL		0x44DF4024
+#define PRM_IO_PMCTRL_IO_ISO_STATUS	(1<<25)
+#define PRM_IO_PMCTRL_IO_ISO_CTRL	(1<<24)
+
 extern unsigned int soc_id;
 extern unsigned int soc_rev;
 extern unsigned int soc_type;
@@ -60,4 +65,6 @@ void ds_restore(void);
 int a8_i2c_sleep_handler(unsigned short);
 int a8_i2c_wake_handler(unsigned short);
 
+void prcm_enable_isolation(void);
+void prcm_disable_isolation(void);
 #endif

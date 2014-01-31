@@ -23,6 +23,7 @@ struct cmd_data cmd_global_data;
 int mem_type;
 bool vtt_toggle;
 int vtt_gpio_pin;
+bool io_isolation;
 
 static union state_data custom_state_data;
 
@@ -181,6 +182,7 @@ void msg_cmd_dispatcher(void)
 	mem_type = (param3 & MEM_TYPE_MASK) >> MEM_TYPE_SHIFT;
 	vtt_toggle = (param3 & VTT_STAT_MASK) >> VTT_STAT_SHIFT;
 	vtt_gpio_pin = (param3 & VTT_GPIO_PIN_MASK) >> VTT_GPIO_PIN_SHIFT;
+	io_isolation = (param3 & IO_ISOLATION_STAT_MASK) >> IO_ISOLATION_STAT_SHIFT;
 
 	param1 = msg_read(PARAM1_REG);
 	param2 = msg_read(PARAM2_REG);
