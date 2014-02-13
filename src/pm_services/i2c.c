@@ -109,6 +109,16 @@ static void i2c_program_freq(int speed_khz)
 	xtal_freq = get_master_xtal_khz();
 
 	n2_div = dpll_get_div(DPLL_PER);
+
+	/*
+	 * NOTE: TRM for both AM437x and AM335x indicate that per_clkoutm2
+	 * Mstr Xtal/(N2 + 1) in the "Per PLL Typical Frequencies (MHz)" table,
+	 * this disagrees with experiment. In reality, the clock signal is
+	 * passed though in bypass mode with no divisor (tested on am437x and
+	 * am335x).
+	 */
+	n2_div = 0;
+
 	per_clkoutm2 = xtal_freq / (n2_div + 1);
 	i2c_fclk = per_clkoutm2 / 4;
 
