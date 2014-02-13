@@ -97,8 +97,6 @@ static int i2c_wait_for_ardy(void)
 
 static void i2c_program_freq(int speed_khz)
 {
-	const int xtal_freqs[] = {19200, 24000, 25000, 26000};
-	int index;
 	int xtal_freq;
 	int n2_div;
 	int per_clkoutm2;
@@ -108,12 +106,8 @@ static void i2c_program_freq(int speed_khz)
 	int sclh;
 
 	/* Calculate I2C0 functional clock */
-	index = __raw_readl(CONTROL_STATUS);
-	index &= CONTROL_STATUS_SYSBOOT1_MASK;
-	index >>= CONTROL_STATUS_SYSBOOT1_SHIFT;
-	xtal_freq = xtal_freqs[index];
+	xtal_freq = get_master_xtal_khz();
 
-	/* FIXME: May need to change for am43xx */
 	n2_div = dpll_get_div(DPLL_PER);
 	per_clkoutm2 = xtal_freq / (n2_div + 1);
 	i2c_fclk = per_clkoutm2 / 4;

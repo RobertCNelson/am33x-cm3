@@ -11,6 +11,7 @@
 */
 
 #include <io.h>
+#include <device_common.h>
 #include <prcm_core.h>
 #include <dpll.h>
 #include <dpll_335x.h>
@@ -180,4 +181,20 @@ void dpll_init(void)
 		dpll_regs = am43xx_dpll_regs;
 		power_down_plls = am43xx_power_down_plls;
 	}
+}
+
+unsigned int get_master_xtal_khz(void)
+{
+	const int xtal_freqs[] = {19200, 24000, 25000, 26000};
+	int index;
+
+	index = __raw_readl(CONTROL_STATUS);
+	if (index & CONTROL_STATUS_FREQ_SOURCE) {
+		index &= CONTROL_STATUS_FREQ_SELECT_MASK;
+		index >>= CONTROL_STATUS_FREQ_SELECT_SHIFT;
+	} else {
+		index &= CONTROL_STATUS_SYSBOOT1_MASK;
+		index >>= CONTROL_STATUS_SYSBOOT1_SHIFT;
+	}
+	return xtal_freqs[index];
 }

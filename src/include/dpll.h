@@ -13,6 +13,8 @@
 #ifndef __DPLL_H__
 #define __DPLL_H__
 
+#include <stddef.h>
+
 enum dpll_id {
 	DPLL_PER,
 	DPLL_DISP,
@@ -53,6 +55,8 @@ unsigned int dpll_get_div(enum dpll_id dpll);
 
 void dpll_reset(void);
 void dpll_init(void);
+
+unsigned int get_master_xtal_khz(void);
 
 #endif
 
