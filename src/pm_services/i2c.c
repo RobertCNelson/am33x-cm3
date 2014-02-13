@@ -123,16 +123,16 @@ static void i2c_program_freq(int speed_khz)
 	i2c_fclk = per_clkoutm2 / 4;
 
 	scl = i2c_fclk / (speed_khz ? : 1);
-	scll = scl - (scl / 3) - 7;
-	if (scll < 0)
-		scll = 0;
-	if (scll > 255)
-		scll = 255;
-	sclh = (scl / 3) - 5;
+	sclh = scl / 2 - 5;
 	if (sclh < 0)
 		sclh = 0;
 	if (sclh > 255)
 		sclh = 255;
+	scll = (scl - (sclh + 5)) - 7;
+	if (scll < 0)
+		scll = 0;
+	if (scll > 255)
+		scll = 255;
 
 	/* Frequency of XTAL will never be high enough to require PSC */
 	i2c_reg_write(0, OMAP_I2C_PSC_REG);
