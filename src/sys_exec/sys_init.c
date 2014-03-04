@@ -35,6 +35,10 @@ int am335_init(void)
 	for (i=0; i < CM3_NUM_EXT_INTERRUPTS; i++)
 		nvic_disable_irq(i);
 
+	/* Disable Tamper swakeup, a new addition for AM43XX SOCs */
+	if (soc_id == AM43XX_SOC_ID)
+		nvic_disable_irq(CM3_IRQ_TPM_WAKE);
+
 	/* Clean the IPC registers */
 	m3_param_reset();
 

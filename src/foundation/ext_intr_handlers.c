@@ -12,6 +12,7 @@
 
 #include <cm3.h>
 #include <device_cm3.h>
+#include <prcm_core.h>
 #include <msg.h>
 #include <pm_handlers.h>
 #include <sync.h>
@@ -71,6 +72,10 @@ void extint34_handler(void)
 	{
 		nvic_disable_irq(i);
 		nvic_clear_irq(i);
+	}
+	if (soc_id == AM43XX_SOC_ID) {
+		nvic_disable_irq(CM3_IRQ_TPM_WAKE);
+		nvic_clear_irq(CM3_IRQ_TPM_WAKE);
 	}
 
 	msg_cmd_dispatcher();
@@ -174,16 +179,14 @@ void extint51_handler(void)
 	generic_wake_handler(CM3_IRQ_ADC_TSC_WAKE);
 }
 
-#if 0
 /* TPM_WAKE */
 void extint52_handler(void)
 {
-	nvic_disable_irq(AM437X_IRQ_TMP_WAKE);
-	generic_wake_handler(AM437X_IRQ_ADC_TSC_WAKE);
+	nvic_disable_irq(CM3_IRQ_TPM_WAKE);
+	generic_wake_handler(CM3_IRQ_TPM_WAKE);
 }
-#endif
 
-/* TPM_WAKE */
+/* CTRL_WAKE */
 void extint53_handler(void)
 {
 	nvic_disable_irq(53);

@@ -55,6 +55,12 @@ void init_m3_state_machine(void)
 		nvic_clear_irq(i);
 	}
 
+	/* Tamper swakeup interrupt is new addition for AM43XX SOCx */
+	if (soc_id == AM43XX_SOC_ID) {
+		nvic_disable_irq(CM3_IRQ_TPM_WAKE);
+		nvic_clear_irq(CM3_IRQ_TPM_WAKE);
+	}
+
 	trace_init();
 
 	pm_reset();

@@ -170,6 +170,9 @@ void configure_wake_sources(int wake_sources)
 
 	if(BB_MPU_WAKE)
 		nvic_enable_irq(CM3_IRQ_MPU_WAKE);
+
+	if (soc_id == AM43XX_SOC_ID)
+		nvic_enable_irq(CM3_IRQ_TPM_WAKE);
 }
 
 void clear_wake_sources(void)
@@ -197,6 +200,8 @@ void clear_wake_sources(void)
 	nvic_disable_irq(CM3_IRQ_ADC_TSC_WAKE);
 	nvic_disable_irq(CM3_IRQ_USB0WOUT);
 	nvic_disable_irq(CM3_IRQ_USB1WOUT);
+	if (soc_id == AM43XX_SOC_ID)
+		nvic_disable_irq(CM3_IRQ_TPM_WAKE);
 
 	/* TODO: Clear all the pending interrupts */
 }

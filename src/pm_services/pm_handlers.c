@@ -346,6 +346,12 @@ void generic_wake_handler(int wakeup_reason)
 		nvic_clear_irq(i);
 	}
 
+	/* Flush out Tamper swakeup, a new addition for AM43XX SOCs */
+	if (soc_id == AM43XX_SOC_ID) {
+		nvic_disable_irq(CM3_IRQ_TPM_WAKE);
+		nvic_clear_irq(CM3_IRQ_TPM_WAKE);
+	}
+
 	trace_init();
 
 	pm_reset();
